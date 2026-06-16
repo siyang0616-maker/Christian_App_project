@@ -39,7 +39,7 @@ export function CheckInForm({ groupId, returnTo = "/", todayCheckIn }: CheckInFo
         <div>
           <h2 className="font-bold text-ink">오늘의 신앙 리듬</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            오늘의 신앙 리듬을 남겨보세요. 평가가 아니라 함께 기억하기 위한 짧은 안부예요.
+            하루에 한 번 가볍게 남기는 체크인이에요. 시간 추적이 아니라 함께 기억하기 위한 짧은 안부예요.
           </p>
         </div>
       </div>
@@ -50,6 +50,9 @@ export function CheckInForm({ groupId, returnTo = "/", todayCheckIn }: CheckInFo
 
         <fieldset className="grid gap-2">
           <legend className="mb-1 text-sm font-bold text-ink">오늘 함께 기억할 리듬</legend>
+          <p className="text-xs leading-5 text-slate-500">
+            각 항목은 오늘 했는지만 가볍게 남겨요. 몇 시에 했는지는 기록하지 않아요.
+          </p>
           {rhythmItems.map((item) => (
             <label
               className="flex min-h-12 items-center gap-3 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 has-[:checked]:border-leaf has-[:checked]:bg-mist has-[:checked]:text-leaf"

@@ -18,7 +18,7 @@ export function LeaderDashboard({ members, quietMembers, recentCheckIns, prayers
         </div>
         <div>
           <h2 className="font-bold text-ink">리더 돌봄 보드</h2>
-          <p className="text-sm text-slate-600">멤버의 흐름을 돌봄 관점으로 살펴봐요.</p>
+          <p className="text-sm text-slate-600">멤버의 안부와 기도제목을 먼저 살펴봐요.</p>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-2">
@@ -34,7 +34,7 @@ export function LeaderDashboard({ members, quietMembers, recentCheckIns, prayers
       <div className="mt-4">
         <div className="mb-2 flex items-center gap-2 text-sm font-bold text-ink">
           <Moon className="h-4 w-4 text-leaf" />
-          조용한 멤버
+          안부를 살펴볼 멤버
         </div>
         {quietMembers.length > 0 ? (
           <div className="grid gap-2">
@@ -56,15 +56,21 @@ export function LeaderDashboard({ members, quietMembers, recentCheckIns, prayers
           최근 체크인
         </div>
         <div className="grid gap-2">
-          {recentCheckIns.slice(0, 4).map((checkIn) => (
-            <div className="rounded-md border border-slate-100 bg-white px-3 py-2" key={checkIn.id}>
-              <div className="flex items-center justify-between gap-2 text-sm">
-                <span className="font-semibold text-ink">{checkIn.profiles.display_name}</span>
-                <span className="text-xs text-slate-500">{formatDateLabel(checkIn.checkin_date)}</span>
+          {recentCheckIns.length > 0 ? (
+            recentCheckIns.slice(0, 4).map((checkIn) => (
+              <div className="rounded-md border border-slate-100 bg-white px-3 py-2" key={checkIn.id}>
+                <div className="flex items-center justify-between gap-2 text-sm">
+                  <span className="font-semibold text-ink">{checkIn.profiles.display_name}</span>
+                  <span className="text-xs text-slate-500">{formatDateLabel(checkIn.checkin_date)}</span>
+                </div>
+                <p className="mt-1 text-sm text-slate-600">{moodLabel(checkIn.mood)}</p>
               </div>
-              <p className="mt-1 text-sm text-slate-600">{moodLabel(checkIn.mood)}</p>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="rounded-md border border-slate-100 bg-white px-3 py-2 text-sm text-slate-600">
+              아직 최근 체크인이 없어요.
+            </p>
+          )}
         </div>
       </div>
     </section>

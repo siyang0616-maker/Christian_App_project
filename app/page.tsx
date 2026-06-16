@@ -190,13 +190,21 @@ export default async function Home({
     >
       <div className="grid gap-4">
         <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
+        {dashboard.membership.role === "leader" ? (
+          <>
+            <LeaderDashboard
+              members={dashboard.members}
+              quietMembers={dashboard.quietMembers}
+              recentCheckIns={dashboard.recentCheckIns}
+              prayers={dashboard.prayerRequests}
+            />
+            <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
+          </>
+        ) : null}
         <TodayStatus
           checkIn={dashboard.todayCheckIn}
           groupName={dashboard.activeGroup.name}
         />
-        {dashboard.membership.role === "leader" ? (
-          <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
-        ) : null}
         <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
         <PrayerRequestForm groupId={dashboard.activeGroup.id} />
         <PrayerRequestList
@@ -204,14 +212,6 @@ export default async function Home({
           prayers={dashboard.prayerRequests}
           reactions={dashboard.prayerReactions}
         />
-        {dashboard.membership.role === "leader" ? (
-          <LeaderDashboard
-            members={dashboard.members}
-            quietMembers={dashboard.quietMembers}
-            recentCheckIns={dashboard.recentCheckIns}
-            prayers={dashboard.prayerRequests}
-          />
-        ) : null}
       </div>
     </AppShell>
   );

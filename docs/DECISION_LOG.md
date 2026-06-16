@@ -30,3 +30,19 @@
 - Lane D QA/Pre-Beta completed locally: manual first-beta QA checklist added.
 - Lane E Docs/State completed locally: project state, sprint, backlog, risk register, and beta status updated.
 - Decision: do not expand product scope. Next required work is verification, public smoke testing, and beta data deletion handling.
+
+### Leader-First Beta UX Refinement
+
+- Decision record: `superpowers/decisions/2026-06-16-leader-first-beta-ux-refinement.md`
+- Implementation ticket: `superpowers/tickets/2026-06-16-leader-first-beta-ux-refinement.md`
+- Decision: build a narrowed UI-only refinement before beta.
+- Approved areas:
+  - Move leader care dashboard above the leader's personal check-in flow.
+  - Make invite message compact by default.
+  - Let leaders edit the invite message locally before copying.
+  - Clarify that today's rhythm is a once-a-day check-in.
+- Deferred:
+  - Per-item timestamps.
+  - Frequency tracking.
+  - 0-10 mood score.
+  - Persisted invite message templates.

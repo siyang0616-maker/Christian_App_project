@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Check, Copy, KeyRound, Link as LinkIcon, MessageSquareText } from "lucide-react";
+import { AlertCircle, Check, ChevronDown, ChevronUp, Copy, KeyRound, Link as LinkIcon, MessageSquareText } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 
 type LeaderInviteCardProps = {
@@ -59,10 +59,12 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
   const [currentOrigin, setCurrentOrigin] = useState("");
   const [copiedTarget, setCopiedTarget] = useState<CopiedTarget>(null);
   const [copyNotice, setCopyNotice] = useState("");
+  const [isMessageOpen, setIsMessageOpen] = useState(false);
+  const [hasEditedMessage, setHasEditedMessage] = useState(false);
   const betaLink = normalizeSiteUrl(configuredSiteUrl || configuredVercelUrl || currentOrigin);
   const isLocalLink = !betaLink || isLocalUrl(betaLink);
   const inviteLink = !isLocalLink ? `${betaLink}/?inviteCode=${encodeURIComponent(inviteCode)}` : "";
-  const inviteMessage = useMemo(
+  const defaultInviteMessage = useMemo(
     () =>
       [
         `이번 주부터 ${groupName}에서 동행방을 1주만 가볍게 써보려고 해요.`,
@@ -81,10 +83,17 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
       ].join("\n"),
     [groupName, inviteCode, inviteLink],
   );
+  const [inviteMessage, setInviteMessage] = useState(defaultInviteMessage);
 
   useEffect(() => {
     setCurrentOrigin(window.location.origin);
   }, []);
+
+  useEffect(() => {
+    if (!hasEditedMessage) {
+      setInviteMessage(defaultInviteMessage);
+    }
+  }, [defaultInviteMessage, hasEditedMessage]);
 
   async function copyText(text: string, target: CopiedTarget, label: string) {
     if (!text) {
@@ -109,9 +118,9 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
           <MessageSquareText className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-bold text-ink">멤버에게 보낼 초대 메시지</h2>
+          <h2 className="font-bold text-ink">멤버 초대하기</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            카톡에 그대로 붙여넣을 수 있는 낮은 부담의 안내문이에요.
+            코드를 먼저 보내고, 필요하면 카톡용 메시지를 다듬어 복사해요.
           </p>
         </div>
       </div>
@@ -137,15 +146,6 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
             <p className="mt-1 break-all text-sm leading-6 text-slate-700">{inviteLink}</p>
           </div>
         ) : null}
-
-        <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
-          <p className="mb-2 text-xs font-semibold text-slate-500">멤버에게 보낼 메시지</p>
-          <textarea
-            className="min-h-64 w-full resize-none rounded-md border border-slate-100 bg-slate-50 p-3 text-sm leading-6 text-slate-700"
-            readOnly
-            value={inviteMessage}
-          />
-        </div>
 
         <div className="grid gap-2 sm:grid-cols-3">
           <button
@@ -174,6 +174,35 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
             메시지 복사
           </button>
         </div>
+
+        <button
+          aria-expanded={isMessageOpen}
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
+          onClick={() => setIsMessageOpen((current) => !current)}
+          type="button"
+        >
+          {isMessageOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+          {isMessageOpen ? "초대 메시지 접기" : "초대 메시지 보기/편집"}
+        </button>
+
+        {isMessageOpen ? (
+          <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
+            <label className="grid gap-2 text-xs font-semibold text-slate-500">
+              멤버에게 보낼 메시지
+              <textarea
+                className="min-h-56 w-full resize-y rounded-md border border-slate-100 bg-slate-50 p-3 text-sm font-normal leading-6 text-slate-700"
+                onChange={(event) => {
+                  setHasEditedMessage(true);
+                  setInviteMessage(event.target.value);
+                }}
+                value={inviteMessage}
+              />
+            </label>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              이 수정은 저장되지 않고, 지금 복사할 메시지에만 반영돼요.
+            </p>
+          </div>
+        ) : null}
         {copyNotice ? <p className="text-sm font-medium text-leaf" aria-live="polite">{copyNotice}</p> : null}
       </div>
     </section>
