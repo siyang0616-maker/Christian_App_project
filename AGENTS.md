@@ -82,3 +82,24 @@ Every time we plan, build, review, or improve a feature, answer:
 Decision principle:
 
 If a feature does not strengthen daily check-in, prayer memory, or leader care, defer it.
+
+## Active Superpowers Command Usage
+
+Before planning or implementing any meaningful task, Codex must read:
+
+- `docs/PROJECT_STATE.md`
+- `docs/CURRENT_SPRINT.md`
+- `docs/RISK_REGISTER.md`
+- the relevant `/superpowers/commands` file
+- the relevant `/superpowers/workflows` file
+- the relevant `/superpowers/agents` files
+
+## Parallel Workstream Rules
+
+1. Parallel work is allowed only when tasks touch clearly separated files.
+2. Each parallel task must declare lane name, goal, allowed files, forbidden files, dependencies, acceptance criteria, and merge risk.
+3. No two parallel tasks should modify the same file unless explicitly approved.
+4. DB schema, RLS, auth, middleware, and package.json changes must not be parallelized without a merge gate.
+5. Each parallel task must run lint/typecheck/build if it changes code.
+6. The merge gate must review conflicts, duplicated work, scope creep, security risk, and competitor drift.
+7. If conflicts exist, stop and ask for manual decision.
