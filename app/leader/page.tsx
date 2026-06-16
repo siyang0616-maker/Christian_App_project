@@ -45,7 +45,12 @@ export default async function LeaderPage() {
   }
 
   return (
-    <AppShell groupName={dashboard.activeGroup.name} profileName={dashboard.profile.display_name} role={dashboard.membership.role}>
+    <AppShell
+      currentPath="/leader"
+      groupName={dashboard.activeGroup.name}
+      profileName={dashboard.profile.display_name}
+      role={dashboard.membership.role}
+    >
       <LeaderDashboardView data={dashboard} />
     </AppShell>
   );

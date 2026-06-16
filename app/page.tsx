@@ -1,9 +1,11 @@
 import { redirect } from "next/navigation";
+import { ActionMessage } from "@/components/action-message";
 import { AppShell } from "@/components/app-shell";
 import { AuthPanel, type AuthPanelMessage } from "@/components/auth-panel";
 import { CheckInForm } from "@/components/check-in-form";
 import { CreateGroupForm } from "@/components/create-group-form";
 import { JoinGroupForm } from "@/components/join-group-form";
+import { LeaderInviteCard } from "@/components/leader-invite-card";
 import { LeaderDashboard } from "@/components/leader-dashboard";
 import { PrayerRequestForm } from "@/components/prayer-request-form";
 import { PrayerRequestList } from "@/components/prayer-request-list";
@@ -15,6 +17,7 @@ import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { getDashboardData } from "@/lib/data/dashboard";
 
 type HomeSearchParams = {
+  actionError?: string | string[];
   error?: string | string[];
   notice?: string | string[];
 };
@@ -99,7 +102,10 @@ export default async function Home({
   if (!dashboard.profile) {
     return (
       <AppShell>
-        <ProfileSetupForm email={user.email ?? ""} />
+        <div className="grid gap-4">
+          <ActionMessage code={firstParam(params.actionError)} />
+          <ProfileSetupForm email={user.email ?? ""} />
+        </div>
       </AppShell>
     );
   }
@@ -108,6 +114,14 @@ export default async function Home({
     return (
       <AppShell profileName={dashboard.profile.display_name}>
         <div className="grid gap-4">
+          <ActionMessage code={firstParam(params.actionError)} />
+          <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
+            <p className="text-sm font-semibold text-white/80">동행방 시작하기</p>
+            <h2 className="mt-1 text-xl font-bold">리더와 멤버 중 어디에서 시작하나요?</h2>
+            <p className="mt-2 text-sm leading-6 text-white/85">
+              리더라면 새 방을 만들고, 멤버라면 리더에게 받은 초대코드를 입력하면 돼요.
+            </p>
+          </section>
           <CreateGroupForm />
           <JoinGroupForm />
         </div>
@@ -126,11 +140,14 @@ export default async function Home({
       role={dashboard.membership.role}
     >
       <div className="grid gap-4">
+        <ActionMessage code={firstParam(params.actionError)} />
         <TodayStatus
           checkIn={dashboard.todayCheckIn}
           groupName={dashboard.activeGroup.name}
-          inviteCode={dashboard.activeGroup.invite_code}
         />
+        {dashboard.membership.role === "leader" ? (
+          <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
+        ) : null}
         <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
         <PrayerRequestForm groupId={dashboard.activeGroup.id} />
         <PrayerRequestList

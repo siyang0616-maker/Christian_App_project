@@ -3,26 +3,29 @@ import Link from "next/link";
 import type { Route } from "next";
 import { signOut } from "@/lib/actions/auth";
 import type { MemberRole } from "@/lib/types";
+import { ProfileNameEditor } from "@/components/profile-name-editor";
 
 type AppShellProps = {
   children: React.ReactNode;
+  currentPath?: string;
   groupName?: string;
   profileName?: string;
   role?: MemberRole;
 };
 
-export function AppShell({ children, groupName, profileName, role }: AppShellProps) {
+export function AppShell({ children, currentPath = "/", groupName, profileName, role }: AppShellProps) {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 py-5">
       <header className="mb-5 flex items-start justify-between gap-3">
-        <div>
+        <div className="min-w-0">
           <p className="text-sm font-semibold text-leaf">동행방</p>
           <h1 className="mt-1 text-2xl font-bold tracking-normal text-ink">
             {groupName ?? "오늘의 신앙 리듬"}
           </h1>
-          <p className="mt-1 text-sm leading-6 text-slate-600">
+          <p className="mt-1 break-words text-sm leading-6 text-slate-600">
             {profileName ? `${profileName}님, 함께 기억할 시간을 남겨요.` : "소그룹의 기도와 안부를 차분히 기록해요."}
           </p>
+          {profileName ? <ProfileNameEditor currentPath={currentPath} profileName={profileName} /> : null}
         </div>
         {profileName ? (
           <form action={signOut}>

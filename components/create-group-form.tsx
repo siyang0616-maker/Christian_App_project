@@ -9,8 +9,8 @@ export function CreateGroupForm() {
           <Plus className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-bold text-ink">새 동행방 만들기</h2>
-          <p className="text-sm text-slate-600">리더로 소그룹을 시작해요.</p>
+          <h2 className="font-bold text-ink">리더라면 방 만들기</h2>
+          <p className="text-sm text-slate-600">소그룹 이름을 넣고 초대코드를 만들어요.</p>
         </div>
       </div>
       <form action={createGroup} className="grid gap-3">
@@ -25,7 +25,7 @@ export function CreateGroupForm() {
           />
         </label>
         <button className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" type="submit">
-          만들기
+          방 만들기
         </button>
       </form>
     </section>

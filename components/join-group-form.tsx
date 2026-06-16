@@ -9,8 +9,8 @@ export function JoinGroupForm() {
           <KeyRound className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-bold text-ink">초대코드로 참여</h2>
-          <p className="text-sm text-slate-600">리더에게 받은 코드를 입력해요.</p>
+          <h2 className="font-bold text-ink">멤버라면 초대코드 입력</h2>
+          <p className="text-sm text-slate-600">리더에게 받은 코드로 동행방에 들어가요.</p>
         </div>
       </div>
       <form action={joinGroup} className="grid gap-3">

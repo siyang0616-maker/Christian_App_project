@@ -45,7 +45,7 @@ export default async function TodayPage() {
 
   if (!dashboard.activeGroup) {
     return (
-      <AppShell profileName={dashboard.profile.display_name}>
+      <AppShell currentPath="/today" profileName={dashboard.profile.display_name}>
         <div className="grid gap-4">
           <CreateGroupForm />
           <JoinGroupForm />
@@ -60,6 +60,7 @@ export default async function TodayPage() {
 
   return (
     <AppShell
+      currentPath="/today"
       groupName={dashboard.activeGroup.name}
       profileName={dashboard.profile.display_name}
       role={dashboard.membership.role}

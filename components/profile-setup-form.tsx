@@ -14,10 +14,11 @@ export function ProfileSetupForm({ email }: ProfileSetupFormProps) {
         </div>
         <h2 className="text-xl font-bold text-ink">프로필을 준비해요</h2>
         <p className="mt-2 text-sm leading-6 text-slate-600">
-          동행방 안에서 사용할 이름만 입력하면 돼요.
+          동행방 안에서 사용할 표시 이름만 입력하면 돼요. 비밀번호가 아니에요.
         </p>
       </div>
       <form action={saveProfile} className="grid gap-3">
+        <input name="returnTo" type="hidden" value="/" />
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           이메일
           <input className="h-12 rounded-md border border-slate-200 bg-slate-50 px-3 text-base" readOnly value={email} />
