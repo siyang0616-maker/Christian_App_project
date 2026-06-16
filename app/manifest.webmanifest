@@ -1,0 +1,10 @@
+{
+  "name": "동행방",
+  "short_name": "동행방",
+  "description": "소그룹을 위한 말씀·기도 체크인",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F1E8",
+  "theme_color": "#2F6F5E",
+  "icons": []
+}
