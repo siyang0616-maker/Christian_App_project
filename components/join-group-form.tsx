@@ -14,7 +14,7 @@ export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
         </div>
         <div>
           <h2 className="font-bold text-ink">멤버라면 초대코드 입력</h2>
-          <p className="text-sm text-slate-600">리더에게 받은 코드로 동행방에 들어가요.</p>
+          <p className="text-sm text-slate-600">리더에게 받은 초대코드를 입력하면 바로 체크인을 시작할 수 있어요.</p>
         </div>
       </div>
       <form action={joinGroup} className="grid gap-3">
@@ -30,7 +30,7 @@ export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
           />
         </label>
         <button className="h-12 rounded-md border border-leaf/25 bg-white px-4 font-semibold text-leaf" type="submit">
-          참여하기
+          초대코드로 참여하기
         </button>
       </form>
     </section>

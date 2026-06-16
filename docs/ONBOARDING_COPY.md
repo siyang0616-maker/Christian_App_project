@@ -68,11 +68,11 @@ Button:
 
 Title:
 
-새 동행방 만들기
+리더라면 방 만들기
 
 Body:
 
-리더로 소그룹을 시작해요.
+소그룹 이름을 넣으면 멤버에게 보낼 초대코드가 준비돼요.
 
 Input label:
 
@@ -84,7 +84,7 @@ Placeholder:
 
 Button:
 
-만들기
+리더로 방 만들기
 
 Success helper:
 
@@ -94,11 +94,11 @@ Success helper:
 
 Title:
 
-초대코드로 참여
+멤버라면 초대코드 입력
 
 Body:
 
-리더에게 받은 코드를 입력해요.
+리더에게 받은 초대코드를 입력하면 바로 체크인을 시작할 수 있어요.
 
 Input label:
 
@@ -110,7 +110,7 @@ AB12CD
 
 Button:
 
-참여하기
+초대코드로 참여하기
 
 Error:
 
@@ -263,4 +263,3 @@ Leader note:
 - 순위
 - 점수
 - 스트릭
-

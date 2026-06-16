@@ -6,6 +6,10 @@ Primary workflow:
 
 - `superpowers/workflows/08_pre_beta_readiness_audit.md`
 
+Manual QA checklist:
+
+- `docs/QA_CHECKLIST.md`
+
 Supporting templates:
 
 - `superpowers/templates/privacy-risk-report.md`

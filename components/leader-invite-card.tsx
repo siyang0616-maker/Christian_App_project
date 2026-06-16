@@ -67,7 +67,8 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
       [
         `이번 주부터 ${groupName}에서 동행방을 1주만 가볍게 써보려고 해요.`,
         "",
-        "동행방은 카톡을 대체하는 앱이 아니라, 카톡에 흘러가는 기도제목과 오늘의 안부를 함께 기억하기 위한 작은 기록 공간이에요.",
+        "동행방은 카톡을 대체하는 앱이 아니라, 카톡에 흘러가는 기도제목을 함께 기억하는 기록 공간이에요.",
+        "대화는 카톡에서 계속하고, 체크인과 기도제목만 동행방에 짧게 남겨보려고 해요.",
         "",
         inviteLink
           ? "아래 링크를 열고 이메일로 가입한 뒤 초대코드를 입력해 주세요."
@@ -76,7 +77,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
         `링크: ${inviteLink || "[베타 링크]"}`,
         `초대코드: ${inviteCode}`,
         "",
-        "부담 없이 오늘 체크인 한 번만 남겨봐 주세요. 공개 범위는 직접 선택할 수 있어요.",
+        "부담 없이 오늘 체크인 한 번만 남겨봐 주세요. 기도제목은 공개 범위를 직접 선택할 수 있어요.",
       ].join("\n"),
     [groupName, inviteCode, inviteLink],
   );
@@ -108,9 +109,9 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
           <MessageSquareText className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-bold text-ink">멤버 초대하기</h2>
+          <h2 className="font-bold text-ink">멤버에게 보낼 초대 메시지</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            아래 코드를 멤버에게 보내면 같은 동행방에 들어올 수 있어요.
+            카톡에 그대로 붙여넣을 수 있는 낮은 부담의 안내문이에요.
           </p>
         </div>
       </div>

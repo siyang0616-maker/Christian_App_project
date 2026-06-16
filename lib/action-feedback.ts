@@ -65,6 +65,30 @@ export const actionSuccessMessages = {
 export type ActionErrorCode = keyof typeof actionErrorMessages;
 export type ActionSuccessCode = keyof typeof actionSuccessMessages;
 
+export function getSafeInternalPath(value: FormDataEntryValue | string | null | undefined, fallback: Route = "/") {
+  if (typeof value !== "string") {
+    return fallback;
+  }
+
+  if (!value.startsWith("/") || value.startsWith("//") || value.includes("\\")) {
+    return fallback;
+  }
+
+  if (/[\u0000-\u001F\u007F]/.test(value)) {
+    return fallback;
+  }
+
+  return value as Route;
+}
+
+function actionFeedbackPath(key: "actionError" | "actionSuccess", code: string, returnTo: Route = "/") {
+  const safeReturnTo = getSafeInternalPath(returnTo);
+  const [path, hash = ""] = safeReturnTo.split("#");
+  const separator = path.includes("?") ? "&" : "?";
+
+  return `${path}${separator}${key}=${code}${hash ? `#${hash}` : ""}` as Route;
+}
+
 export function getActionErrorMessage(code: string | undefined) {
   if (!code || !(code in actionErrorMessages)) {
     return undefined;
@@ -81,12 +105,10 @@ export function getActionSuccessMessage(code: string | undefined) {
   return actionSuccessMessages[code as ActionSuccessCode];
 }
 
-export function actionErrorPath(code: ActionErrorCode) {
-  return `/?actionError=${code}` as Route;
+export function actionErrorPath(code: ActionErrorCode, returnTo: Route = "/") {
+  return actionFeedbackPath("actionError", code, returnTo);
 }
 
 export function actionSuccessPath(code: ActionSuccessCode, returnTo = "/") {
-  const [path, hash = ""] = returnTo.split("#");
-  const separator = path.includes("?") ? "&" : "?";
-  return `${path}${separator}actionSuccess=${code}${hash ? `#${hash}` : ""}` as Route;
+  return actionFeedbackPath("actionSuccess", code, getSafeInternalPath(returnTo));
 }

@@ -21,3 +21,12 @@
 ### Pre-Beta Reality Check
 
 - Current audit decision: Not ready for external beta until public URL smoke test, deletion handling, and verification checks are complete.
+
+### Sequential Lane Stabilization Progress
+
+- Lane A Backend/Security completed locally: safer auth callback redirect handling and safer server-action failure redirects.
+- Lane B UX/Onboarding completed locally: clearer first-use paths for leaders and members.
+- Lane C Marketing/Beta Copy completed locally: copy-ready leader invite message aligned with beta positioning.
+- Lane D QA/Pre-Beta completed locally: manual first-beta QA checklist added.
+- Lane E Docs/State completed locally: project state, sprint, backlog, risk register, and beta status updated.
+- Decision: do not expand product scope. Next required work is verification, public smoke testing, and beta data deletion handling.

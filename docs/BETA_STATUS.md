@@ -23,19 +23,31 @@ Not ready for first real beta.
 - [ ] Leader dashboard is care-oriented and useful.
 - [ ] Invalid invite code and failed actions show safe errors.
 - [ ] Private/anonymous data does not leak.
-- [ ] Feedback guide or forms are ready.
+- [x] Feedback guide or forms are ready.
+- [x] Manual QA checklist is ready.
 - [ ] Beta data deletion handling is defined.
+
+## Stabilization Status
+
+- [x] Auth callback redirect safety patched locally.
+- [x] Safe server-action failure redirects patched locally.
+- [x] First-use leader/member paths clarified locally.
+- [x] Copy-ready leader invite message updated locally.
+- [x] Manual QA checklist created.
+- [ ] Lint/typecheck/build completed after these changes.
+- [ ] Public URL smoke test completed after these changes.
 
 ## Current Blockers
 
 - Public URL smoke test not completed in this session.
 - Beta data deletion process not defined.
-- Verification commands not run in this session because dependencies are not installed locally.
+- Verification commands not run in this session because `pnpm` and dependencies are not available locally.
 
 ## Beta Feedback Assets
 
 - `docs/BETA_TEST_GUIDE.md`
 - `docs/BETA_INVITE_MESSAGE.md`
+- `docs/QA_CHECKLIST.md`
 - `docs/LEADER_FEEDBACK_FORM.md`
 - `docs/MEMBER_FEEDBACK_FORM.md`
 - `docs/POST_BETA_REVIEW.md`

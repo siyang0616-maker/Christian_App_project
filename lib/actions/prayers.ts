@@ -2,24 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { actionErrorPath, actionSuccessPath } from "@/lib/action-feedback";
+import { actionErrorPath, actionSuccessPath, getSafeInternalPath } from "@/lib/action-feedback";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { prayerReactionSchema, prayerRequestSchema } from "@/lib/validation";
 
-function getSafeReturnPath(value: FormDataEntryValue | null) {
-  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) {
-    return "/";
-  }
-
-  return value;
-}
-
 export async function createPrayerRequest(formData: FormData) {
-  const returnTo = getSafeReturnPath(formData.get("returnTo"));
+  const returnTo = getSafeInternalPath(formData.get("returnTo"));
   const parsed = prayerRequestSchema.safeParse(Object.fromEntries(formData));
 
   if (!parsed.success) {
-    redirect(actionErrorPath("prayer-invalid"));
+    redirect(actionErrorPath("prayer-invalid", returnTo));
   }
 
   const supabase = await createServerSupabaseClient();
@@ -40,7 +32,7 @@ export async function createPrayerRequest(formData: FormData) {
   });
 
   if (error) {
-    redirect(actionErrorPath("prayer-save"));
+    redirect(actionErrorPath("prayer-save", returnTo));
   }
 
   revalidatePath("/");
@@ -51,7 +43,7 @@ export async function prayForRequest(formData: FormData) {
   const parsed = prayerReactionSchema.safeParse(Object.fromEntries(formData));
 
   if (!parsed.success) {
-    redirect(actionErrorPath("prayer-reaction"));
+    redirect(actionErrorPath("prayer-reaction", "/#prayer-cards"));
   }
 
   const supabase = await createServerSupabaseClient();
@@ -72,7 +64,7 @@ export async function prayForRequest(formData: FormData) {
   );
 
   if (error) {
-    redirect(actionErrorPath("prayer-reaction"));
+    redirect(actionErrorPath("prayer-reaction", "/#prayer-cards"));
   }
 
   revalidatePath("/");

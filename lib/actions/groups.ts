@@ -27,22 +27,22 @@ export async function createGroup(formData: FormData) {
     redirect("/");
   }
 
-  const { data: group } = await supabase
+  const { data: group, error: groupError } = await supabase
     .from("groups")
     .insert({ name: parsed.data.name, invite_code: createInviteCode(), created_by: user.id })
     .select("id")
     .single();
 
-  if (!group) {
+  if (groupError || !group) {
     redirect(actionErrorPath("group-create"));
   }
 
-  if (group) {
-    const { error } = await supabase.from("group_members").insert({ group_id: group.id, user_id: user.id, role: "leader" });
+  const { error: membershipError } = await supabase
+    .from("group_members")
+    .insert({ group_id: group.id, user_id: user.id, role: "leader" });
 
-    if (error) {
-      redirect(actionErrorPath("group-create"));
-    }
+  if (membershipError) {
+    redirect(actionErrorPath("group-create"));
   }
 
   revalidatePath("/");
@@ -64,9 +64,11 @@ export async function joinGroup(formData: FormData) {
     redirect("/");
   }
 
-  const { error } = await supabase.rpc("join_group_by_code", { raw_invite_code: parsed.data.inviteCode.toUpperCase() });
+  const { data: joinedGroupId, error } = await supabase.rpc("join_group_by_code", {
+    raw_invite_code: parsed.data.inviteCode.toUpperCase(),
+  });
 
-  if (error) {
+  if (error || !joinedGroupId) {
     redirect(actionErrorPath("invite-join"));
   }
 

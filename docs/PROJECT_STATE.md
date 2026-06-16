@@ -24,6 +24,16 @@ MVP stabilization before first real beta with 1 leader and 2 members.
 
 Not ready for external beta until public URL smoke test, beta data deletion handling, and verification checks are complete.
 
+## Stabilization Progress
+
+- Lane A Backend/Security: auth callback redirect safety and safe server-action failure redirects have been patched locally.
+- Lane B UX/Onboarding: first-use leader/member paths have been clarified locally.
+- Lane C Marketing/Beta Copy: copy-ready leader invite messaging has been aligned in app copy and beta docs.
+- Lane D QA/Pre-Beta: manual first-beta QA checklist exists at `docs/QA_CHECKLIST.md`.
+- Lane E Docs/State: state files now track remaining blockers before beta.
+
+These changes still need lint, typecheck, build, and public URL smoke testing before beta invite.
+
 ## Known Foundation
 
 - Next.js App Router app exists.
@@ -34,7 +44,7 @@ Not ready for external beta until public URL smoke test, beta data deletion hand
 
 ## Current Priority
 
-Prepare the app and operating plan for a tiny public beta without expanding scope.
+Verify the stabilization pass and close beta blockers without expanding scope.
 
 ## Do Not Expand Into
 

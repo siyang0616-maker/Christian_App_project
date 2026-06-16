@@ -10,9 +10,10 @@ Make Donghaeng Room ready for one real leader and two members to complete the fi
 
 ## Top Priorities
 
-1. Complete public URL smoke test.
-2. Define beta data deletion request handling.
-3. Verify auth, invite, check-in, prayer, visibility, and leader dashboard flows.
+1. Run lint, typecheck, and build in an environment with `pnpm` and dependencies installed.
+2. Complete public URL smoke test.
+3. Define beta data deletion request handling.
+4. Verify auth, invite, check-in, prayer, visibility, and leader dashboard flows using `docs/QA_CHECKLIST.md`.
 
 ## Active Ticket
 
@@ -23,6 +24,13 @@ Make Donghaeng Room ready for one real leader and two members to complete the fi
 - Run `superpowers/commands/pre-beta.md` to audit readiness.
 - Run `superpowers/commands/qa.md` to produce and execute QA checklist.
 - Run `superpowers/commands/feature.md` before any new meaningful change.
+
+## Stabilization Done Locally
+
+- Auth callback redirect safety and safe server-action error redirects.
+- Clear no-group leader/member first-use paths.
+- Copy-ready leader invite message wording.
+- Manual first-beta QA checklist.
 
 ## Not In Sprint
 

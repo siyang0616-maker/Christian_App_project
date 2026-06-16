@@ -20,8 +20,8 @@
 
 - Status: Open
 - Severity: Medium
-- Risk: "공개 범위는 언제든 수정할 수 있어요" may imply edit support that is limited for prayer requests.
-- Mitigation: Align copy with actual edit/delete capabilities before beta.
+- Risk: Visibility copy may imply edit support that is limited for prayer requests.
+- Mitigation: Align copy with actual edit/delete capabilities before beta and verify with `docs/QA_CHECKLIST.md`.
 
 ### R4: Email Confirmation Friction
 
@@ -36,6 +36,20 @@
 - Severity: Medium
 - Risk: Dashboard metrics may feel like attendance tracking if copy or beta framing is wrong.
 - Mitigation: Use care language and collect leader/member feedback.
+
+### R6: Local Verification Environment Not Ready
+
+- Status: Open
+- Severity: High
+- Risk: `pnpm`, local dependencies, lint, typecheck, and build could not be run in this session, so code correctness is not fully verified.
+- Mitigation: Install or restore dependencies on a writable local environment, then run `pnpm lint`, `pnpm typecheck`, and `pnpm build` before merge or beta.
+
+### R7: Group Creation Is Not Transactional
+
+- Status: Watch
+- Severity: Medium
+- Risk: Group creation and leader membership insertion are still two separate Supabase writes. Error handling is safer, but strict atomicity is not guaranteed.
+- Mitigation: Keep as-is for MVP unless QA finds a real partial-create issue; consider a separately approved RPC only if needed.
 
 ## Closed Risks
 
