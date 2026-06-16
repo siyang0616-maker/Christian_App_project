@@ -19,6 +19,7 @@ import { getDashboardData } from "@/lib/data/dashboard";
 type HomeSearchParams = {
   actionError?: string | string[];
   error?: string | string[];
+  inviteCode?: string | string[];
   notice?: string | string[];
 };
 
@@ -123,7 +124,7 @@ export default async function Home({
             </p>
           </section>
           <CreateGroupForm />
-          <JoinGroupForm />
+          <JoinGroupForm defaultInviteCode={firstParam(params.inviteCode)} />
         </div>
       </AppShell>
     );

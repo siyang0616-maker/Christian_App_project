@@ -12,8 +12,9 @@ function redirectWithError(code: "invalid" | "login" | "signup"): never {
 async function getEmailRedirectTo() {
   const headerStore = await headers();
   const origin = headerStore.get("origin");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
 
-  return origin ? `${origin}/auth/callback` : undefined;
+  return origin ? `${origin}/auth/callback` : siteUrl ? `${siteUrl}/auth/callback` : undefined;
 }
 
 export async function submitAuth(formData: FormData) {

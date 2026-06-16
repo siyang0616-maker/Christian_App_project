@@ -64,6 +64,22 @@ This runs:
 
 Run these checks sequentially. Running `typecheck` and `build` at the same time can race with Next.js `.next/types` generation.
 
+## If The Browser Stops Reacting
+
+If the page loads but buttons do not react, stop the local dev server with `Ctrl+C` and start it again:
+
+```bash
+corepack pnpm dev
+```
+
+On Windows, from the project folder:
+
+```powershell
+.\scripts\start-dev-windows.cmd 3010
+```
+
+The app keeps development output in `.next-dev` and production build output in `.next`, so restarting the dev server should restore the CSS and browser interactivity.
+
 ## Notes For Windows
 
 - If bare `pnpm` is not recognized, use `corepack pnpm`.
@@ -75,4 +91,3 @@ Run these checks sequentially. Running `typecheck` and `build` at the same time 
 - Use Terminal from the repository root.
 - If `corepack pnpm` asks to prepare pnpm, allow it.
 - Use the same `.env.local` values as the deployed Supabase project.
-

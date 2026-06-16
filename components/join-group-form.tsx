@@ -1,7 +1,11 @@
 import { KeyRound } from "lucide-react";
 import { joinGroup } from "@/lib/actions/groups";
 
-export function JoinGroupForm() {
+type JoinGroupFormProps = {
+  defaultInviteCode?: string;
+};
+
+export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
   return (
     <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
       <div className="mb-4 flex items-center gap-2">
@@ -18,6 +22,7 @@ export function JoinGroupForm() {
           초대코드
           <input
             className="h-12 rounded-md border border-slate-200 bg-white px-3 text-base uppercase tracking-wide"
+            defaultValue={defaultInviteCode}
             maxLength={10}
             name="inviteCode"
             placeholder="AB12CD"
