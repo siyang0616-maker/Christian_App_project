@@ -18,6 +18,7 @@ import { getDashboardData } from "@/lib/data/dashboard";
 
 type HomeSearchParams = {
   actionError?: string | string[];
+  actionSuccess?: string | string[];
   error?: string | string[];
   inviteCode?: string | string[];
   notice?: string | string[];
@@ -53,7 +54,34 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
     return {
       tone: "error",
       title: "계정을 만들 수 없었어요",
-      body: "이미 가입한 이메일이라면 로그인해 주세요. 계속 어렵다면 Supabase Auth 설정을 확인해야 해요.",
+      body: "이미 가입한 이메일이라면 로그인해 주세요. 다른 이메일도 안 된다면 베타 운영자에게 알려주세요.",
+      suggestedIntent: "signUp",
+    };
+  }
+
+  if (error === "signup-config") {
+    return {
+      tone: "error",
+      title: "가입 설정을 확인해야 해요",
+      body: "Vercel의 Supabase URL은 /rest/v1 없이 프로젝트 주소만 넣어야 하고, Supabase Auth Redirect URL에 배포 주소의 /auth/callback이 있어야 해요.",
+      suggestedIntent: "signUp",
+    };
+  }
+
+  if (error === "signup-disabled") {
+    return {
+      tone: "error",
+      title: "이메일 가입이 꺼져 있어요",
+      body: "Supabase Authentication 설정에서 이메일 가입을 켠 뒤 다시 시도해 주세요.",
+      suggestedIntent: "signUp",
+    };
+  }
+
+  if (error === "signup-rate-limit") {
+    return {
+      tone: "error",
+      title: "가입 메일을 잠시 후 다시 보내야 해요",
+      body: "짧은 시간에 가입 메일을 여러 번 보내면 Supabase가 잠시 제한할 수 있어요. 몇 분 뒤 다시 시도해 주세요.",
       suggestedIntent: "signUp",
     };
   }
@@ -63,6 +91,15 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
       tone: "error",
       title: "로그인할 수 없었어요",
       body: "이메일 또는 비밀번호를 확인해 주세요. 처음이라면 새 계정 만들기를 먼저 눌러주세요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "login-email-unconfirmed") {
+    return {
+      tone: "error",
+      title: "이메일 확인이 아직 필요해요",
+      body: "새 계정은 메일함에서 가입 확인 링크를 먼저 눌러야 로그인할 수 있어요. 스팸함도 확인해 주세요.",
       suggestedIntent: "signIn",
     };
   }
@@ -104,7 +141,7 @@ export default async function Home({
     return (
       <AppShell>
         <div className="grid gap-4">
-          <ActionMessage code={firstParam(params.actionError)} />
+          <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
           <ProfileSetupForm email={user.email ?? ""} />
         </div>
       </AppShell>
@@ -115,7 +152,7 @@ export default async function Home({
     return (
       <AppShell profileName={dashboard.profile.display_name}>
         <div className="grid gap-4">
-          <ActionMessage code={firstParam(params.actionError)} />
+          <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
           <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
             <p className="text-sm font-semibold text-white/80">동행방 시작하기</p>
             <h2 className="mt-1 text-xl font-bold">리더와 멤버 중 어디에서 시작하나요?</h2>
@@ -141,7 +178,7 @@ export default async function Home({
       role={dashboard.membership.role}
     >
       <div className="grid gap-4">
-        <ActionMessage code={firstParam(params.actionError)} />
+        <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
         <TodayStatus
           checkIn={dashboard.todayCheckIn}
           groupName={dashboard.activeGroup.name}

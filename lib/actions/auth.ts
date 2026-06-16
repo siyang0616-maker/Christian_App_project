@@ -5,8 +5,64 @@ import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { emailPasswordSchema } from "@/lib/validation";
 
-function redirectWithError(code: "invalid" | "login" | "signup"): never {
+type AuthErrorCode =
+  | "invalid"
+  | "login"
+  | "login-email-unconfirmed"
+  | "signup"
+  | "signup-config"
+  | "signup-disabled"
+  | "signup-rate-limit";
+
+function redirectWithError(code: AuthErrorCode): never {
   redirect(`/?error=${code}`);
+}
+
+function getSignupErrorCode(error: { message?: string; status?: number; code?: string }): AuthErrorCode {
+  const message = error.message?.toLowerCase() ?? "";
+  const code = error.code?.toLowerCase() ?? "";
+
+  console.error("Supabase signup failed", {
+    code: error.code,
+    message: error.message,
+    status: error.status,
+  });
+
+  if (error.status === 429 || message.includes("rate limit") || message.includes("too many")) {
+    return "signup-rate-limit";
+  }
+
+  if (message.includes("email signups are disabled") || message.includes("signup is disabled")) {
+    return "signup-disabled";
+  }
+
+  if (
+    code.includes("validation") ||
+    message.includes("redirect") ||
+    message.includes("not allowed") ||
+    message.includes("failed to fetch") ||
+    message.includes("invalid url")
+  ) {
+    return "signup-config";
+  }
+
+  return "signup";
+}
+
+function getLoginErrorCode(error: { message?: string; code?: string }): AuthErrorCode {
+  const message = error.message?.toLowerCase() ?? "";
+  const code = error.code?.toLowerCase() ?? "";
+
+  console.error("Supabase login failed", {
+    code: error.code,
+    message: error.message,
+  });
+
+  if (code.includes("email_not_confirmed") || message.includes("email not confirmed")) {
+    return "login-email-unconfirmed";
+  }
+
+  return "login";
 }
 
 async function getEmailRedirectTo() {
@@ -36,7 +92,7 @@ export async function submitAuth(formData: FormData) {
     });
 
     if (error) {
-      redirectWithError("signup");
+      redirectWithError(getSignupErrorCode(error));
     }
 
     if (!data.session) {
@@ -52,7 +108,7 @@ export async function submitAuth(formData: FormData) {
   });
 
   if (error) {
-    redirectWithError("login");
+    redirectWithError(getLoginErrorCode(error));
   }
 
   redirect("/");

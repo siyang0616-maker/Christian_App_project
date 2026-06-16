@@ -1,12 +1,14 @@
 import { HandHeart } from "lucide-react";
 import { createPrayerRequest } from "@/lib/actions/prayers";
+import { SubmitButton } from "@/components/submit-button";
 import { VisibilitySelect } from "@/components/visibility-select";
 
 type PrayerRequestFormProps = {
   groupId: string;
+  returnTo?: string;
 };
 
-export function PrayerRequestForm({ groupId }: PrayerRequestFormProps) {
+export function PrayerRequestForm({ groupId, returnTo = "/#prayer-cards" }: PrayerRequestFormProps) {
   return (
     <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
       <div className="mb-4 flex items-center gap-2">
@@ -20,6 +22,7 @@ export function PrayerRequestForm({ groupId }: PrayerRequestFormProps) {
       </div>
       <form action={createPrayerRequest} className="grid gap-3">
         <input name="groupId" type="hidden" value={groupId} />
+        <input name="returnTo" type="hidden" value={returnTo} />
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           기도제목
           <textarea
@@ -31,9 +34,9 @@ export function PrayerRequestForm({ groupId }: PrayerRequestFormProps) {
           />
         </label>
         <VisibilitySelect includeAnonymous />
-        <button className="h-12 rounded-md bg-clay px-4 font-semibold text-white" type="submit">
+        <SubmitButton className="h-12 rounded-md bg-clay px-4 font-semibold text-white" pendingLabel="기도제목을 저장하고 있어요...">
           기도제목 남기기
-        </button>
+        </SubmitButton>
       </form>
     </section>
   );

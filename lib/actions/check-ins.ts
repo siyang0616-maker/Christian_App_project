@@ -2,11 +2,20 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { actionErrorPath } from "@/lib/action-feedback";
+import { actionErrorPath, actionSuccessPath } from "@/lib/action-feedback";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { checkInSchema } from "@/lib/validation";
 
+function getSafeReturnPath(value: FormDataEntryValue | null) {
+  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) {
+    return "/";
+  }
+
+  return value;
+}
+
 export async function saveCheckIn(formData: FormData) {
+  const returnTo = getSafeReturnPath(formData.get("returnTo"));
   const parsed = checkInSchema.safeParse(Object.fromEntries(formData));
 
   if (!parsed.success) {
@@ -48,4 +57,5 @@ export async function saveCheckIn(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/today");
+  redirect(actionSuccessPath("checkin-saved", returnTo));
 }

@@ -19,7 +19,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
   });
 
   return (
-    <section className="grid gap-3">
+    <section className="scroll-mt-4 grid gap-3" id="prayer-cards">
       <div>
         <h2 className="font-bold text-ink">기도제목 카드</h2>
         <p className="text-sm text-slate-600">오늘 함께 기도로 기억할 제목이에요.</p>

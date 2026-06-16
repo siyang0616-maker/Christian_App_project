@@ -1,10 +1,12 @@
 import { Check, HeartPulse } from "lucide-react";
 import { saveCheckIn } from "@/lib/actions/check-ins";
+import { SubmitButton } from "@/components/submit-button";
 import { VisibilitySelect } from "@/components/visibility-select";
 import type { CheckInWithAuthor, Mood } from "@/lib/types";
 
 type CheckInFormProps = {
   groupId: string;
+  returnTo?: string;
   todayCheckIn: CheckInWithAuthor | null;
 };
 
@@ -27,7 +29,7 @@ function isChecked(todayCheckIn: CheckInWithAuthor | null, name: (typeof rhythmI
   return Boolean(todayCheckIn?.[name]);
 }
 
-export function CheckInForm({ groupId, todayCheckIn }: CheckInFormProps) {
+export function CheckInForm({ groupId, returnTo = "/", todayCheckIn }: CheckInFormProps) {
   return (
     <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
       <div className="mb-4 flex items-start gap-3">
@@ -44,6 +46,7 @@ export function CheckInForm({ groupId, todayCheckIn }: CheckInFormProps) {
 
       <form action={saveCheckIn} className="grid gap-4">
         <input name="groupId" type="hidden" value={groupId} />
+        <input name="returnTo" type="hidden" value={returnTo} />
 
         <fieldset className="grid gap-2">
           <legend className="mb-1 text-sm font-bold text-ink">오늘 함께 기억할 리듬</legend>
@@ -99,9 +102,9 @@ export function CheckInForm({ groupId, todayCheckIn }: CheckInFormProps) {
 
         <VisibilitySelect defaultValue={todayCheckIn?.visibility ?? "group"} />
 
-        <button className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" type="submit">
+        <SubmitButton className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" pendingLabel="체크인을 저장하고 있어요...">
           {todayCheckIn ? "오늘 체크인 수정" : "오늘 체크인 남기기"}
-        </button>
+        </SubmitButton>
       </form>
     </section>
   );

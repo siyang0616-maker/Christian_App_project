@@ -76,6 +76,18 @@ NEXT_PUBLIC_SITE_URL=https://your-vercel-beta-url.vercel.app
 
 Use the same Supabase values from local `.env.local`, but never add a Supabase `service_role` key.
 
+`NEXT_PUBLIC_SUPABASE_URL` must be the project root URL:
+
+```text
+https://your-project-ref.supabase.co
+```
+
+Do not include the REST API suffix:
+
+```text
+https://your-project-ref.supabase.co/rest/v1/
+```
+
 After changing environment variables, redeploy. Environment variable changes do not update old deployments automatically.
 
 ### 5. Configure Supabase Auth Redirects

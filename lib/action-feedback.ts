@@ -47,7 +47,23 @@ export const actionErrorMessages = {
   },
 } as const;
 
+export const actionSuccessMessages = {
+  "checkin-saved": {
+    title: "오늘 체크인이 저장됐어요",
+    body: "위의 오늘 상태 카드에 방금 남긴 마음이 반영됐어요. 다시 고치고 싶으면 체크인 수정을 눌러주세요.",
+  },
+  "prayer-saved": {
+    title: "기도제목이 저장됐어요",
+    body: "아래 기도제목 카드 목록에 새 카드로 추가됐어요.",
+  },
+  "prayer-reaction-saved": {
+    title: "기도로 기억했어요",
+    body: "기도했어요 반응이 카드에 반영됐어요.",
+  },
+} as const;
+
 export type ActionErrorCode = keyof typeof actionErrorMessages;
+export type ActionSuccessCode = keyof typeof actionSuccessMessages;
 
 export function getActionErrorMessage(code: string | undefined) {
   if (!code || !(code in actionErrorMessages)) {
@@ -57,6 +73,20 @@ export function getActionErrorMessage(code: string | undefined) {
   return actionErrorMessages[code as ActionErrorCode];
 }
 
+export function getActionSuccessMessage(code: string | undefined) {
+  if (!code || !(code in actionSuccessMessages)) {
+    return undefined;
+  }
+
+  return actionSuccessMessages[code as ActionSuccessCode];
+}
+
 export function actionErrorPath(code: ActionErrorCode) {
   return `/?actionError=${code}` as Route;
+}
+
+export function actionSuccessPath(code: ActionSuccessCode, returnTo = "/") {
+  const [path, hash = ""] = returnTo.split("#");
+  const separator = path.includes("?") ? "&" : "?";
+  return `${path}${separator}actionSuccess=${code}${hash ? `#${hash}` : ""}` as Route;
 }
