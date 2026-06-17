@@ -22,7 +22,7 @@ MVP stabilization before first real beta with 1 leader and 2 members.
 
 ## Current Readiness
 
-Not ready for external beta until public URL smoke test, beta data deletion handling, and verification checks are complete.
+Not ready for external beta until the full public 1-leader/2-member smoke test is complete.
 
 ## Stabilization Progress
 
@@ -31,8 +31,10 @@ Not ready for external beta until public URL smoke test, beta data deletion hand
 - Lane C Marketing/Beta Copy: copy-ready leader invite messaging has been aligned in app copy and beta docs.
 - Lane D QA/Pre-Beta: manual first-beta QA checklist exists at `docs/QA_CHECKLIST.md`.
 - Lane E Docs/State: state files now track remaining blockers before beta.
+- Pre-beta operations: beta data deletion handling is documented.
+- Verification: lint, typecheck, build, and basic public URL HTTP checks pass.
 
-These changes still need lint, typecheck, build, and public URL smoke testing before beta invite.
+These changes still need the full public leader/member smoke test before beta invite.
 
 ## Known Foundation
 
@@ -44,7 +46,7 @@ These changes still need lint, typecheck, build, and public URL smoke testing be
 
 ## Current Priority
 
-Verify the stabilization pass and close beta blockers without expanding scope.
+Complete the full public leader/member smoke test without expanding scope.
 
 ## Do Not Expand Into
 

@@ -2,12 +2,9 @@
 
 ## Now
 
-- Install or restore local dependencies, then run lint/typecheck/build.
 - Public URL smoke test for 1 leader and 2 members.
-- Define beta data deletion request process.
 - Verify auth redirect, group create, invite, join, check-in, prayer, "기도했어요", and leader dashboard.
 - Execute `docs/QA_CHECKLIST.md`.
-- Review visibility copy against actual edit/delete capability before inviting beta users.
 
 ## Next
 

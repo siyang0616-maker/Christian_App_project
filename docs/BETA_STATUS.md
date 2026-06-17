@@ -25,7 +25,7 @@ Not ready for first real beta.
 - [ ] Private/anonymous data does not leak.
 - [x] Feedback guide or forms are ready.
 - [x] Manual QA checklist is ready.
-- [ ] Beta data deletion handling is defined.
+- [x] Beta data deletion handling is defined.
 
 ## Stabilization Status
 
@@ -34,14 +34,15 @@ Not ready for first real beta.
 - [x] First-use leader/member paths clarified locally.
 - [x] Copy-ready leader invite message updated locally.
 - [x] Manual QA checklist created.
-- [ ] Lint/typecheck/build completed after these changes.
-- [ ] Public URL smoke test completed after these changes.
+- [x] Lint/typecheck/build completed after these changes.
+- [x] Basic public URL HTTP smoke test completed after these changes.
+- [x] Password recovery link handling patched locally with `/auth/reset-password`.
+- [ ] Full public leader/member smoke test completed after these changes.
 
 ## Current Blockers
 
-- Public URL smoke test not completed in this session.
-- Beta data deletion process not defined.
-- Verification commands not run in this session because `pnpm` and dependencies are not available locally.
+- Password recovery patch needs deployment and public URL retest.
+- Full public leader/member smoke test not completed in this session.
 
 ## Beta Feedback Assets
 
@@ -51,3 +52,5 @@ Not ready for first real beta.
 - `docs/LEADER_FEEDBACK_FORM.md`
 - `docs/MEMBER_FEEDBACK_FORM.md`
 - `docs/POST_BETA_REVIEW.md`
+- `docs/PRE_BETA_GATE_2026-06-17.md`
+- `docs/BETA_DATA_DELETION_RUNBOOK.md`

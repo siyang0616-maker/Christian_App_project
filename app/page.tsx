@@ -41,6 +41,15 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
     };
   }
 
+  if (notice === "password-updated") {
+    return {
+      tone: "success",
+      title: "비밀번호를 바꿨어요",
+      body: "방금 설정한 새 비밀번호로 다시 로그인해 주세요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
   if (error === "invalid") {
     return {
       tone: "error",

@@ -1,5 +1,20 @@
 # Worklog
 
+## 2026-06-17
+
+- Found that Supabase password recovery emails returned to the app without a password reset screen.
+- Added a recovery hash router and `/auth/reset-password` flow so recovery links can collect a new password.
+- Verified `corepack pnpm verify` passes after the password reset flow: lint, typecheck, and build all passed.
+- Ran the pre-beta gate after the Mac continuation work.
+- Verified `corepack pnpm verify` passes locally: lint, typecheck, and build all passed.
+- Verified the public Vercel URL returns HTTP 200 and renders Donghaeng Room app copy instead of the Supabase setup notice.
+- Current result: still not ready for first real beta until the full public 1-leader/2-member smoke test is complete.
+- Added `docs/PRE_BETA_GATE_2026-06-17.md` as the durable gate result.
+- Added `docs/BETA_DATA_DELETION_RUNBOOK.md` to define the first-beta manual Supabase deletion process.
+- Closed the "beta data deletion handling not defined" risk.
+- Narrowed visibility helper copy from "언제든 수정" to "제출 전에 확인" so the app does not overpromise editability before beta.
+- Closed the visibility copy risk; the remaining beta blocker is the full public leader/member smoke test.
+
 ## 2026-06-16
 
 - Added Superpowers harness and reality review layers.

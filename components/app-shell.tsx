@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Route } from "next";
 import { signOut } from "@/lib/actions/auth";
 import type { MemberRole } from "@/lib/types";
+import { AuthRecoveryRouter } from "@/components/auth-recovery-router";
 import { ProfileNameEditor } from "@/components/profile-name-editor";
 
 type AppShellProps = {
@@ -16,6 +17,7 @@ type AppShellProps = {
 export function AppShell({ children, currentPath = "/", groupName, profileName, role }: AppShellProps) {
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-md flex-col px-4 py-5">
+      <AuthRecoveryRouter />
       <header className="mb-5 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm font-semibold text-leaf">동행방</p>
