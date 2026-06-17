@@ -172,28 +172,25 @@ export function AuthForm({ message }: AuthFormProps) {
           type="password"
         />
       </label>
+      <div className="grid gap-2 rounded-md border border-leaf/15 bg-mist px-3 py-3">
+        <p className="text-xs leading-5 text-slate-600">
+          이미 만든 계정인데 폰이나 카카오톡에서 안 들어가지면, 같은 이메일을 입력하고 재설정 메일을 받아 주세요.
+        </p>
+        <button
+          className="h-11 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
+          data-auth-action="resetPassword"
+          formAction={requestPasswordReset}
+          type="submit"
+        >
+          비밀번호 재설정 메일 받기
+        </button>
+      </div>
       <p className="rounded-md bg-linen px-3 py-2 text-xs leading-5 text-slate-600">
         공개 범위와 기도제목은 가입 후 동행방 안에서 직접 선택할 수 있어요.
       </p>
       <button className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" type="submit">
         {intentCopy[intent].submit}
       </button>
-
-      {intent === "signIn" ? (
-        <div className="grid gap-2 rounded-md border border-slate-100 bg-white px-3 py-3">
-          <p className="text-xs leading-5 text-slate-500">
-            다른 브라우저나 카카오톡 안에서는 다시 로그인해야 해요. 비밀번호가 헷갈리면 이메일만 입력하고 재설정 메일을 받아 주세요.
-          </p>
-          <button
-            className="h-11 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
-            data-auth-action="resetPassword"
-            formAction={requestPasswordReset}
-            type="submit"
-          >
-            비밀번호 재설정 메일 받기
-          </button>
-        </div>
-      ) : null}
     </form>
   );
 }
