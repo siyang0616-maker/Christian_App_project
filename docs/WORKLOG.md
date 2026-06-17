@@ -2,6 +2,10 @@
 
 ## 2026-06-17
 
+- Investigated the phone Safari/KakaoTalk login issue from screenshots and Vercel logs.
+- Identified that the public app was loading, but phone login attempts were failing with Supabase `invalid_credentials` while the Codex browser still had an existing session cookie.
+- Added a minimal auth recovery UX: new visitors default to `새 계정`, login failure copy explains separate browser sessions, email input is normalized, and existing users can request a password reset email from the login screen.
+- Verified `corepack pnpm verify` passes after the auth recovery UX change.
 - Found that Supabase password recovery emails returned to the app without a password reset screen.
 - Added a recovery hash router and `/auth/reset-password` flow so recovery links can collect a new password.
 - Verified `corepack pnpm verify` passes after the password reset flow: lint, typecheck, and build all passed.

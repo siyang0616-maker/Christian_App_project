@@ -3,12 +3,16 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
-import { emailPasswordSchema } from "@/lib/validation";
+import { emailOnlySchema, emailPasswordSchema } from "@/lib/validation";
 
 type AuthErrorCode =
   | "invalid"
   | "login"
   | "login-email-unconfirmed"
+  | "reset"
+  | "reset-config"
+  | "reset-invalid"
+  | "reset-rate-limit"
   | "signup"
   | "signup-config"
   | "signup-disabled"
@@ -73,6 +77,39 @@ async function getEmailRedirectTo() {
   return origin ? `${origin}/auth/callback` : siteUrl ? `${siteUrl}/auth/callback` : undefined;
 }
 
+async function getPasswordResetRedirectTo() {
+  const headerStore = await headers();
+  const origin = headerStore.get("origin");
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+
+  return origin ? `${origin}/auth/reset-password` : siteUrl ? `${siteUrl}/auth/reset-password` : undefined;
+}
+
+function getPasswordResetErrorCode(error: { message?: string; status?: number; code?: string }): AuthErrorCode {
+  const message = error.message?.toLowerCase() ?? "";
+
+  console.error("Supabase password reset failed", {
+    code: error.code,
+    message: error.message,
+    status: error.status,
+  });
+
+  if (error.status === 429 || message.includes("rate limit") || message.includes("too many")) {
+    return "reset-rate-limit";
+  }
+
+  if (
+    message.includes("redirect") ||
+    message.includes("not allowed") ||
+    message.includes("failed to fetch") ||
+    message.includes("invalid url")
+  ) {
+    return "reset-config";
+  }
+
+  return "reset";
+}
+
 export async function submitAuth(formData: FormData) {
   const intent = formData.get("intent") === "signUp" ? "signUp" : "signIn";
   const parsed = emailPasswordSchema.safeParse(Object.fromEntries(formData));
@@ -112,6 +149,27 @@ export async function submitAuth(formData: FormData) {
   }
 
   redirect("/");
+}
+
+export async function requestPasswordReset(formData: FormData) {
+  const parsed = emailOnlySchema.safeParse(Object.fromEntries(formData));
+
+  if (!parsed.success) {
+    redirectWithError("reset-invalid");
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const redirectTo = await getPasswordResetRedirectTo();
+  const { error } = await supabase.auth.resetPasswordForEmail(
+    parsed.data.email,
+    redirectTo ? { redirectTo } : undefined,
+  );
+
+  if (error) {
+    redirectWithError(getPasswordResetErrorCode(error));
+  }
+
+  redirect("/?notice=reset-email");
 }
 
 export async function signOut() {

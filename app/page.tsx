@@ -50,6 +50,15 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
     };
   }
 
+  if (notice === "reset-email") {
+    return {
+      tone: "success",
+      title: "비밀번호 재설정 메일을 보냈어요",
+      body: "메일함에서 재설정 링크를 열고 새 비밀번호를 만든 뒤 다시 로그인해 주세요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
   if (error === "invalid") {
     return {
       tone: "error",
@@ -99,7 +108,7 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
     return {
       tone: "error",
       title: "로그인할 수 없었어요",
-      body: "이메일 또는 비밀번호를 확인해 주세요. 처음이라면 새 계정 만들기를 먼저 눌러주세요.",
+      body: "이 브라우저에는 아직 로그인 기록이 없어요. 처음이라면 새 계정을 만들고, 이미 만든 계정이면 비밀번호 재설정 메일을 받아 주세요.",
       suggestedIntent: "signIn",
     };
   }
@@ -109,6 +118,42 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
       tone: "error",
       title: "이메일 확인이 아직 필요해요",
       body: "새 계정은 메일함에서 가입 확인 링크를 먼저 눌러야 로그인할 수 있어요. 스팸함도 확인해 주세요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "reset-invalid") {
+    return {
+      tone: "error",
+      title: "이메일을 확인해 주세요",
+      body: "비밀번호 재설정 메일을 받을 이메일 주소를 입력해 주세요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "reset-config") {
+    return {
+      tone: "error",
+      title: "재설정 링크 설정을 확인해야 해요",
+      body: "Supabase Auth Redirect URL에 배포 주소의 /auth/reset-password가 허용되어야 해요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "reset-rate-limit") {
+    return {
+      tone: "error",
+      title: "잠시 후 다시 요청해 주세요",
+      body: "짧은 시간에 재설정 메일을 여러 번 요청하면 Supabase가 잠시 제한할 수 있어요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "reset") {
+    return {
+      tone: "error",
+      title: "재설정 메일을 보내지 못했어요",
+      body: "이메일을 확인한 뒤 다시 시도해 주세요. 계속 어렵다면 베타 운영자에게 알려주세요.",
       suggestedIntent: "signIn",
     };
   }

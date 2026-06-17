@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
-import { submitAuth } from "@/lib/actions/auth";
+import { requestPasswordReset, submitAuth } from "@/lib/actions/auth";
 
 type AuthIntent = "signIn" | "signUp";
 
@@ -32,7 +32,7 @@ const intentCopy: Record<AuthIntent, { label: string; helper: string; submit: st
   },
 };
 
-function validateAuthFields(email: string, password: string): AuthPanelMessage | undefined {
+function validateEmailField(email: string): AuthPanelMessage | undefined {
   if (!email.trim()) {
     return {
       tone: "error",
@@ -47,6 +47,16 @@ function validateAuthFields(email: string, password: string): AuthPanelMessage |
       title: "이메일 형식을 확인해 주세요",
       body: "예: name@example.com 형식으로 입력해 주세요.",
     };
+  }
+
+  return undefined;
+}
+
+function validateAuthFields(email: string, password: string): AuthPanelMessage | undefined {
+  const emailMessage = validateEmailField(email);
+
+  if (emailMessage) {
+    return emailMessage;
   }
 
   if (!password) {
@@ -69,7 +79,7 @@ function validateAuthFields(email: string, password: string): AuthPanelMessage |
 }
 
 export function AuthForm({ message }: AuthFormProps) {
-  const [intent, setIntent] = useState<AuthIntent>(message?.suggestedIntent ?? "signIn");
+  const [intent, setIntent] = useState<AuthIntent>(message?.suggestedIntent ?? "signUp");
   const [clientMessage, setClientMessage] = useState<AuthPanelMessage>();
   const [showServerMessage, setShowServerMessage] = useState(true);
   const visibleMessage = clientMessage ?? (showServerMessage ? message : undefined);
@@ -90,7 +100,9 @@ export function AuthForm({ message }: AuthFormProps) {
     const formData = new FormData(event.currentTarget);
     const email = String(formData.get("email") ?? "");
     const password = String(formData.get("password") ?? "");
-    const validationMessage = validateAuthFields(email, password);
+    const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLElement | null;
+    const isPasswordReset = submitter?.getAttribute("data-auth-action") === "resetPassword";
+    const validationMessage = isPasswordReset ? validateEmailField(email) : validateAuthFields(email, password);
 
     if (validationMessage) {
       event.preventDefault();
@@ -166,6 +178,22 @@ export function AuthForm({ message }: AuthFormProps) {
       <button className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" type="submit">
         {intentCopy[intent].submit}
       </button>
+
+      {intent === "signIn" ? (
+        <div className="grid gap-2 rounded-md border border-slate-100 bg-white px-3 py-3">
+          <p className="text-xs leading-5 text-slate-500">
+            다른 브라우저나 카카오톡 안에서는 다시 로그인해야 해요. 비밀번호가 헷갈리면 이메일만 입력하고 재설정 메일을 받아 주세요.
+          </p>
+          <button
+            className="h-11 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
+            data-auth-action="resetPassword"
+            formAction={requestPasswordReset}
+            type="submit"
+          >
+            비밀번호 재설정 메일 받기
+          </button>
+        </div>
+      ) : null}
     </form>
   );
 }
