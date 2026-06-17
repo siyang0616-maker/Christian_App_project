@@ -13,13 +13,27 @@ export function PasswordResetForm() {
 
   useEffect(() => {
     const tokens = getRecoverySessionFromHash(window.location.hash);
+    const code = new URLSearchParams(window.location.search).get("code");
+    const supabase = createBrowserSupabaseClient();
 
     if (!tokens) {
+      if (code) {
+        supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+          if (error) {
+            setMessage("비밀번호 재설정 링크가 만료되었거나 사용할 수 없어요. 다시 요청해 주세요.");
+            setState("missing");
+            return;
+          }
+
+          window.history.replaceState(null, "", "/auth/reset-password");
+          setState("ready");
+        });
+        return;
+      }
+
       setState("missing");
       return;
     }
-
-    const supabase = createBrowserSupabaseClient();
 
     supabase.auth.setSession(tokens).then(({ error }) => {
       if (error) {
