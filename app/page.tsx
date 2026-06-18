@@ -107,8 +107,26 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
   if (error === "login") {
     return {
       tone: "error",
-      title: "로그인할 수 없었어요",
-      body: "이 브라우저에는 아직 로그인 기록이 없어요. 처음이라면 새 계정을 만들고, 이미 만든 계정이면 비밀번호 재설정 메일을 받아 주세요.",
+      title: "로그인 중 문제가 생겼어요",
+      body: "잠시 후 다시 시도해 주세요. 계속 어렵다면 베타 운영자에게 알려주세요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "login-invalid") {
+    return {
+      tone: "error",
+      title: "이메일 또는 비밀번호가 맞지 않아요",
+      body: "비밀번호를 다시 입력해 주세요. 기억나지 않으면 아래에서 재설정 메일을 받을 수 있어요.",
+      suggestedIntent: "signIn",
+    };
+  }
+
+  if (error === "login-rate-limit") {
+    return {
+      tone: "error",
+      title: "로그인 요청이 잠시 제한됐어요",
+      body: "짧은 시간에 여러 번 로그인하면 잠시 막힐 수 있어요. 몇 분 뒤 다시 시도해 주세요.",
       suggestedIntent: "signIn",
     };
   }
@@ -143,8 +161,8 @@ function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undef
   if (error === "reset-rate-limit") {
     return {
       tone: "error",
-      title: "잠시 후 다시 요청해 주세요",
-      body: "짧은 시간에 재설정 메일을 여러 번 요청하면 Supabase가 잠시 제한할 수 있어요.",
+      title: "비밀번호 재설정 메일 요청이 잠시 제한됐어요",
+      body: "짧은 시간에 재설정 메일을 여러 번 요청하면 Supabase가 잠시 제한할 수 있어요. 몇 분 뒤 다시 요청해 주세요.",
       suggestedIntent: "signIn",
     };
   }

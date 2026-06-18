@@ -9,6 +9,8 @@ type AuthErrorCode =
   | "invalid"
   | "login"
   | "login-email-unconfirmed"
+  | "login-invalid"
+  | "login-rate-limit"
   | "reset"
   | "reset-config"
   | "reset-invalid"
@@ -53,7 +55,7 @@ function getSignupErrorCode(error: { message?: string; status?: number; code?: s
   return "signup";
 }
 
-function getLoginErrorCode(error: { message?: string; code?: string }): AuthErrorCode {
+function getLoginErrorCode(error: { message?: string; status?: number; code?: string }): AuthErrorCode {
   const message = error.message?.toLowerCase() ?? "";
   const code = error.code?.toLowerCase() ?? "";
 
@@ -64,6 +66,14 @@ function getLoginErrorCode(error: { message?: string; code?: string }): AuthErro
 
   if (code.includes("email_not_confirmed") || message.includes("email not confirmed")) {
     return "login-email-unconfirmed";
+  }
+
+  if (error.status === 429 || message.includes("rate limit") || message.includes("too many")) {
+    return "login-rate-limit";
+  }
+
+  if (code.includes("invalid_credentials") || message.includes("invalid login credentials")) {
+    return "login-invalid";
   }
 
   return "login";

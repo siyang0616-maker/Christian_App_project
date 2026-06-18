@@ -3,6 +3,13 @@ import { existsSync } from "node:fs";
 
 const checks = ["lint", "typecheck", "build"];
 
+function runNodeScript(scriptPath) {
+  return spawnSync(process.execPath, [scriptPath], {
+    stdio: "inherit",
+    shell: false,
+  });
+}
+
 function runPackageScript(scriptName) {
   const packageManagerCli = process.env.npm_execpath;
 
@@ -21,6 +28,13 @@ function runPackageScript(scriptName) {
   });
 }
 
+console.log("\n> verify:auth-form-regression");
+const authFormRegression = runNodeScript("scripts/check-auth-form-regression.mjs");
+
+if (authFormRegression.status !== 0) {
+  process.exit(authFormRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);
@@ -31,4 +45,3 @@ for (const check of checks) {
 }
 
 console.log("\nAll verification checks passed.");
-
