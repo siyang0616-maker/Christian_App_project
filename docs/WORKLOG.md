@@ -1,5 +1,14 @@
 # Worklog
 
+## 2026-06-18
+
+- Rechecked the previous mobile Safari login blocker.
+- Confirmed latest code includes `/auth/reset-password` and recovery hash routing.
+- Confirmed local `main` is aligned with `origin/main`.
+- Confirmed public Vercel route `https://christian-app-project.vercel.app/auth/reset-password` returns HTTP 200.
+- Re-ran `corepack pnpm verify`; lint, typecheck, and build all passed.
+- Added `docs/MOBILE_AUTH_RECOVERY_TEST_2026-06-18.md` as the phone password recovery and login test runbook.
+
 ## 2026-06-17
 
 - Investigated the phone Safari/KakaoTalk login issue from screenshots and Vercel logs.

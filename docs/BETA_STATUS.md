@@ -44,6 +44,10 @@ Not ready for first real beta.
 - Password recovery patch needs deployment and public URL retest.
 - Full public leader/member smoke test not completed in this session.
 
+## Current Phone Test Runbook
+
+- `docs/MOBILE_AUTH_RECOVERY_TEST_2026-06-18.md`
+
 ## Beta Feedback Assets
 
 - `docs/BETA_TEST_GUIDE.md`
