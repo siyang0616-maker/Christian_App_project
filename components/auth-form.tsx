@@ -85,6 +85,7 @@ export function AuthForm({ message }: AuthFormProps) {
   const [showServerMessage, setShowServerMessage] = useState(true);
   const visibleMessage = clientMessage ?? (showServerMessage ? message : undefined);
   const isError = visibleMessage?.tone === "error";
+  const showPasswordReset = intent === "signIn" && visibleMessage?.tone !== "success";
 
   function clearMessages() {
     setClientMessage(undefined);
@@ -201,18 +202,20 @@ export function AuthForm({ message }: AuthFormProps) {
         </button>
       </form>
 
-      <form action={requestPasswordReset} className="grid gap-2 rounded-md border border-leaf/15 bg-mist px-3 py-3" noValidate onSubmit={handleResetSubmit}>
-        <input name="email" type="hidden" value={email} />
-        <p className="text-xs leading-5 text-slate-600">
-          비밀번호가 기억나지 않거나 폰에서 계속 안 들어가지면, 위 이메일로 재설정 메일을 받을 수 있어요.
-        </p>
-        <button
-          className="h-11 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
-          type="submit"
-        >
-          비밀번호 재설정 메일 받기
-        </button>
-      </form>
+      {showPasswordReset ? (
+        <form action={requestPasswordReset} className="grid gap-2 rounded-md border border-leaf/15 bg-mist px-3 py-3" noValidate onSubmit={handleResetSubmit}>
+          <input name="email" type="hidden" value={email} />
+          <p className="text-xs leading-5 text-slate-600">
+            비밀번호가 기억나지 않거나 폰에서 계속 안 들어가지면, 위 이메일로 재설정 메일을 받을 수 있어요.
+          </p>
+          <button
+            className="h-11 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
+            type="submit"
+          >
+            비밀번호 재설정 메일 받기
+          </button>
+        </form>
+      ) : null}
     </div>
   );
 }
