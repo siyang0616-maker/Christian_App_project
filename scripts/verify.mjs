@@ -35,6 +35,13 @@ if (authFormRegression.status !== 0) {
   process.exit(authFormRegression.status ?? 1);
 }
 
+console.log("\n> verify:password-recovery-regression");
+const passwordRecoveryRegression = runNodeScript("scripts/check-password-recovery-regression.mjs");
+
+if (passwordRecoveryRegression.status !== 0) {
+  process.exit(passwordRecoveryRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);

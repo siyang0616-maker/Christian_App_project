@@ -8,6 +8,11 @@
 - Confirmed public Vercel route `https://christian-app-project.vercel.app/auth/reset-password` returns HTTP 200.
 - Re-ran `corepack pnpm verify`; lint, typecheck, and build all passed.
 - Added `docs/MOBILE_AUTH_RECOVERY_TEST_2026-06-18.md` as the phone password recovery and login test runbook.
+- Investigated failed mobile/password recovery attempts from Vercel logs.
+- Confirmed phone requests reached Vercel, but Supabase rejected login attempts with `invalid_credentials`.
+- Confirmed repeated reset requests hit Supabase `over_email_send_rate_limit` / HTTP 429.
+- Added `TokenHash` password recovery support so reset emails can open the app first and verify only after the user taps a confirmation button.
+- Added `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md` with the Supabase Reset Password template that should be pasted into the dashboard before sending new reset emails.
 
 ## 2026-06-17
 

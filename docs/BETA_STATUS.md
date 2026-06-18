@@ -37,16 +37,19 @@ Not ready for first real beta.
 - [x] Lint/typecheck/build completed after these changes.
 - [x] Basic public URL HTTP smoke test completed after these changes.
 - [x] Password recovery link handling patched locally with `/auth/reset-password`.
+- [x] TokenHash password recovery support added for mobile/email-app-safe reset links.
 - [ ] Full public leader/member smoke test completed after these changes.
 
 ## Current Blockers
 
-- Password recovery patch needs deployment and public URL retest.
+- Supabase Reset Password email template must be updated using `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`.
+- Password recovery patch needs deployment and public URL retest with a new reset email after the template change.
 - Full public leader/member smoke test not completed in this session.
 
 ## Current Phone Test Runbook
 
 - `docs/MOBILE_AUTH_RECOVERY_TEST_2026-06-18.md`
+- `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`
 
 ## Beta Feedback Assets
 

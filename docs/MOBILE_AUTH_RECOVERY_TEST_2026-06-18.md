@@ -31,6 +31,12 @@ Mobile login and password recovery must work because a leader/member cannot test
 - Supabase `Last sign in at` changed when logging in from desktop, but did not change when login failed on phone.
 - This confirmed the phone failure was not a cookie/session problem. Supabase was rejecting the email/password combination.
 - Password recovery email returned to the app root with a recovery token in the URL hash, but the app had no password reset screen.
+- Later testing showed another failure mode:
+  - Vercel received phone login attempts.
+  - Supabase returned `invalid_credentials`.
+  - Repeated password recovery requests returned `over_email_send_rate_limit` / HTTP 429.
+  - A reset email could open `/auth/reset-password`, but the app could show `재설정 링크를 확인할 수 없어요`.
+  - This can happen when the default Supabase `{{ .ConfirmationURL }}` link is consumed early by email prefetching/security scanning, or when PKCE code exchange is opened in a different browser/device than the one that requested the email.
 
 ## What Was Fixed
 
@@ -43,17 +49,22 @@ Added password recovery handling:
   - New password reset page.
 - `components/password-reset-form.tsx`
   - Reads the recovery token in the browser.
+  - Supports `token_hash` recovery links from a custom Supabase email template.
+  - Waits for the user to tap `비밀번호 재설정 계속하기` before verifying the recovery token.
   - Sets the Supabase session from the recovery token.
   - Allows the user to enter and confirm a new password.
   - Updates the Supabase password.
   - Signs the user out and returns to the login screen.
 - `lib/auth/password-recovery.ts`
-  - Small helper for parsing Supabase recovery hash tokens.
+  - Small helper for parsing Supabase recovery hash tokens and `token_hash` recovery links.
 - `lib/supabase/browser.ts`
   - Browser Supabase client for client-side recovery flow.
 - `app/page.tsx`
   - Added success notice after password reset:
     - `/?notice=password-updated`
+- `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`
+  - Documents the required Supabase Reset Password email template.
+  - The template uses `{{ .TokenHash }}` instead of the default `{{ .ConfirmationURL }}`.
 
 ## Verification Completed
 
@@ -85,6 +96,14 @@ Git state checked:
 
 Use a phone browser, preferably Safari first.
 
+### Step 0. Update The Supabase Reset Password Email Template
+
+Before sending a new reset email, follow:
+
+- `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`
+
+This is required because old/default Supabase reset emails may be consumed before the user taps them.
+
 ### Step 1. Send a New Password Recovery Email
 
 In Supabase:
@@ -96,6 +115,8 @@ In Supabase:
 
 Use a fresh recovery email because old recovery links may be expired or already consumed.
 
+If Vercel logs show `over_email_send_rate_limit`, wait before requesting another email. Supabase may temporarily limit reset emails.
+
 ### Step 2. Open The Email On The Phone
 
 On the phone:
@@ -105,6 +126,8 @@ On the phone:
 3. Expected result:
    - The app should open.
    - It should show `비밀번호를 새로 설정해요`.
+   - It may first show `재설정 링크를 찾았어요`.
+   - Tap `비밀번호 재설정 계속하기`.
 
 If it goes to the normal home screen instead, the recovery hash routing still failed.
 
@@ -181,6 +204,19 @@ Next action:
 - Send a fresh password recovery email.
 - Confirm the email link is opening the production Vercel URL, not localhost.
 
+### Case D. Reset page says `재설정 링크를 확인할 수 없어요`
+
+Meaning:
+
+- The reset link was expired, already used, consumed by email prefetching, or PKCE exchange failed across browsers/devices.
+
+Next action:
+
+- Update Supabase Reset Password template using `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`.
+- Send a fresh reset email after the template is saved.
+- Open the newest email only once.
+- If logs show `over_email_send_rate_limit`, wait before requesting another email.
+
 ## After Phone Login Works
 
 Continue the beta smoke test:
@@ -195,4 +231,3 @@ Continue the beta smoke test:
 8. Confirm private and anonymous visibility rules.
 
 Do not invite external beta users until this full phone flow passes.
-
