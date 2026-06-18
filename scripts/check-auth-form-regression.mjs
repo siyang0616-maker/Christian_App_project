@@ -33,6 +33,18 @@ assert.ok(
 );
 
 assert.match(
+  authFormSource,
+  /<SubmitButton[\s\S]*?가입 확인 메일을 보내고 있어요/,
+  "Sign-up submission should immediately show that a confirmation email is being sent.",
+);
+
+assert.match(
+  authFormSource,
+  /const showPasswordReset = intent === "signIn" && visibleMessage\?\.tone !== "success"/,
+  "Password reset should stay hidden during sign-up and success states.",
+);
+
+assert.match(
   appPageSource,
   /error === "login-invalid"[\s\S]*?이메일 또는 비밀번호가 맞지 않아요/,
   "Invalid login credentials should show a clear email/password message.",

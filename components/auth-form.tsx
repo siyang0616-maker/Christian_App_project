@@ -3,6 +3,7 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import { AlertCircle, CheckCircle2 } from "lucide-react";
 import { requestPasswordReset, submitAuth } from "@/lib/actions/auth";
+import { SubmitButton } from "@/components/submit-button";
 
 type AuthIntent = "signIn" | "signUp";
 
@@ -197,9 +198,12 @@ export function AuthForm({ message }: AuthFormProps) {
         <p className="rounded-md bg-linen px-3 py-2 text-xs leading-5 text-slate-600">
           공개 범위와 기도제목은 가입 후 동행방 안에서 직접 선택할 수 있어요.
         </p>
-        <button className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" type="submit">
+        <SubmitButton
+          className="h-12 rounded-md bg-leaf px-4 font-semibold text-white"
+          pendingLabel={intent === "signUp" ? "가입 확인 메일을 보내고 있어요..." : "로그인하고 있어요..."}
+        >
           {intentCopy[intent].submit}
-        </button>
+        </SubmitButton>
       </form>
 
       {showPasswordReset ? (
