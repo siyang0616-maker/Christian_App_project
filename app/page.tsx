@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { ActionMessage } from "@/components/action-message";
 import { AppShell } from "@/components/app-shell";
 import { AuthPanel, type AuthPanelMessage } from "@/components/auth-panel";
+import { CheckInActivityList } from "@/components/check-in-activity-list";
 import { CheckInForm } from "@/components/check-in-form";
 import { CreateGroupForm } from "@/components/create-group-form";
 import { JoinGroupForm } from "@/components/join-group-form";
@@ -276,14 +277,24 @@ export default async function Home({
         {dashboard.membership.role === "leader" ? (
           <>
             <LeaderDashboard
+              activeGroupName={dashboard.activeGroup.name}
+              inviteCode={dashboard.activeGroup.invite_code}
               members={dashboard.members}
               quietMembers={dashboard.quietMembers}
               recentCheckIns={dashboard.recentCheckIns}
               prayers={dashboard.prayerRequests}
             />
-            <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
           </>
         ) : null}
+        <div className="scroll-mt-4 grid gap-3" id="prayer-cards">
+          {isPrayerFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
+          <PrayerRequestList
+            currentUserId={user.id}
+            prayers={dashboard.prayerRequests}
+            reactions={dashboard.prayerReactions}
+          />
+        </div>
+        <CheckInActivityList currentUserId={user.id} checkIns={dashboard.recentCheckIns} />
         <div className="scroll-mt-4 grid gap-3" id="check-in-status">
           <TodayStatus
             checkIn={dashboard.todayCheckIn}
@@ -293,14 +304,9 @@ export default async function Home({
         </div>
         <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
         <PrayerRequestForm groupId={dashboard.activeGroup.id} />
-        <div className="scroll-mt-4 grid gap-3" id="prayer-cards">
-          {isPrayerFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
-          <PrayerRequestList
-            currentUserId={user.id}
-            prayers={dashboard.prayerRequests}
-            reactions={dashboard.prayerReactions}
-          />
-        </div>
+        {dashboard.membership.role === "leader" ? (
+          <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
+        ) : null}
       </div>
     </AppShell>
   );

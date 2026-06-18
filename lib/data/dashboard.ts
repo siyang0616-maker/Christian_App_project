@@ -21,7 +21,7 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
     .from("group_members")
     .select("*")
     .eq("user_id", userId)
-    .order("joined_at", { ascending: true })
+    .order("joined_at", { ascending: false })
     .limit(1)
     .maybeSingle<GroupMember>();
 
@@ -68,7 +68,9 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
       : { data: [] };
 
   const recentCheckInUserIds = new Set((recentCheckIns ?? []).map((checkIn) => checkIn.user_id));
-  const quietMembers = (members ?? []).filter((member) => !recentCheckInUserIds.has(member.user_id));
+  const quietMembers = (members ?? []).filter(
+    (member) => member.role === "member" && !recentCheckInUserIds.has(member.user_id),
+  );
 
   return {
     profile,

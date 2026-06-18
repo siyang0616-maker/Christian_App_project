@@ -32,7 +32,7 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
     .select("*")
     .eq("user_id", userId)
     .eq("role", "leader")
-    .order("joined_at", { ascending: true })
+    .order("joined_at", { ascending: false })
     .limit(1)
     .maybeSingle<GroupMember>();
 
@@ -93,7 +93,9 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
   ]);
 
   const checkedInRecently = new Set((recentCheckins ?? []).map((checkin) => checkin.user_id));
-  const quietMembers = (members ?? []).filter((member) => !checkedInRecently.has(member.user_id));
+  const quietMembers = (members ?? []).filter(
+    (member) => member.role === "member" && !checkedInRecently.has(member.user_id),
+  );
 
   return {
     profile,

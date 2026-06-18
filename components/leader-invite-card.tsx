@@ -59,9 +59,10 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
   const [currentOrigin, setCurrentOrigin] = useState("");
   const [copiedTarget, setCopiedTarget] = useState<CopiedTarget>(null);
   const [copyNotice, setCopyNotice] = useState("");
+  const [isCardOpen, setIsCardOpen] = useState(false);
   const [isMessageOpen, setIsMessageOpen] = useState(false);
   const [hasEditedMessage, setHasEditedMessage] = useState(false);
-  const betaLink = normalizeSiteUrl(configuredSiteUrl || configuredVercelUrl || currentOrigin);
+  const betaLink = normalizeSiteUrl(configuredSiteUrl || currentOrigin || configuredVercelUrl);
   const isLocalLink = !betaLink || isLocalUrl(betaLink);
   const inviteLink = !isLocalLink ? `${betaLink}/?inviteCode=${encodeURIComponent(inviteCode)}` : "";
   const defaultInviteMessage = useMemo(
@@ -113,98 +114,110 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
 
   return (
     <section className="rounded-lg border border-leaf/15 bg-white/90 p-4 shadow-soft">
-      <div className="mb-3 flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-mist text-leaf">
-          <MessageSquareText className="h-5 w-5" />
-        </div>
-        <div>
-          <h2 className="font-bold text-ink">멤버 초대하기</h2>
-          <p className="mt-1 text-sm leading-6 text-slate-600">
-            코드를 먼저 보내고, 필요하면 카톡용 메시지를 다듬어 복사해요.
-          </p>
-        </div>
-      </div>
+      <button
+        aria-expanded={isCardOpen}
+        className="flex w-full items-start justify-between gap-3 text-left"
+        onClick={() => setIsCardOpen((current) => !current)}
+        type="button"
+      >
+        <span className="flex items-start gap-3">
+          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-mist text-leaf">
+            <MessageSquareText className="h-5 w-5" />
+          </span>
+          <span>
+            <span className="block font-bold text-ink">멤버 초대하기</span>
+            <span className="mt-1 block text-sm leading-6 text-slate-600">
+              필요할 때 초대코드와 카톡용 메시지를 열어 복사해요.
+            </span>
+          </span>
+        </span>
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-600">
+          {isCardOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+        </span>
+      </button>
 
-      <div className="grid gap-3">
-        {isLocalLink ? (
-          <div className="flex gap-2 rounded-md border border-clay/20 bg-linen px-3 py-3 text-sm leading-6 text-slate-700">
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-clay" />
-            <p>
-              지금 주소는 내 컴퓨터에서만 열리는 로컬 주소예요. 외부 멤버에게 보내기 전에는 배포된 베타 링크가 필요해요.
-            </p>
+      {isCardOpen ? (
+        <div className="mt-4 grid gap-3">
+          {isLocalLink ? (
+            <div className="flex gap-2 rounded-md border border-clay/20 bg-linen px-3 py-3 text-sm leading-6 text-slate-700">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-clay" />
+              <p>
+                지금 주소는 내 컴퓨터에서만 열리는 로컬 주소예요. 외부 멤버에게 보내기 전에는 배포된 베타 링크가 필요해요.
+              </p>
+            </div>
+          ) : null}
+
+          <div className="rounded-md bg-mist px-3 py-3">
+            <p className="text-xs font-semibold text-leaf">초대코드</p>
+            <p className="mt-1 text-2xl font-bold tracking-wide text-ink">{inviteCode}</p>
           </div>
-        ) : null}
 
-        <div className="rounded-md bg-mist px-3 py-3">
-          <p className="text-xs font-semibold text-leaf">초대코드</p>
-          <p className="mt-1 text-2xl font-bold tracking-wide text-ink">{inviteCode}</p>
-        </div>
+          {inviteLink ? (
+            <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
+              <p className="text-xs font-semibold text-slate-500">초대링크</p>
+              <p className="mt-1 break-all text-sm leading-6 text-slate-700">{inviteLink}</p>
+            </div>
+          ) : null}
 
-        {inviteLink ? (
-          <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
-            <p className="text-xs font-semibold text-slate-500">초대링크</p>
-            <p className="mt-1 break-all text-sm leading-6 text-slate-700">{inviteLink}</p>
+          <div className="grid gap-2 sm:grid-cols-3">
+            <button
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
+              onClick={() => copyText(inviteCode, "code", "초대코드")}
+              type="button"
+            >
+              {copiedTarget === "code" ? <Check className="h-4 w-4" /> : <KeyRound className="h-4 w-4" />}
+              코드 복사
+            </button>
+            <button
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf disabled:cursor-not-allowed disabled:opacity-60"
+              disabled={!inviteLink}
+              onClick={() => copyText(inviteLink, "link", "초대링크")}
+              type="button"
+            >
+              {copiedTarget === "link" ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
+              링크 복사
+            </button>
+            <button
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-leaf px-3 text-sm font-semibold text-white"
+              onClick={() => copyText(inviteMessage, "message", "초대 메시지")}
+              type="button"
+            >
+              {copiedTarget === "message" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+              메시지 복사
+            </button>
           </div>
-        ) : null}
 
-        <div className="grid gap-2 sm:grid-cols-3">
           <button
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
-            onClick={() => copyText(inviteCode, "code", "초대코드")}
+            aria-expanded={isMessageOpen}
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
+            onClick={() => setIsMessageOpen((current) => !current)}
             type="button"
           >
-            {copiedTarget === "code" ? <Check className="h-4 w-4" /> : <KeyRound className="h-4 w-4" />}
-            코드 복사
+            {isMessageOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            {isMessageOpen ? "초대 메시지 접기" : "초대 메시지 보기/편집"}
           </button>
-          <button
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={!inviteLink}
-            onClick={() => copyText(inviteLink, "link", "초대링크")}
-            type="button"
-          >
-            {copiedTarget === "link" ? <Check className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
-            링크 복사
-          </button>
-          <button
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-leaf px-3 text-sm font-semibold text-white"
-            onClick={() => copyText(inviteMessage, "message", "초대 메시지")}
-            type="button"
-          >
-            {copiedTarget === "message" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-            메시지 복사
-          </button>
+
+          {isMessageOpen ? (
+            <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
+              <label className="grid gap-2 text-xs font-semibold text-slate-500">
+                멤버에게 보낼 메시지
+                <textarea
+                  className="min-h-56 w-full resize-y rounded-md border border-slate-100 bg-slate-50 p-3 text-sm font-normal leading-6 text-slate-700"
+                  onChange={(event) => {
+                    setHasEditedMessage(true);
+                    setInviteMessage(event.target.value);
+                  }}
+                  value={inviteMessage}
+                />
+              </label>
+              <p className="mt-2 text-xs leading-5 text-slate-500">
+                이 수정은 저장되지 않고, 지금 복사할 메시지에만 반영돼요.
+              </p>
+            </div>
+          ) : null}
+          {copyNotice ? <p className="text-sm font-medium text-leaf" aria-live="polite">{copyNotice}</p> : null}
         </div>
-
-        <button
-          aria-expanded={isMessageOpen}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
-          onClick={() => setIsMessageOpen((current) => !current)}
-          type="button"
-        >
-          {isMessageOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-          {isMessageOpen ? "초대 메시지 접기" : "초대 메시지 보기/편집"}
-        </button>
-
-        {isMessageOpen ? (
-          <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
-            <label className="grid gap-2 text-xs font-semibold text-slate-500">
-              멤버에게 보낼 메시지
-              <textarea
-                className="min-h-56 w-full resize-y rounded-md border border-slate-100 bg-slate-50 p-3 text-sm font-normal leading-6 text-slate-700"
-                onChange={(event) => {
-                  setHasEditedMessage(true);
-                  setInviteMessage(event.target.value);
-                }}
-                value={inviteMessage}
-              />
-            </label>
-            <p className="mt-2 text-xs leading-5 text-slate-500">
-              이 수정은 저장되지 않고, 지금 복사할 메시지에만 반영돼요.
-            </p>
-          </div>
-        ) : null}
-        {copyNotice ? <p className="text-sm font-medium text-leaf" aria-live="polite">{copyNotice}</p> : null}
-      </div>
+      ) : null}
     </section>
   );
 }
