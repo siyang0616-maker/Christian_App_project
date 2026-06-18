@@ -42,6 +42,13 @@ if (passwordRecoveryRegression.status !== 0) {
   process.exit(passwordRecoveryRegression.status ?? 1);
 }
 
+console.log("\n> verify:action-feedback-regression");
+const actionFeedbackRegression = runNodeScript("scripts/check-action-feedback-regression.mjs");
+
+if (actionFeedbackRegression.status !== 0) {
+  process.exit(actionFeedbackRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);

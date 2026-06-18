@@ -2,7 +2,7 @@
 
 ## Current Decision
 
-Not ready for first real beta.
+Blocked for first real beta.
 
 ## Target Beta
 
@@ -14,7 +14,7 @@ Not ready for first real beta.
 ## Must Pass Before Invite
 
 - [ ] Public URL opens on mobile.
-- [ ] Leader can sign up, confirm email, log in, create profile, and create room.
+- [ ] Leader can sign up or be created as a confirmed test user, log in, create profile, and create room.
 - [ ] Leader can copy invite message/code.
 - [ ] Two members can join.
 - [ ] Member can check in within 2 minutes.
@@ -38,18 +38,29 @@ Not ready for first real beta.
 - [x] Basic public URL HTTP smoke test completed after these changes.
 - [x] Password recovery link handling patched locally with `/auth/reset-password`.
 - [x] TokenHash password recovery support added for mobile/email-app-safe reset links.
+- [x] Check-in and prayer save feedback placement improved locally.
+- [x] Action feedback regression added to `corepack pnpm verify`.
 - [ ] Full public leader/member smoke test completed after these changes.
 
 ## Current Blockers
 
-- Supabase Reset Password email template must be updated using `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`.
-- Password recovery patch needs deployment and public URL retest with a new reset email after the template change.
-- Full public leader/member smoke test not completed in this session.
+- Supabase Auth email flow is blocking public phone testing.
+- Supabase dashboard could not save the `Confirm email` toggle because it returned `Failed to update settings: Failed to fetch (api.supabase.com)`.
+- Password recovery requests hit Supabase `over_email_send_rate_limit` / HTTP 429 during repeated testing.
+- Supabase Auth users were deleted during troubleshooting, so fresh confirmed test users must be created before the next smoke test.
+- Full public leader/member smoke test is not complete.
+
+## Next Safe Path
+
+- Do not continue SMTP troubleshooting first.
+- On Mac, restore local testability with fresh confirmed test users or a strictly local-only test path.
+- Verify the local 1-leader/1-member MVP loop before returning to public Vercel/mobile testing.
 
 ## Current Phone Test Runbook
 
 - `docs/MOBILE_AUTH_RECOVERY_TEST_2026-06-18.md`
 - `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md`
+- `docs/MAC_HANDOFF_2026-06-18.md`
 
 ## Beta Feedback Assets
 

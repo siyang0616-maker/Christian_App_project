@@ -2,6 +2,8 @@
 
 ## Now
 
+- Restore local testability with fresh confirmed leader/member test users.
+- Verify the local 1-leader/1-member MVP loop before returning to public smoke testing.
 - Public URL smoke test for 1 leader and 2 members.
 - Verify auth redirect, group create, invite, join, check-in, prayer, "기도했어요", and leader dashboard.
 - Execute `docs/QA_CHECKLIST.md`.
@@ -9,6 +11,7 @@
 ## Next
 
 - Patch only verified beta blockers.
+- Retest public phone login with a fresh confirmed test user.
 - Create first beta runbook from `superpowers/templates/beta-test-runbook.md` if needed.
 - Record first beta feedback using existing leader/member feedback forms.
 - Run `superpowers/commands/parallel-merge-review.md` after verification.

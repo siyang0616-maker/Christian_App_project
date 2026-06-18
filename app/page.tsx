@@ -28,6 +28,10 @@ function firstParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+function isFeedbackCodeFor(code: string | undefined, prefix: string) {
+  return Boolean(code?.startsWith(prefix));
+}
+
 function getAuthPanelMessage(params: HomeSearchParams): AuthPanelMessage | undefined {
   const error = firstParam(params.error);
   const notice = firstParam(params.notice);
@@ -185,6 +189,8 @@ export default async function Home({
   searchParams?: Promise<HomeSearchParams>;
 }) {
   const params = searchParams ? await searchParams : {};
+  const actionError = firstParam(params.actionError);
+  const actionSuccess = firstParam(params.actionSuccess);
 
   if (!hasSupabaseEnv()) {
     return (
@@ -213,7 +219,7 @@ export default async function Home({
     return (
       <AppShell>
         <div className="grid gap-4">
-          <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
+          <ActionMessage errorCode={actionError} successCode={actionSuccess} />
           <ProfileSetupForm email={user.email ?? ""} />
         </div>
       </AppShell>
@@ -224,7 +230,7 @@ export default async function Home({
     return (
       <AppShell profileName={dashboard.profile.display_name}>
         <div className="grid gap-4">
-          <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
+          <ActionMessage errorCode={actionError} successCode={actionSuccess} />
           <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
             <p className="text-sm font-semibold text-white/80">동행방을 시작해볼까요?</p>
             <h2 className="mt-1 text-xl font-bold">대화는 카톡에서, 체크인과 기도제목 기록은 동행방에서.</h2>
@@ -254,6 +260,11 @@ export default async function Home({
     redirect("/");
   }
 
+  const isCheckInFeedback =
+    isFeedbackCodeFor(actionError, "checkin-") || isFeedbackCodeFor(actionSuccess, "checkin-");
+  const isPrayerFeedback = isFeedbackCodeFor(actionError, "prayer-") || isFeedbackCodeFor(actionSuccess, "prayer-");
+  const shouldShowGlobalActionMessage = !isCheckInFeedback && !isPrayerFeedback;
+
   return (
     <AppShell
       groupName={dashboard.activeGroup.name}
@@ -261,7 +272,7 @@ export default async function Home({
       role={dashboard.membership.role}
     >
       <div className="grid gap-4">
-        <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
+        {shouldShowGlobalActionMessage ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
         {dashboard.membership.role === "leader" ? (
           <>
             <LeaderDashboard
@@ -273,17 +284,23 @@ export default async function Home({
             <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
           </>
         ) : null}
-        <TodayStatus
-          checkIn={dashboard.todayCheckIn}
-          groupName={dashboard.activeGroup.name}
-        />
+        <div className="scroll-mt-4 grid gap-3" id="check-in-status">
+          <TodayStatus
+            checkIn={dashboard.todayCheckIn}
+            groupName={dashboard.activeGroup.name}
+          />
+          {isCheckInFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
+        </div>
         <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
         <PrayerRequestForm groupId={dashboard.activeGroup.id} />
-        <PrayerRequestList
-          currentUserId={user.id}
-          prayers={dashboard.prayerRequests}
-          reactions={dashboard.prayerReactions}
-        />
+        <div className="scroll-mt-4 grid gap-3" id="prayer-cards">
+          {isPrayerFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
+          <PrayerRequestList
+            currentUserId={user.id}
+            prayers={dashboard.prayerRequests}
+            reactions={dashboard.prayerReactions}
+          />
+        </div>
       </div>
     </AppShell>
   );

@@ -1,5 +1,15 @@
 # Mac Mini Handoff - Donghaeng Room
 
+Latest continuation note: `docs/MAC_HANDOFF_2026-06-18.md`
+
+Important 2026-06-18 update:
+
+- Public beta is currently blocked by Supabase Auth email/phone login friction.
+- Do not spend the next Mac session on SMTP first.
+- First restore local testability with fresh confirmed Supabase test users.
+- Then run the local 1-leader/1-member MVP loop.
+- Return to public Vercel/mobile testing only after the local loop works.
+
 Last updated: 2026-06-16
 
 ## Start Here

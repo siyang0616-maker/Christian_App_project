@@ -2,6 +2,10 @@
 
 ## 2026-06-18
 
+- Added `docs/MAC_HANDOFF_2026-06-18.md` so the next Mac session can resume without relying on this chat.
+- Marked public beta status as blocked until local testability is restored with fresh confirmed test users.
+- Raised the Auth email confirmation friction risk because phone/public testing is currently blocked.
+- Deferred SMTP and Supabase dashboard email-setting troubleshooting until the local MVP loop works again.
 - Rechecked the previous mobile Safari login blocker.
 - Confirmed latest code includes `/auth/reset-password` and recovery hash routing.
 - Confirmed local `main` is aligned with `origin/main`.
@@ -13,6 +17,12 @@
 - Confirmed repeated reset requests hit Supabase `over_email_send_rate_limit` / HTTP 429.
 - Added `TokenHash` password recovery support so reset emails can open the app first and verify only after the user taps a confirmation button.
 - Added `docs/SUPABASE_AUTH_EMAIL_TEMPLATE.md` with the Supabase Reset Password template that should be pasted into the dashboard before sending new reset emails.
+- Deferred SMTP troubleshooting so product development can continue without blocking on email deliverability.
+- Improved check-in and prayer save feedback placement under the approved MVP beta stabilization ticket.
+- Added `scripts/check-action-feedback-regression.mjs` and wired it into `scripts/verify.mjs`.
+- Moved check-in success/failure feedback near today's status and prayer success/failure feedback inside the prayer cards anchor.
+- Verified `corepack pnpm verify` passes after the feedback placement patch.
+- Restarted the local dev server on `http://127.0.0.1:3010`; it returned HTTP 200.
 
 ## 2026-06-17
 

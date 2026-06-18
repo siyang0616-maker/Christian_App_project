@@ -12,9 +12,17 @@
 ### R4: Email Confirmation Friction
 
 - Status: Open
-- Severity: Medium
-- Risk: Korean beta users may fail to confirm email, reset passwords, or return to the app.
-- Mitigation: Test Naver/Gmail flows and the `/auth/reset-password` recovery flow on the public URL after deployment.
+- Severity: High
+- Risk: Korean beta users may fail to confirm email, reset passwords, log in on phone Safari, or return to the app.
+- Evidence: Phone/public testing hit Supabase `invalid_credentials`, password reset requests hit `over_email_send_rate_limit` / HTTP 429, and the dashboard could not save the `Confirm email` toggle because `api.supabase.com` failed to fetch.
+- Mitigation: Do not block MVP development on SMTP first. Restore local testability with fresh confirmed test users, then retest the public phone flow with one leader and one member.
+
+### R8: Auth Debugging Can Consume MVP Time
+
+- Status: Open
+- Severity: High
+- Risk: Repeated Supabase dashboard, SMTP, and email-template troubleshooting can stall the core MVP validation question.
+- Mitigation: Timebox Auth operations. If email confirmation blocks testing, use confirmed internal test accounts for development and return to email deliverability only before public beta invites.
 
 ### R5: Leader Dashboard Could Feel Like Monitoring
 

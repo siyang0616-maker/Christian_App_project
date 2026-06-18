@@ -29,7 +29,7 @@ function isChecked(todayCheckIn: CheckInWithAuthor | null, name: (typeof rhythmI
   return Boolean(todayCheckIn?.[name]);
 }
 
-export function CheckInForm({ groupId, returnTo = "/", todayCheckIn }: CheckInFormProps) {
+export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayCheckIn }: CheckInFormProps) {
   return (
     <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
       <div className="mb-4 flex items-start gap-3">

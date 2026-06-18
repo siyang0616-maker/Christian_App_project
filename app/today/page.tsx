@@ -27,6 +27,8 @@ export default async function TodayPage({
   searchParams?: Promise<TodaySearchParams>;
 }) {
   const params = searchParams ? await searchParams : {};
+  const actionError = firstParam(params.actionError);
+  const actionSuccess = firstParam(params.actionSuccess);
 
   if (!hasSupabaseEnv()) {
     return (
@@ -63,7 +65,7 @@ export default async function TodayPage({
     return (
       <AppShell currentPath="/today" profileName={dashboard.profile.display_name}>
         <div className="grid gap-4">
-          <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
+          <ActionMessage errorCode={actionError} successCode={actionSuccess} />
           <CreateGroupForm />
           <JoinGroupForm />
         </div>
@@ -83,7 +85,6 @@ export default async function TodayPage({
       role={dashboard.membership.role}
     >
       <div className="grid gap-4">
-        <ActionMessage errorCode={firstParam(params.actionError)} successCode={firstParam(params.actionSuccess)} />
         <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
           <div className="flex items-start gap-3">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/15">
@@ -98,7 +99,14 @@ export default async function TodayPage({
             </div>
           </div>
         </section>
-        <CheckInForm groupId={dashboard.activeGroup.id} returnTo="/today" todayCheckIn={dashboard.todayCheckIn} />
+        <div className="scroll-mt-4 grid gap-4" id="check-in-status">
+          <ActionMessage errorCode={actionError} successCode={actionSuccess} />
+          <CheckInForm
+            groupId={dashboard.activeGroup.id}
+            returnTo="/today#check-in-status"
+            todayCheckIn={dashboard.todayCheckIn}
+          />
+        </div>
       </div>
     </AppShell>
   );

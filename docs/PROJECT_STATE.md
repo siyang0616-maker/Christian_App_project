@@ -46,7 +46,7 @@ These changes still need the full public leader/member smoke test before beta in
 
 ## Current Priority
 
-Complete the full public leader/member smoke test without expanding scope.
+Restore local testability with fresh confirmed test users, then complete the full public leader/member smoke test without expanding scope.
 
 ## Do Not Expand Into
 
