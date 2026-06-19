@@ -94,6 +94,33 @@ Before planning or implementing any meaningful task, Codex must read:
 - the relevant `/superpowers/workflows` file
 - the relevant `/superpowers/agents` files
 
+## Sub-Agent Review Usage
+
+The Markdown files in `superpowers/agents/` are role guides, not automatic background workers.
+
+When Codex discovers meaningful product questions, implementation candidates, UX risks, QA gaps, privacy risks, beta-operation issues, or roadmap decisions, Codex should explicitly dispatch real sub-agents when the work can be usefully reviewed in parallel.
+
+Use sub-agents for:
+
+- planning critique before building a meaningful feature
+- UX/onboarding review
+- QA and beta-readiness review
+- privacy and security review
+- retention and product-scope review
+- implementation work only when file ownership is clear and non-overlapping
+
+Each sub-agent task must include:
+
+- role or lane name
+- goal
+- exact files or docs to inspect
+- allowed files, if edits are permitted
+- forbidden files
+- expected output format
+- how the answer should help the main Codex decision
+
+The main Codex remains the coordinator. It must summarize sub-agent findings, separate facts from recommendations, decide what to do next, and report the decision back to the user before expanding scope.
+
 ## Parallel Workstream Rules
 
 1. Parallel work is allowed only when tasks touch clearly separated files.

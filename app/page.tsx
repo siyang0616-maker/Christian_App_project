@@ -303,7 +303,7 @@ export default async function Home({
           {isCheckInFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
         </div>
         <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
-        <PrayerRequestForm groupId={dashboard.activeGroup.id} />
+        <PrayerRequestForm clearDraft={actionSuccess === "prayer-saved"} groupId={dashboard.activeGroup.id} />
         {dashboard.membership.role === "leader" ? (
           <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
         ) : null}

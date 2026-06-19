@@ -36,11 +36,15 @@ Make Donghaeng Room ready for one real leader and two members to complete the fi
 - Safer visibility helper copy that does not overpromise editability.
 - Check-in and prayer save feedback placement.
 - Action feedback regression in `corepack pnpm verify`.
+- Local-only confirmed test user helper scripts for Supabase Auth Admin API:
+  - `scripts/create-confirmed-test-users.mjs`
+  - `scripts/create-confirmed-test-users.ps1`
 
 ## Current Operational Blocker
 
 - Supabase Auth email/confirmation flow blocked phone/public testing.
 - Supabase Auth users were deleted during troubleshooting, so the next session must create fresh confirmed test users before smoke testing.
+- This machine does not currently have `SUPABASE_SERVICE_ROLE_KEY`, so Codex cannot create confirmed Auth users until the key is supplied locally or the users are created in the Supabase Dashboard.
 - SMTP/email deliverability work is deferred until local testability is restored.
 
 ## Not In Sprint

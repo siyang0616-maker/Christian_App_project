@@ -49,6 +49,34 @@ if (actionFeedbackRegression.status !== 0) {
   process.exit(actionFeedbackRegression.status ?? 1);
 }
 
+console.log("\n> verify:prayer-draft-regression");
+const prayerDraftRegression = runNodeScript("scripts/check-prayer-draft-regression.mjs");
+
+if (prayerDraftRegression.status !== 0) {
+  process.exit(prayerDraftRegression.status ?? 1);
+}
+
+console.log("\n> verify:dashboard-data-regression");
+const dashboardDataRegression = runNodeScript("scripts/check-dashboard-data-regression.mjs");
+
+if (dashboardDataRegression.status !== 0) {
+  process.exit(dashboardDataRegression.status ?? 1);
+}
+
+console.log("\n> verify:leader-care-board-regression");
+const leaderCareBoardRegression = runNodeScript("scripts/check-leader-care-board-regression.mjs");
+
+if (leaderCareBoardRegression.status !== 0) {
+  process.exit(leaderCareBoardRegression.status ?? 1);
+}
+
+console.log("\n> verify:test-user-helper-regression");
+const testUserHelperRegression = runNodeScript("scripts/check-test-user-helper-regression.mjs");
+
+if (testUserHelperRegression.status !== 0) {
+  process.exit(testUserHelperRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);

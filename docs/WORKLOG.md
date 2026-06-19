@@ -1,5 +1,31 @@
 # Worklog
 
+## 2026-06-19
+
+- Built Leader Care Board v1 for `/leader` from existing RLS-visible data only.
+- Added `lib/data/leader-care-board.ts` with server-side derived care data:
+  - today care inbox
+  - date-grouped prayer timeline
+  - member care summaries
+  - manual copy-ready care messages
+- Added `components/leader-care-board.tsx` and `components/copy-text-button.tsx`.
+- Reduced the home leader dashboard to a warm summary plus `/leader` CTA so the home screen does not feel like a surveillance dashboard.
+- Fixed Korean UI labels in `lib/ui/labels.ts`.
+- Added `scripts/check-leader-care-board-regression.mjs` and wired it into `scripts/verify.mjs`.
+- Sub-agent QA flagged that "공개 기도제목" overclaimed visibility; changed copy to "리더에게 보이는 기도제목."
+- Tightened anonymous-prayer privacy posture by avoiding profile lookup for anonymous prayer authors in the leader dashboard profile ID list.
+- Verified `corepack pnpm verify` passes after Leader Care Board v1.
+- Still deferred: real chat, schedule/RSVP, push/SMS/Kakao notifications, birthdays, contact directory, and attendance scoring.
+- Confirmed current Supabase Auth behavior with the public anon key: fresh signup succeeds, but no session is returned and immediate login fails with `email_not_confirmed`.
+- Added `scripts/create-confirmed-test-users.mjs` to create fresh confirmed leader/member test users with Supabase Auth Admin API when `SUPABASE_SERVICE_ROLE_KEY` is provided as a server-only shell env var.
+- Added `scripts/create-confirmed-test-users.ps1` so Windows can prompt for the service role key without echoing it or storing it in `.env.local`.
+- Added `scripts/check-test-user-helper-regression.mjs` and wired it into `scripts/verify.mjs`.
+- Verified auth/password/action/test-user helper regression checks pass.
+- Verified `corepack pnpm typecheck` passes.
+- Verified `eslint .` passes.
+- Restarted the local dev server on `http://127.0.0.1:3010`; it returned HTTP 200.
+- Current blocker: this machine still has no `SUPABASE_SERVICE_ROLE_KEY`, so Codex cannot create confirmed Auth users until the key is supplied locally or the users are created in the Supabase Dashboard.
+
 ## 2026-06-18
 
 - Added `docs/MAC_HANDOFF_2026-06-18.md` so the next Mac session can resume without relying on this chat.
