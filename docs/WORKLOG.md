@@ -2,6 +2,10 @@
 
 ## 2026-06-19
 
+- Worker D documentation pass: updated beta/manual QA docs for the latest leader-first UX.
+- Aligned `docs/QA_CHECKLIST.md` around 1 leader + 2 members, prayer cards/form first, leader care signals, bottom/collapsed invite, and current visibility labels `리더와 나` / `이름 숨김`.
+- Updated `docs/BETA_STATUS.md` to keep the beta gate blocked until the full local/public 1-leader/2-member smoke test verifies those flows.
+- Kept this pass documentation-only and deferred any RLS deep dive unless manual smoke testing shows a visible privacy leak.
 - User testing feedback showed that the Leader Care Board still did not feel differentiated enough from KakaoTalk because leaders could not classify prayer requests for weekly care.
 - Ran product/UX/security sub-agent review for leader prayer care classification.
 - Decision: do not overload `prayer_reactions`; create leader-only care marks with RLS.

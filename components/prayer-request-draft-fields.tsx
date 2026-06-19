@@ -140,7 +140,7 @@ export function PrayerRequestDraftFields({ groupId, clearDraft }: PrayerRequestD
             </option>
           ))}
         </select>
-        <span className="text-xs font-normal text-slate-500">공개 범위는 제출 전에 확인할 수 있어요.</span>
+        <span className="text-xs font-normal text-slate-500">제출 전에 공개 범위를 꼭 확인해 주세요.</span>
       </label>
     </>
   );

@@ -97,9 +97,11 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
                       </span>
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-full bg-bluewash px-2 py-1 text-xs font-semibold text-leaf">
-                        {prayer.careScopeLabel}
-                      </span>
+                      {prayer.careMark ? (
+                        <span className="rounded-full bg-bluewash px-2 py-1 text-xs font-semibold text-leaf">
+                          {prayer.careScopeLabel}
+                        </span>
+                      ) : null}
                       {prayer.isImportant ? (
                         <span className="rounded-full bg-[#FFF5EF] px-2 py-1 text-xs font-semibold text-clay">중요</span>
                       ) : null}
@@ -134,7 +136,7 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
                         <CopyTextButton text={prayer.copyMessage}>{prayer.copyLabel}</CopyTextButton>
                       ) : (
                         <p className="rounded-md bg-mist px-3 py-2 text-xs leading-5 text-slate-600">
-                          익명 제목은 작성자를 드러내는 문구를 만들지 않아요.
+                          이름 숨김 제목은 작성자를 드러내는 문구를 만들지 않아요.
                         </p>
                       )}
                     </div>

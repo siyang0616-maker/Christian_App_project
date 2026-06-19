@@ -42,7 +42,7 @@ assertIncludes(careData, "careScopeLabel", "leader-only prayer care scope label"
 assertIncludes(careData, "isImportant", "leader-only important prayer flag");
 assertIncludes(careData, "isOngoing", "leader-only ongoing prayer flag");
 assertIncludes(careData, "visibility !== \"anonymous\"", "anonymous privacy guard");
-assertIncludes(careData, "authorLabel: \"익명\"", "anonymous author masking");
+assertIncludes(careData, "authorLabel: \"이름 숨김\"", "hidden-name author masking");
 assertIncludes(careData, "기도 응원 문구", "copy-ready prayer support label");
 
 assertExcludes(careData, "events", "leader care data v1 scope");

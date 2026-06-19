@@ -286,6 +286,7 @@ export default async function Home({
         {dashboard.membership.role === "leader" ? (
           <LeaderDashboard
             activeGroupName={dashboard.activeGroup.name}
+            currentUserId={user.id}
             quietMembers={dashboard.quietMembers}
             recentCheckIns={dashboard.recentCheckIns}
             prayers={dashboard.prayerRequests}

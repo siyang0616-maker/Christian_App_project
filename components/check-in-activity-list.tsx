@@ -15,9 +15,9 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
           <ClipboardList className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-bold text-ink">함께 남긴 체크인</h2>
+          <h2 className="font-bold text-ink">볼 수 있는 안부</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            소그룹 전체로 공개된 안부는 리더와 멤버가 함께 볼 수 있어요.
+            내가 볼 수 있는 안부가 여기 모여요. 공개 범위는 카드마다 표시돼요.
           </p>
         </div>
       </div>
@@ -45,7 +45,7 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
           ))
         ) : (
           <p className="rounded-md bg-mist px-3 py-3 text-sm leading-6 text-slate-600">
-            아직 함께 볼 수 있는 체크인이 없어요. 공개 범위를 소그룹 전체로 선택하면 이곳에 함께 남아요.
+            아직 볼 수 있는 안부가 없어요. 공개 범위에 맞는 체크인이 생기면 이곳에 보여요.
           </p>
         )}
       </div>

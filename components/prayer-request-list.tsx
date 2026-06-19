@@ -28,7 +28,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
         prayers.map((prayer) => {
           const prayerReactions = reactionMap.get(prayer.id) ?? [];
           const alreadyPrayed = prayerReactions.some((reaction) => reaction.user_id === currentUserId);
-          const authorName = prayer.visibility === "anonymous" ? "익명" : prayer.profiles.display_name;
+          const authorName = prayer.visibility === "anonymous" ? "이름 숨김" : prayer.profiles.display_name;
 
           return (
             <article className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft" key={prayer.id}>

@@ -15,14 +15,18 @@ Blocked for first real beta.
 
 - [ ] Public URL opens on mobile.
 - [ ] Leader can sign up or be created as a confirmed test user, log in, create profile, and create room.
-- [ ] Leader can copy invite message/code.
+- [ ] Joined room opens with prayer cards and the prayer request form first.
+- [ ] Leader sees care-oriented summary/signals before personal check-in.
+- [ ] Leader invite stays collapsed at the bottom by default, then shows code/copy controls when opened.
 - [ ] Two members can join.
 - [ ] Member can check in within 2 minutes.
-- [ ] Member understands visibility before check-in/prayer submission.
+- [ ] Member understands visibility before check-in/prayer submission, especially `리더와 나` and prayer-only `이름 숨김`.
 - [ ] Prayer card and "기도했어요" work.
+- [ ] Leader can use care signals on visible prayers: `함께 기도`, `개별 돌봄`, `중요`, `계속 기억`.
+- [ ] Member-facing cards do not show leader-only care labels.
 - [ ] Leader dashboard is care-oriented and useful.
 - [ ] Invalid invite code and failed actions show safe errors.
-- [ ] Private/anonymous data does not leak.
+- [ ] `나만 보기`, `리더와 나`, and `이름 숨김` behavior does not leak to the wrong viewer.
 - [x] Feedback guide or forms are ready.
 - [x] Manual QA checklist is ready.
 - [x] Beta data deletion handling is defined.
@@ -40,6 +44,9 @@ Blocked for first real beta.
 - [x] TokenHash password recovery support added for mobile/email-app-safe reset links.
 - [x] Check-in and prayer save feedback placement improved locally.
 - [x] Action feedback regression added to `corepack pnpm verify`.
+- [x] Latest leader-first UX is reflected locally: prayer cards/form first, leader care signals before personal check-in, and invite at the bottom/collapsed.
+- [x] Current visibility wording is reflected locally: `리더와 나` and prayer-only `이름 숨김`.
+- [x] Leader prayer care marks are implemented locally for `/leader`: `함께 기도`, `개별 돌봄`, `중요`, `계속 기억`.
 - [ ] Full public leader/member smoke test completed after these changes.
 
 ## Current Blockers
@@ -54,7 +61,8 @@ Blocked for first real beta.
 
 - Do not continue SMTP troubleshooting first.
 - On Mac, restore local testability with fresh confirmed test users or a strictly local-only test path.
-- Verify the local 1-leader/1-member MVP loop before returning to public Vercel/mobile testing.
+- Verify the local 1-leader/2-member MVP loop before returning to public Vercel/mobile testing.
+- Keep today's QA pass focused on manual UX and visible privacy behavior; defer any RLS deep dive unless the smoke test shows a visible leak.
 
 ## Current Phone Test Runbook
 

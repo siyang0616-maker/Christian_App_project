@@ -186,7 +186,7 @@ export function groupPrayersByDate(
     const careState = buildPrayerCareState(careMark);
     const privacy = isAnonymous
       ? {
-          authorLabel: "익명",
+          authorLabel: "이름 숨김",
           copyLabel: null,
           copyMessage: null,
           copyPreview: null,

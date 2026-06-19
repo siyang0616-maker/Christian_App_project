@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, ClipboardList, Moon, UsersRound } from "lucide-react";
+import { ArrowRight, ClipboardList, HeartPulse, Moon, UsersRound } from "lucide-react";
 import { koreaDateKey } from "@/lib/dates";
 import type { CheckInWithAuthor, GroupMemberWithProfile, PrayerRequestWithAuthor } from "@/lib/types";
 
 type LeaderDashboardProps = {
   activeGroupName: string;
+  currentUserId: string;
   quietMembers: GroupMemberWithProfile[];
   recentCheckIns: CheckInWithAuthor[];
   prayers: PrayerRequestWithAuthor[];
@@ -12,20 +13,28 @@ type LeaderDashboardProps = {
 
 export function LeaderDashboard({
   activeGroupName,
+  currentUserId,
   quietMembers,
   recentCheckIns,
   prayers,
 }: LeaderDashboardProps) {
   const today = koreaDateKey();
-  const todayCheckIns = recentCheckIns.filter((checkIn) => checkIn.checkin_date === today);
+  const todayMemberCheckIns = recentCheckIns.filter(
+    (checkIn) => checkIn.checkin_date === today && checkIn.user_id !== currentUserId,
+  );
+  const careNeededCheckIns = todayMemberCheckIns.filter(
+    (checkIn) => checkIn.mood === "hard" || checkIn.mood === "need_prayer",
+  );
   const latestPrayer = prayers[0];
   const latestPrayerSummary = latestPrayer
     ? latestPrayer.visibility === "anonymous"
-      ? "익명으로 남겨진 최근 기도제목을 함께 기억해요."
+      ? "이름을 숨긴 최근 기도제목을 함께 기억해요."
       : `${latestPrayer.profiles.display_name}님의 최근 기도제목을 함께 기억해요.`
     : "아직 새 기도제목은 없어요. 멤버가 남기면 여기서 함께 기억해요.";
   const careSignalSummary =
-    quietMembers.length > 0
+    careNeededCheckIns.length > 0
+      ? `${careNeededCheckIns.map((checkIn) => checkIn.profiles.display_name).join(", ")}님의 안부를 먼저 살펴보면 좋아요.`
+      : quietMembers.length > 0
       ? `${quietMembers.length}명에게 가볍게 안부를 물어보면 좋아요.`
       : "오늘은 따로 안부를 물어볼 멤버가 아직 없어요.";
 
@@ -55,13 +64,17 @@ export function LeaderDashboard({
 
       <div className="mt-3 grid grid-cols-3 gap-2">
         <Summary label="살필 안부" value={quietMembers.length} />
-        <Summary label="오늘 안부" value={todayCheckIns.length} />
+        <Summary label="오늘 멤버 안부" value={todayMemberCheckIns.length} />
         <Summary label="기도제목" value={prayers.length} />
       </div>
 
       <div className="mt-3 rounded-md border border-slate-100 bg-white px-3 py-3 text-sm leading-6 text-slate-600">
         <div className="flex items-start gap-2">
-          <Moon className="mt-1 h-4 w-4 shrink-0 text-leaf" />
+          {careNeededCheckIns.length > 0 ? (
+            <HeartPulse className="mt-1 h-4 w-4 shrink-0 text-clay" />
+          ) : (
+            <Moon className="mt-1 h-4 w-4 shrink-0 text-leaf" />
+          )}
           <p>{careSignalSummary}</p>
         </div>
         <div className="mt-2 flex items-start gap-2">
