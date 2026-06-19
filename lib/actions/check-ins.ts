@@ -48,6 +48,7 @@ export async function saveCheckIn(formData: FormData) {
   }
 
   revalidatePath("/");
+  revalidatePath("/leader");
   revalidatePath("/today");
   redirect(actionSuccessPath("checkin-saved", returnTo));
 }

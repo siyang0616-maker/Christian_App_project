@@ -46,6 +46,7 @@ export async function createGroup(formData: FormData) {
   }
 
   revalidatePath("/");
+  revalidatePath("/leader");
 }
 
 export async function joinGroup(formData: FormData) {
@@ -73,4 +74,5 @@ export async function joinGroup(formData: FormData) {
   }
 
   revalidatePath("/");
+  revalidatePath("/leader");
 }

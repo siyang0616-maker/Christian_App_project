@@ -44,3 +44,10 @@ export const prayerRequestSchema = z.object({
 export const prayerReactionSchema = z.object({
   prayerId: z.string().uuid(),
 });
+
+export const leaderPrayerCareMarkSchema = z.object({
+  prayerId: z.string().uuid(),
+  careScope: z.enum(["communal", "personal"]),
+  isImportant: checkboxSchema,
+  isOngoing: checkboxSchema,
+});

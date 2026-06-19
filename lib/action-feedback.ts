@@ -45,6 +45,10 @@ export const actionErrorMessages = {
     title: "기도했어요를 남기지 못했어요",
     body: "잠시 후 다시 시도해 주세요. 볼 수 있는 기도제목에만 반응할 수 있어요.",
   },
+  "prayer-care": {
+    title: "기도 돌봄 표시를 저장하지 못했어요",
+    body: "잠시 후 다시 시도해 주세요. 리더에게 보이는 기도제목에만 돌봄 표시를 남길 수 있어요.",
+  },
 } as const;
 
 export const actionSuccessMessages = {
@@ -59,6 +63,10 @@ export const actionSuccessMessages = {
   "prayer-reaction-saved": {
     title: "기도로 기억했어요",
     body: "기도했어요 반응이 카드에 반영됐어요.",
+  },
+  "prayer-care-saved": {
+    title: "기도 돌봄 표시를 저장했어요",
+    body: "이 제목은 리더 보드에서 함께 기도할 일과 조용히 돌볼 일로 다시 볼 수 있어요.",
   },
 } as const;
 

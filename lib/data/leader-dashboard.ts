@@ -14,6 +14,7 @@ import type {
   Group,
   GroupMember,
   GroupMemberWithProfile,
+  LeaderPrayerCareMark,
   PrayerReaction,
   PrayerRequestWithAuthor,
   Profile,
@@ -30,6 +31,7 @@ export type LeaderDashboardData = {
   quietMembers: GroupMemberWithProfile[];
   prayersToRemember: PrayerRequestWithAuthor[];
   prayerReactions: PrayerReaction[];
+  leaderPrayerCareMarks: LeaderPrayerCareMark[];
   careBoard: LeaderCareBoardData;
   metrics: {
     todayCheckinCount: number;
@@ -136,7 +138,11 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
   const todayCheckins = todayCheckinsResult.data ?? [];
   const recentCheckIns = recentCheckinsResult.data ?? [];
   const prayersToRemember = prayersToRememberResult.data ?? [];
-  const prayerReactions = await getPrayerReactions(supabase, prayersToRemember.map((prayer) => prayer.id));
+  const prayerIds = prayersToRemember.map((prayer) => prayer.id);
+  const [prayerReactions, leaderPrayerCareMarks] = await Promise.all([
+    getPrayerReactions(supabase, prayerIds),
+    getLeaderPrayerCareMarks(supabase, prayerIds),
+  ]);
 
   const profilesById = await getProfilesByIds(
     supabase,
@@ -169,6 +175,7 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
     recentCheckIns: recentCheckInsWithProfiles,
     prayers: prayersToRememberWithProfiles,
     reactions: prayerReactions,
+    careMarks: leaderPrayerCareMarks,
     currentUserId: userId,
   });
 
@@ -183,6 +190,7 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
     quietMembers,
     prayersToRemember: prayersToRememberWithProfiles,
     prayerReactions,
+    leaderPrayerCareMarks,
     careBoard,
     metrics: {
       todayCheckinCount: todayCheckinsWithProfiles.length,
@@ -208,6 +216,21 @@ async function getPrayerReactions(supabase: SupabaseClient, prayerIds: string[])
     .returns<PrayerReaction[]>();
 
   logDataQueryError("leader-dashboard", "prayer_reactions", error);
+  return data ?? [];
+}
+
+async function getLeaderPrayerCareMarks(supabase: SupabaseClient, prayerIds: string[]) {
+  if (prayerIds.length === 0) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("leader_prayer_care_marks")
+    .select("*")
+    .in("prayer_id", prayerIds)
+    .returns<LeaderPrayerCareMark[]>();
+
+  logDataQueryError("leader-dashboard", "leader_prayer_care_marks", error);
   return data ?? [];
 }
 
@@ -245,6 +268,7 @@ function emptyLeaderDashboard(profile: Profile | null, userId: string): LeaderDa
     recentCheckIns: [],
     prayers: [],
     reactions: [],
+    careMarks: [],
     currentUserId: userId,
   });
 
@@ -259,6 +283,7 @@ function emptyLeaderDashboard(profile: Profile | null, userId: string): LeaderDa
     quietMembers: [],
     prayersToRemember: [],
     prayerReactions: [],
+    leaderPrayerCareMarks: [],
     careBoard,
     metrics: {
       todayCheckinCount: 0,

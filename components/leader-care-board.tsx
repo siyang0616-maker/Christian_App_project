@@ -1,9 +1,13 @@
-import { Bell, CheckCircle2, HeartHandshake, KeyRound, MessageCircle, Moon, UsersRound } from "lucide-react";
+import { Bell, Heart, HeartHandshake, KeyRound, MessageCircle, UsersRound } from "lucide-react";
 import type { ReactNode } from "react";
+import { ActionMessage } from "@/components/action-message";
 import { CopyTextButton } from "@/components/copy-text-button";
+import { prayForRequest, saveLeaderPrayerCareMark } from "@/lib/actions/prayers";
 import type { LeaderCareBoardData } from "@/lib/data/leader-care-board";
 
 type LeaderCareBoardProps = {
+  actionError?: string;
+  actionSuccess?: string;
   activeGroupName: string;
   inviteCode: string;
   data: LeaderCareBoardData;
@@ -15,7 +19,13 @@ const toneClassNames: Record<LeaderCareBoardData["inbox"][number]["tone"], strin
   blue: "border-bluewash bg-bluewash text-leaf",
 };
 
-export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCareBoardProps) {
+const memberBadgeClassNames: Record<LeaderCareBoardData["memberSummaries"][number]["careBadgeTone"], string> = {
+  leaf: "bg-mist text-leaf",
+  clay: "bg-[#FFF5EF] text-clay",
+  blue: "bg-bluewash text-leaf",
+};
+
+export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, inviteCode, data }: LeaderCareBoardProps) {
   return (
     <div className="grid gap-4">
       <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
@@ -25,7 +35,7 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
           </div>
           <div className="min-w-0">
             <p className="text-sm font-semibold text-white/80">리더 돌봄 보드</p>
-            <h2 className="mt-1 text-xl font-bold">오늘 살펴볼 안부</h2>
+            <h2 className="mt-1 text-xl font-bold">오늘 함께 기억할 안부</h2>
             <p className="mt-2 text-sm leading-6 text-white/85">
               카톡에 흘러가기 쉬운 체크인과 기도제목을 오늘 돌볼 일로 정리했어요.
             </p>
@@ -46,17 +56,17 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
       </section>
 
       <section className="grid grid-cols-2 gap-2">
-        <SummaryTile label="참여 멤버" value={data.totals.memberCount} />
-        <SummaryTile label="오늘 안부" value={data.totals.todayVisibleCheckInCount} />
-        <SummaryTile label="기도제목" value={data.totals.visiblePrayerCount} />
-        <SummaryTile label="살펴볼 멤버" value={data.totals.quietMemberCount} />
+        <SummaryTile label="함께하는 멤버" value={data.totals.memberCount} />
+        <SummaryTile label="오늘 남겨진 안부" value={data.totals.todayMemberVisibleCheckInCount} />
+        <SummaryTile label="기억할 기도제목" value={data.totals.visiblePrayerCount} />
+        <SummaryTile label="계속 기억" value={data.totals.ongoingPrayerCount} />
       </section>
 
-      <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
+      <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft" id="leader-care-inbox">
         <SectionHeader
-          body="점수나 출석표가 아니라, 오늘 리더가 기억하면 좋은 신호예요."
+          body="점수나 출석표가 아니라, 오늘 리더가 먼저 기억하면 좋은 신호예요."
           icon={<Bell className="h-4 w-4" />}
-          title="오늘 살펴볼 안부"
+          title="먼저 기억할 일"
         />
         <div className="mt-3 grid gap-2">
           {data.inbox.map((item) => (
@@ -68,12 +78,13 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
         </div>
       </section>
 
-      <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
+      <section className="scroll-mt-4 rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft" id="leader-prayer-timeline">
         <SectionHeader
-          body="날짜별로 쌓인 제목을 보고, 필요한 경우 가볍게 기도 응원 문구를 복사해요."
+          body="날짜별로 쌓인 제목을 보고, 리더도 바로 기도로 기억할 수 있어요."
           icon={<HeartHandshake className="h-4 w-4" />}
           title="기도제목 타임라인"
         />
+        <ActionMessage errorCode={actionError} successCode={actionSuccess} />
         <div className="mt-4 grid gap-4">
           {data.prayerDateGroups.length > 0 ? (
             data.prayerDateGroups.map((group) => (
@@ -89,11 +100,43 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
                         </p>
                       </div>
                       <span className="shrink-0 rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf">
-                        {prayer.alreadyPrayed ? "리더 확인함" : `${prayer.reactionCount}명 기도`}
+                        {prayer.prayerStatusLabel}
                       </span>
                     </div>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-bluewash px-2 py-1 text-xs font-semibold text-leaf">
+                        {prayer.careScopeLabel}
+                      </span>
+                      {prayer.isImportant ? (
+                        <span className="rounded-full bg-[#FFF5EF] px-2 py-1 text-xs font-semibold text-clay">중요</span>
+                      ) : null}
+                      {prayer.isOngoing ? (
+                        <span className="rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf">계속 기억</span>
+                      ) : null}
+                      {!prayer.careMark ? (
+                        <span className="rounded-full bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-500">분류 전</span>
+                      ) : null}
+                    </div>
                     <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-slate-700">{prayer.content}</p>
+                    {prayer.copyPreview ? (
+                      <div className="mt-3 rounded-md bg-mist px-3 py-2">
+                        <p className="text-xs font-semibold text-leaf">복사될 문구</p>
+                        <p className="mt-1 text-xs leading-5 text-slate-600">{prayer.copyPreview}</p>
+                      </div>
+                    ) : null}
                     <div className="mt-3 flex flex-wrap items-center gap-2">
+                      <form action={prayForRequest}>
+                        <input name="prayerId" type="hidden" value={prayer.id} />
+                        <input name="returnTo" type="hidden" value="/leader#leader-prayer-timeline" />
+                        <button
+                          className="inline-flex h-10 items-center gap-2 rounded-md border border-clay/25 bg-[#FFF9F5] px-3 text-sm font-semibold text-clay disabled:opacity-60"
+                          disabled={prayer.alreadyPrayed}
+                          type="submit"
+                        >
+                          <Heart className={prayer.alreadyPrayed ? "h-4 w-4 fill-current" : "h-4 w-4"} />
+                          {prayer.alreadyPrayed ? "기도로 기억 중" : "기도로 기억하기"}
+                        </button>
+                      </form>
                       {prayer.copyMessage && prayer.copyLabel ? (
                         <CopyTextButton text={prayer.copyMessage}>{prayer.copyLabel}</CopyTextButton>
                       ) : (
@@ -102,6 +145,47 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
                         </p>
                       )}
                     </div>
+                    <form action={saveLeaderPrayerCareMark} className="mt-3 rounded-md border border-slate-100 bg-slate-50 px-3 py-3">
+                      <input name="prayerId" type="hidden" value={prayer.id} />
+                      <input name="returnTo" type="hidden" value="/leader#leader-prayer-timeline" />
+                      <p className="text-xs font-bold text-slate-600">리더 돌봄 표시</p>
+                      <div className="mt-2 grid grid-cols-2 gap-2">
+                        <label className="flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700">
+                          <input
+                            className="accent-leaf"
+                            defaultChecked={prayer.careScope === "communal"}
+                            name="careScope"
+                            type="radio"
+                            value="communal"
+                          />
+                          함께 기도
+                        </label>
+                        <label className="flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700">
+                          <input
+                            className="accent-leaf"
+                            defaultChecked={prayer.careScope === "personal"}
+                            name="careScope"
+                            type="radio"
+                            value="personal"
+                          />
+                          개별 돌봄
+                        </label>
+                        <label className="flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700">
+                          <input className="accent-leaf" defaultChecked={prayer.isImportant} name="isImportant" type="checkbox" />
+                          중요
+                        </label>
+                        <label className="flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700">
+                          <input className="accent-leaf" defaultChecked={prayer.isOngoing} name="isOngoing" type="checkbox" />
+                          계속 기억
+                        </label>
+                      </div>
+                      <p className="mt-2 text-xs leading-5 text-slate-500">
+                        이 표시는 리더 보드에서만 보여요. 멤버에게는 분류가 공개되지 않아요.
+                      </p>
+                      <button className="mt-3 h-10 w-full rounded-md bg-leaf px-3 text-sm font-bold text-white" type="submit">
+                        돌봄 표시 저장
+                      </button>
+                    </form>
                   </article>
                 ))}
               </div>
@@ -129,17 +213,11 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
                     <p className="text-sm font-bold text-ink">{member.displayName}</p>
                     <p className="mt-1 text-xs text-slate-500">{member.latestCheckInLabel}</p>
                   </div>
-                  {member.isQuiet ? (
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf">
-                      <Moon className="h-3.5 w-3.5" />
-                      살펴보기
-                    </span>
-                  ) : (
-                    <span className="inline-flex shrink-0 items-center gap-1 rounded-full bg-bluewash px-2 py-1 text-xs font-semibold text-leaf">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      안부 있음
-                    </span>
-                  )}
+                  <span
+                    className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${memberBadgeClassNames[member.careBadgeTone]}`}
+                  >
+                    {member.careBadgeLabel}
+                  </span>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-slate-700">{member.careReason}</p>
                 {member.visiblePrayerCount > 0 ? (
@@ -147,6 +225,10 @@ export function LeaderCareBoard({ activeGroupName, inviteCode, data }: LeaderCar
                     리더에게 보이는 기도제목 {member.visiblePrayerCount}개
                   </p>
                 ) : null}
+                <div className="mt-3 rounded-md bg-mist px-3 py-2">
+                  <p className="text-xs font-semibold text-leaf">복사될 문구</p>
+                  <p className="mt-1 text-xs leading-5 text-slate-600">{member.copyPreview}</p>
+                </div>
                 <div className="mt-3">
                   <CopyTextButton text={member.copyMessage}>
                     <span className="inline-flex items-center gap-2">

@@ -2,6 +2,35 @@
 
 ## 2026-06-19
 
+- User testing feedback showed that the Leader Care Board still did not feel differentiated enough from KakaoTalk because leaders could not classify prayer requests for weekly care.
+- Ran product/UX/security sub-agent review for leader prayer care classification.
+- Decision: do not overload `prayer_reactions`; create leader-only care marks with RLS.
+- Added decision record `superpowers/decisions/2026-06-19-leader-prayer-care-marks.md`.
+- Added implementation ticket `superpowers/tickets/2026-06-19-leader-prayer-care-marks.md`.
+- Added `supabase/migrations/004_leader_prayer_care_marks.sql` and `docs/SUPABASE_LEADER_PRAYER_CARE_MARKS_SQL.md`.
+- Implemented leader-only prayer care marks on `/leader`:
+  - `함께 기도`
+  - `개별 돌봄`
+  - `중요`
+  - `계속 기억`
+- Added local prayer-timeline action feedback so leader clicks do not feel silent.
+- Verified `corepack pnpm verify` passes after the leader prayer care mark implementation.
+- Ran sub-agent review for Leader Care Board v1.1 / v1.5 scope:
+  - Product/Retention: build no-schema board sharpening now; defer schema work until beta evidence.
+  - UX: soften count labels, prioritize care cues, show copy previews, avoid surveillance language.
+  - Security/Privacy: defer birthdays, RSVP, stored care status, notification inbox, and contact directory until DB/RLS is designed.
+  - Developer/QA: add regression guards, revalidate `/leader`, and use existing `prayer_reactions` for the smallest v1.5.
+- Added decision record `superpowers/decisions/2026-06-19-leader-care-board-no-schema-upgrade.md`.
+- Added implementation ticket `superpowers/tickets/2026-06-19-leader-care-board-no-schema-upgrade.md`.
+- Upgraded Leader Care Board without a schema change:
+  - added care-priority sorting
+  - added member-focused today check-in count
+  - softened summary labels and badges
+  - added copy-ready message previews
+  - let leaders mark a visible prayer as remembered from `/leader`
+  - added action feedback support on `/leader`
+  - revalidated `/leader` after check-in, prayer, prayer reaction, create-group, and join-group actions
+- Strengthened `scripts/check-leader-care-board-regression.mjs` for the v1.1 / no-schema v1.5 behavior.
 - Built Leader Care Board v1 for `/leader` from existing RLS-visible data only.
 - Added `lib/data/leader-care-board.ts` with server-side derived care data:
   - today care inbox

@@ -3,6 +3,7 @@ export type CheckinVisibility = "private" | "leader" | "group";
 export type PrayerVisibility = CheckinVisibility | "anonymous";
 export type Visibility = PrayerVisibility;
 export type Mood = "good" | "normal" | "hard" | "need_prayer";
+export type PrayerCareScope = "communal" | "personal";
 
 export type Profile = {
   id: string;
@@ -64,6 +65,18 @@ export type PrayerReaction = {
   prayer_id: string;
   user_id: string;
   created_at: string;
+};
+
+export type LeaderPrayerCareMark = {
+  prayer_id: string;
+  group_id: string;
+  care_scope: PrayerCareScope;
+  is_important: boolean;
+  is_ongoing: boolean;
+  created_by: string;
+  updated_by: string;
+  created_at: string;
+  updated_at: string;
 };
 
 export type DashboardData = {
