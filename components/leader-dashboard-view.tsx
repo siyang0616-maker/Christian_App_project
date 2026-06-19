@@ -23,7 +23,6 @@ export function LeaderDashboardView({ actionError, actionSuccess, data }: Leader
         actionSuccess={isPrayerFeedback ? actionSuccess : undefined}
         activeGroupName={data.activeGroup.name}
         data={data.careBoard}
-        inviteCode={data.activeGroup.invite_code}
       />
     </div>
   );

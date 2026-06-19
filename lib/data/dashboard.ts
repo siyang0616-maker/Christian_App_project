@@ -9,6 +9,7 @@ import {
   type CheckInRow,
   type PrayerRequestRow,
 } from "@/lib/data/profile-joins";
+import { koreaDateKey } from "@/lib/dates";
 import type { DashboardData, Group, GroupMember, PrayerReaction, Profile } from "@/lib/types";
 
 export async function getDashboardData(supabase: SupabaseClient, userId: string): Promise<DashboardData> {
@@ -57,7 +58,7 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
       .select("*")
       .eq("group_id", membership.group_id)
       .eq("user_id", userId)
-      .eq("checkin_date", new Date().toISOString().slice(0, 10))
+      .eq("checkin_date", koreaDateKey())
       .maybeSingle<CheckInRow>(),
     supabase
       .from("checkins")

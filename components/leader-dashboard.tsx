@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, ClipboardList, KeyRound, Moon, UsersRound } from "lucide-react";
+import { ArrowRight, ClipboardList, Moon, UsersRound } from "lucide-react";
+import { koreaDateKey } from "@/lib/dates";
 import type { CheckInWithAuthor, GroupMemberWithProfile, PrayerRequestWithAuthor } from "@/lib/types";
 
 type LeaderDashboardProps = {
   activeGroupName: string;
-  inviteCode: string;
   members: GroupMemberWithProfile[];
   quietMembers: GroupMemberWithProfile[];
   recentCheckIns: CheckInWithAuthor[];
@@ -13,19 +13,13 @@ type LeaderDashboardProps = {
 
 export function LeaderDashboard({
   activeGroupName,
-  inviteCode,
   members,
   quietMembers,
   recentCheckIns,
   prayers,
 }: LeaderDashboardProps) {
   const memberOnlyCount = members.filter((member) => member.role === "member").length;
-  const today = new Intl.DateTimeFormat("sv-SE", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  const today = koreaDateKey();
   const todayCheckIns = recentCheckIns.filter((checkIn) => checkIn.checkin_date === today);
   const latestPrayer = prayers[0];
   const latestPrayerSummary = latestPrayer
@@ -54,10 +48,6 @@ export function LeaderDashboard({
           <div className="min-w-0">
             <p className="text-xs font-semibold text-leaf">지금 보고 있는 방</p>
             <p className="mt-1 truncate text-sm font-bold text-ink">{activeGroupName}</p>
-          </div>
-          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white px-2 py-1 text-xs font-semibold text-leaf">
-            <KeyRound className="h-3.5 w-3.5" />
-            {inviteCode}
           </div>
         </div>
       </div>

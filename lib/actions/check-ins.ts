@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { actionErrorPath, actionSuccessPath, getSafeInternalPath } from "@/lib/action-feedback";
+import { koreaDateKey } from "@/lib/dates";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { checkInSchema } from "@/lib/validation";
 
@@ -23,7 +24,7 @@ export async function saveCheckIn(formData: FormData) {
     redirect("/");
   }
 
-  const today = new Date().toISOString().slice(0, 10);
+  const today = koreaDateKey();
 
   // RLS confirms the user belongs to this group before insert/update succeeds.
   const { error } = await supabase.from("checkins").upsert(

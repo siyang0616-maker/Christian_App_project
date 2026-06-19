@@ -1,4 +1,4 @@
-import { Bell, Heart, HeartHandshake, KeyRound, MessageCircle, UsersRound } from "lucide-react";
+import { Bell, Heart, HeartHandshake, MessageCircle, UsersRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { ActionMessage } from "@/components/action-message";
 import { CopyTextButton } from "@/components/copy-text-button";
@@ -9,7 +9,6 @@ type LeaderCareBoardProps = {
   actionError?: string;
   actionSuccess?: string;
   activeGroupName: string;
-  inviteCode: string;
   data: LeaderCareBoardData;
 };
 
@@ -25,7 +24,7 @@ const memberBadgeClassNames: Record<LeaderCareBoardData["memberSummaries"][numbe
   blue: "bg-bluewash text-leaf",
 };
 
-export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, inviteCode, data }: LeaderCareBoardProps) {
+export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, data }: LeaderCareBoardProps) {
   return (
     <div className="grid gap-4">
       <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
@@ -42,15 +41,9 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, i
           </div>
         </div>
         <div className="mt-4 rounded-md bg-white/10 px-3 py-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="min-w-0">
-              <p className="text-xs font-semibold text-white/70">지금 보고 있는 방</p>
-              <p className="mt-1 truncate text-sm font-bold text-white">{activeGroupName}</p>
-            </div>
-            <div className="flex shrink-0 items-center gap-1 rounded-full bg-white px-2 py-1 text-xs font-semibold text-leaf">
-              <KeyRound className="h-3.5 w-3.5" />
-              {inviteCode}
-            </div>
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-white/70">지금 보고 있는 방</p>
+            <p className="mt-1 truncate text-sm font-bold text-white">{activeGroupName}</p>
           </div>
         </div>
       </section>

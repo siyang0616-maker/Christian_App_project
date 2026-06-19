@@ -9,6 +9,7 @@ import {
   type CheckInRow,
   type PrayerRequestRow,
 } from "@/lib/data/profile-joins";
+import { koreaDateKey } from "@/lib/dates";
 import type {
   CheckInWithAuthor,
   Group,
@@ -251,14 +252,6 @@ function daysAgoIso(days: number) {
   return date.toISOString();
 }
 
-function koreaDateKey(date: Date) {
-  return new Intl.DateTimeFormat("sv-SE", {
-    timeZone: "Asia/Seoul",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
-}
 
 function emptyLeaderDashboard(profile: Profile | null, userId: string): LeaderDashboardData {
   const careBoard = createLeaderCareBoardData({
