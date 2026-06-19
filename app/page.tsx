@@ -274,17 +274,6 @@ export default async function Home({
     >
       <div className="grid gap-4">
         {shouldShowGlobalActionMessage ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
-        {dashboard.membership.role === "leader" ? (
-          <>
-            <LeaderDashboard
-              activeGroupName={dashboard.activeGroup.name}
-              members={dashboard.members}
-              quietMembers={dashboard.quietMembers}
-              recentCheckIns={dashboard.recentCheckIns}
-              prayers={dashboard.prayerRequests}
-            />
-          </>
-        ) : null}
         <div className="scroll-mt-4 grid gap-3" id="prayer-cards">
           {isPrayerFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
           <PrayerRequestList
@@ -294,6 +283,14 @@ export default async function Home({
           />
         </div>
         <PrayerRequestForm clearDraft={actionSuccess === "prayer-saved"} groupId={dashboard.activeGroup.id} />
+        {dashboard.membership.role === "leader" ? (
+          <LeaderDashboard
+            activeGroupName={dashboard.activeGroup.name}
+            quietMembers={dashboard.quietMembers}
+            recentCheckIns={dashboard.recentCheckIns}
+            prayers={dashboard.prayerRequests}
+          />
+        ) : null}
         <CheckInActivityList currentUserId={user.id} checkIns={dashboard.recentCheckIns} />
         <div className="scroll-mt-4 grid gap-3" id="check-in-status">
           <TodayStatus

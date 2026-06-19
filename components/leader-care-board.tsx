@@ -1,4 +1,4 @@
-import { Bell, Heart, HeartHandshake, MessageCircle, UsersRound } from "lucide-react";
+import { Bell, Heart, HeartHandshake, UsersRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { ActionMessage } from "@/components/action-message";
 import { CopyTextButton } from "@/components/copy-text-button";
@@ -36,7 +36,7 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
             <p className="text-sm font-semibold text-white/80">리더 돌봄 보드</p>
             <h2 className="mt-1 text-xl font-bold">오늘 함께 기억할 안부</h2>
             <p className="mt-2 text-sm leading-6 text-white/85">
-              카톡에 흘러가기 쉬운 체크인과 기도제목을 오늘 돌볼 일로 정리했어요.
+              앱에 새로 남겨진 안부와 기도제목을 리더가 다시 볼 수 있게 정리했어요.
             </p>
           </div>
         </div>
@@ -49,15 +49,15 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
       </section>
 
       <section className="grid grid-cols-2 gap-2">
+        <SummaryTile label="오늘 새 안부" value={data.totals.todayMemberVisibleCheckInCount} />
+        <SummaryTile label="보이는 기도제목" value={data.totals.visiblePrayerCount} />
+        <SummaryTile label="계속 기억할 제목" value={data.totals.ongoingPrayerCount} />
         <SummaryTile label="함께하는 멤버" value={data.totals.memberCount} />
-        <SummaryTile label="오늘 남겨진 안부" value={data.totals.todayMemberVisibleCheckInCount} />
-        <SummaryTile label="기억할 기도제목" value={data.totals.visiblePrayerCount} />
-        <SummaryTile label="계속 기억" value={data.totals.ongoingPrayerCount} />
       </section>
 
       <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft" id="leader-care-inbox">
         <SectionHeader
-          body="점수나 출석표가 아니라, 오늘 리더가 먼저 기억하면 좋은 신호예요."
+          body="앱에 새로 남겨진 안부와 기도제목 중 오늘 먼저 따뜻하게 기억할 내용이에요."
           icon={<Bell className="h-4 w-4" />}
           title="먼저 기억할 일"
         />
@@ -73,7 +73,7 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
 
       <section className="scroll-mt-4 rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft" id="leader-prayer-timeline">
         <SectionHeader
-          body="날짜별로 쌓인 제목을 보고, 리더도 바로 기도로 기억할 수 있어요."
+          body="새로 남겨진 제목부터 오래 기억할 제목까지, 날짜별로 다시 기도로 붙들 수 있어요."
           icon={<HeartHandshake className="h-4 w-4" />}
           title="기도제목 타임라인"
         />
@@ -134,14 +134,14 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
                         <CopyTextButton text={prayer.copyMessage}>{prayer.copyLabel}</CopyTextButton>
                       ) : (
                         <p className="rounded-md bg-mist px-3 py-2 text-xs leading-5 text-slate-600">
-                          익명 제목은 작성자를 표시하지 않아요.
+                          익명 제목은 작성자를 드러내는 문구를 만들지 않아요.
                         </p>
                       )}
                     </div>
                     <form action={saveLeaderPrayerCareMark} className="mt-3 rounded-md border border-slate-100 bg-slate-50 px-3 py-3">
                       <input name="prayerId" type="hidden" value={prayer.id} />
                       <input name="returnTo" type="hidden" value="/leader#leader-prayer-timeline" />
-                      <p className="text-xs font-bold text-slate-600">리더 돌봄 표시</p>
+                      <p className="text-xs font-bold text-slate-600">리더만 보는 기억 표시</p>
                       <div className="mt-2 grid grid-cols-2 gap-2">
                         <label className="flex min-h-10 items-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700">
                           <input
@@ -173,10 +173,10 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
                         </label>
                       </div>
                       <p className="mt-2 text-xs leading-5 text-slate-500">
-                        이 표시는 리더 보드에서만 보여요. 멤버에게는 분류가 공개되지 않아요.
+                        멤버에게는 이 분류가 보이지 않고, 리더가 다음 돌봄을 놓치지 않도록 돕는 표시예요.
                       </p>
                       <button className="mt-3 h-10 w-full rounded-md bg-leaf px-3 text-sm font-bold text-white" type="submit">
-                        돌봄 표시 저장
+                        기억 표시 저장
                       </button>
                     </form>
                   </article>
@@ -193,7 +193,7 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
 
       <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
         <SectionHeader
-          body="개별 연락은 앱에서 보내지 않고, 리더가 직접 확인해서 필요한 사람에게만 전해요."
+          body="앱에 남겨진 안부와 기도제목만 모아, 이번 주 누구를 부드럽게 기억할지 정리해요."
           icon={<UsersRound className="h-4 w-4" />}
           title="멤버별 안부 스냅샷"
         />
@@ -225,7 +225,7 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
                 <div className="mt-3">
                   <CopyTextButton text={member.copyMessage}>
                     <span className="inline-flex items-center gap-2">
-                      <MessageCircle className="h-4 w-4" />
+                      <HeartHandshake className="h-4 w-4" />
                       안부 문구 복사
                     </span>
                   </CopyTextButton>
@@ -234,7 +234,7 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
             ))
           ) : (
             <p className="rounded-md bg-mist px-3 py-3 text-sm leading-6 text-slate-600">
-              아직 함께하는 멤버가 없어요. 초대코드를 보내 첫 체크인을 받아보세요.
+              아직 멤버별 안부가 쌓이기 전이에요. 첫 안부나 기도제목이 남겨지면 여기에서 다시 볼 수 있어요.
             </p>
           )}
         </div>

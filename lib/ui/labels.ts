@@ -16,7 +16,7 @@ export function visibilityLabel(visibility: Visibility) {
     private: "나만 보기",
     leader: "리더와 나",
     group: "소그룹 전체",
-    anonymous: "익명",
+    anonymous: "이름 숨김",
   };
 
   return labels[visibility];
