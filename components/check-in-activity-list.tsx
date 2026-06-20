@@ -7,6 +7,18 @@ type CheckInActivityListProps = {
   currentUserId: string;
 };
 
+const rhythmLabels: Array<{ key: keyof Pick<CheckInWithAuthor, "attended" | "bible_read" | "meditated" | "prayed" | "woke_up">; label: string }> = [
+  { key: "woke_up", label: "일어남" },
+  { key: "bible_read", label: "말씀" },
+  { key: "prayed", label: "기도" },
+  { key: "meditated", label: "묵상" },
+  { key: "attended", label: "예배/모임" },
+];
+
+function checkedRhythms(checkIn: CheckInWithAuthor) {
+  return rhythmLabels.filter((item) => checkIn[item.key]).map((item) => item.label);
+}
+
 export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivityListProps) {
   return (
     <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
@@ -40,12 +52,24 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
                   {moodLabel(checkIn.mood)}
                 </p>
               </div>
+              {checkedRhythms(checkIn).length > 0 ? (
+                <div className="mt-3 flex flex-wrap gap-1">
+                  <span className="rounded-full bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-500">
+                    오늘 리듬
+                  </span>
+                  {checkedRhythms(checkIn).map((label) => (
+                    <span className="rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf" key={label}>
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
               {checkIn.note ? <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">{checkIn.note}</p> : null}
             </article>
           ))
         ) : (
           <p className="rounded-md bg-mist px-3 py-3 text-sm leading-6 text-slate-600">
-            아직 볼 수 있는 안부가 없어요. 공개 범위에 맞는 체크인이 생기면 이곳에 보여요.
+            아직 볼 수 있는 안부가 없어요. 멤버가 리더에게 보이는 안부를 남기면 이곳에 보여요.
           </p>
         )}
       </div>

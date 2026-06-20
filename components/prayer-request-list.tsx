@@ -22,7 +22,9 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
     <section className="grid gap-3">
       <div>
         <h2 className="font-bold text-ink">기도제목 카드</h2>
-        <p className="text-sm text-slate-600">오늘 함께 기도로 기억할 제목이에요.</p>
+        <p className="text-sm leading-6 text-slate-600">
+          오늘 함께 기도로 기억할 제목이에요. 공개 범위는 카드마다 다시 보여요.
+        </p>
       </div>
       {prayers.length > 0 ? (
         prayers.map((prayer) => {
@@ -40,8 +42,11 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
                   </p>
                 </div>
                 <span className="rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf">
-                  {prayerReactions.length}명이 기도했어요
+                  {alreadyPrayed ? "기도로 기억 중" : `${prayerReactions.length}명이 기도했어요`}
                 </span>
+              </div>
+              <div className="mb-3 inline-flex rounded-full bg-bluewash px-2 py-1 text-xs font-semibold text-leaf">
+                공개 범위: {visibilityLabel(prayer.visibility)}
               </div>
               <p className="whitespace-pre-wrap text-sm leading-6 text-slate-700">{prayer.content}</p>
               <form action={prayForRequest} className="mt-4">
@@ -60,7 +65,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
         })
       ) : (
         <p className="rounded-lg border border-white/70 bg-white/80 p-4 text-sm text-slate-600">
-          아직 남겨진 기도제목이 없어요.
+          아직 남겨진 기도제목이 없어요. 멤버가 공개 범위에 맞게 기도제목을 남기면 리더 보드에도 함께 정리돼요.
         </p>
       )}
     </section>

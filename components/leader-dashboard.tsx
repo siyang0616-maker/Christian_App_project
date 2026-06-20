@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ClipboardList, HeartPulse, Moon, UsersRound } from "lucide-react";
+import { ArrowRight, ClipboardList, HeartHandshake, HeartPulse, Moon, UsersRound } from "lucide-react";
 import { koreaDateKey } from "@/lib/dates";
 import type { CheckInWithAuthor, GroupMemberWithProfile, PrayerRequestWithAuthor } from "@/lib/types";
 
@@ -37,6 +37,10 @@ export function LeaderDashboard({
       : quietMembers.length > 0
       ? `${quietMembers.length}명에게 가볍게 안부를 물어보면 좋아요.`
       : "오늘은 따로 안부를 물어볼 멤버가 아직 없어요.";
+  const memberCheckInSummary =
+    todayMemberCheckIns.length > 0
+      ? `오늘 ${todayMemberCheckIns.length}명의 멤버가 안부를 남겼어요.`
+      : "멤버가 체크인을 남기면 여기서 바로 흐름을 볼 수 있어요.";
 
   return (
     <section className="rounded-lg border border-leaf/15 bg-white/90 p-4 shadow-soft">
@@ -48,7 +52,7 @@ export function LeaderDashboard({
           <p className="text-sm font-semibold text-leaf">리더 돌봄 신호</p>
           <h2 className="mt-1 text-lg font-bold text-ink">오늘 함께 기억할 안부를 살펴봐요</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            조용해진 안부와 새 기도제목을 먼저 보고, 필요한 멤버를 차분히 돌아봐요.
+            감시나 평가가 아니라, 조용해진 안부와 새 기도제목을 차분히 기억하기 위한 자리예요.
           </p>
         </div>
       </div>
@@ -68,19 +72,25 @@ export function LeaderDashboard({
         <Summary label="기도제목" value={prayers.length} />
       </div>
 
-      <div className="mt-3 rounded-md border border-slate-100 bg-white px-3 py-3 text-sm leading-6 text-slate-600">
-        <div className="flex items-start gap-2">
-          {careNeededCheckIns.length > 0 ? (
-            <HeartPulse className="mt-1 h-4 w-4 shrink-0 text-clay" />
-          ) : (
-            <Moon className="mt-1 h-4 w-4 shrink-0 text-leaf" />
-          )}
-          <p>{careSignalSummary}</p>
-        </div>
-        <div className="mt-2 flex items-start gap-2">
-          <UsersRound className="mt-1 h-4 w-4 shrink-0 text-leaf" />
-          <p>{latestPrayerSummary}</p>
-        </div>
+      <div className="mt-3 grid gap-2">
+        <CareSignal
+          body={careSignalSummary}
+          icon={careNeededCheckIns.length > 0 ? <HeartPulse className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          tone={careNeededCheckIns.length > 0 ? "clay" : "leaf"}
+          title="오늘 먼저 살필 것"
+        />
+        <CareSignal
+          body={latestPrayerSummary}
+          icon={<HeartHandshake className="h-4 w-4" />}
+          tone={prayers.length > 0 ? "clay" : "leaf"}
+          title="새 기도제목"
+        />
+        <CareSignal
+          body={memberCheckInSummary}
+          icon={<UsersRound className="h-4 w-4" />}
+          tone={todayMemberCheckIns.length > 0 ? "blue" : "leaf"}
+          title="멤버 안부"
+        />
       </div>
 
       <Link
@@ -91,6 +101,37 @@ export function LeaderDashboard({
         <ArrowRight className="h-4 w-4" />
       </Link>
     </section>
+  );
+}
+
+function CareSignal({
+  body,
+  icon,
+  title,
+  tone,
+}: {
+  body: string;
+  icon: React.ReactNode;
+  title: string;
+  tone: "blue" | "clay" | "leaf";
+}) {
+  const toneClassName =
+    tone === "clay"
+      ? "border-clay/15 bg-[#FFF5EF] text-clay"
+      : tone === "blue"
+      ? "border-bluewash bg-bluewash text-leaf"
+      : "border-leaf/10 bg-mist text-leaf";
+
+  return (
+    <div className={`rounded-md border px-3 py-3 ${toneClassName}`}>
+      <div className="flex items-start gap-2">
+        <span className="mt-0.5 shrink-0">{icon}</span>
+        <div className="min-w-0">
+          <p className="text-sm font-bold">{title}</p>
+          <p className="mt-1 text-sm leading-6 text-slate-700">{body}</p>
+        </div>
+      </div>
+    </div>
   );
 }
 

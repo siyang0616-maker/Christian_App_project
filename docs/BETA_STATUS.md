@@ -33,6 +33,9 @@ Blocked for first real beta.
 
 ## Stabilization Status
 
+- [x] Public test loop can now reach leader/member accounts after live Supabase schema repair.
+- [x] Live Supabase project was repaired after only the initial schema had been applied.
+- [x] Beta UX quality improved locally: leader care summary is clearer, prayer card visibility is more explicit, and check-in rhythm summaries are visible.
 - [x] Auth callback redirect safety patched locally.
 - [x] Safe server-action failure redirects patched locally.
 - [x] First-use leader/member paths clarified locally.
@@ -51,11 +54,10 @@ Blocked for first real beta.
 
 ## Current Blockers
 
-- Supabase Data API grants may be missing on the live project; apply `supabase/migrations/005_data_api_grants.sql` if profile save fails after login.
-- Supabase Auth email flow is blocking public phone testing.
+- Full public 1-leader/2-member smoke test still needs to be completed after the latest UX quality pass is deployed.
+- Supabase Auth email flow may still create friction for first-time public testers.
 - Supabase dashboard could not save the `Confirm email` toggle because it returned `Failed to update settings: Failed to fetch (api.supabase.com)`.
 - Password recovery requests hit Supabase `over_email_send_rate_limit` / HTTP 429 during repeated testing.
-- Supabase Auth users were deleted during troubleshooting, so fresh confirmed test users must be created before the next smoke test.
 - Full public leader/member smoke test is not complete.
 
 ## Next Safe Path

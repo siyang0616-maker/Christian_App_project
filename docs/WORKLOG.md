@@ -2,6 +2,16 @@
 
 ## 2026-06-20
 
+- Improved beta UX quality without adding new product scope:
+  - Leader home care summary now separates `오늘 먼저 살필 것`, `새 기도제목`, and `멤버 안부`.
+  - Prayer cards now make visibility and `기도로 기억 중` state clearer.
+  - Check-in activity cards and today's status now summarize selected daily rhythm items.
+  - Empty states now explain that data will appear after visible check-ins/prayers are submitted.
+- Added `scripts/check-beta-quality-copy-regression.mjs` and wired it into `corepack pnpm verify`.
+- Verified the full suite with `corepack pnpm verify`.
+
+## 2026-06-20
+
 - Investigated the live profile-save blocker after confirmed login reached the profile setup screen.
 - Added safe server-side diagnostics for `saveProfile` failures while keeping the user-facing error generic.
 - Added `supabase/diagnostics/profile_save_diagnostics.sql` so the live Supabase project can be checked for Data API grants, RLS, profile policies, and `join_group_by_code` execute privilege.

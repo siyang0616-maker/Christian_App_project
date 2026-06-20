@@ -91,6 +91,13 @@ if (profileSaveDiagnosticsRegression.status !== 0) {
   process.exit(profileSaveDiagnosticsRegression.status ?? 1);
 }
 
+console.log("\n> verify:beta-quality-copy-regression");
+const betaQualityCopyRegression = runNodeScript("scripts/check-beta-quality-copy-regression.mjs");
+
+if (betaQualityCopyRegression.status !== 0) {
+  process.exit(betaQualityCopyRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);
