@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { ArrowRight, ClipboardList, HeartHandshake, HeartPulse, Moon, UsersRound } from "lucide-react";
 import { koreaDateKey } from "@/lib/dates";
 import type { CheckInWithAuthor, GroupMemberWithProfile, PrayerRequestWithAuthor } from "@/lib/types";
@@ -111,7 +112,7 @@ function CareSignal({
   tone,
 }: {
   body: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   title: string;
   tone: "blue" | "clay" | "leaf";
 }) {
