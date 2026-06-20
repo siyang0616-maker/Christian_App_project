@@ -38,6 +38,12 @@ export async function saveProfile(formData: FormData) {
   });
 
   if (error) {
+    console.error("Supabase profile save failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
     redirect(actionErrorPath("profile-save"));
   }
 

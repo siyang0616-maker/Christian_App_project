@@ -84,6 +84,13 @@ if (dataApiGrantsRegression.status !== 0) {
   process.exit(dataApiGrantsRegression.status ?? 1);
 }
 
+console.log("\n> verify:profile-save-diagnostics-regression");
+const profileSaveDiagnosticsRegression = runNodeScript("scripts/check-profile-save-diagnostics-regression.mjs");
+
+if (profileSaveDiagnosticsRegression.status !== 0) {
+  process.exit(profileSaveDiagnosticsRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);

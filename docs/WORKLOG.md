@@ -2,6 +2,13 @@
 
 ## 2026-06-20
 
+- Investigated the live profile-save blocker after confirmed login reached the profile setup screen.
+- Added safe server-side diagnostics for `saveProfile` failures while keeping the user-facing error generic.
+- Added `supabase/diagnostics/profile_save_diagnostics.sql` so the live Supabase project can be checked for Data API grants, RLS, profile policies, and `join_group_by_code` execute privilege.
+- Added a regression check to keep the profile-save diagnostics and safe redirect behavior in `corepack pnpm verify`.
+
+## 2026-06-20
+
 - Public login reached the profile setup screen, but profile save failed with the safe user-facing `profile-save` message.
 - Root-cause candidate: the live Supabase project may have RLS policies but be missing explicit Data API grants for `authenticated`.
 - Supabase changelog confirms newer projects may not expose public tables to the Data API automatically.
