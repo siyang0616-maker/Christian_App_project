@@ -77,6 +77,13 @@ if (testUserHelperRegression.status !== 0) {
   process.exit(testUserHelperRegression.status ?? 1);
 }
 
+console.log("\n> verify:data-api-grants-regression");
+const dataApiGrantsRegression = runNodeScript("scripts/check-data-api-grants-regression.mjs");
+
+if (dataApiGrantsRegression.status !== 0) {
+  process.exit(dataApiGrantsRegression.status ?? 1);
+}
+
 for (const check of checks) {
   console.log(`\n> verify:${check}`);
   const result = runPackageScript(check);

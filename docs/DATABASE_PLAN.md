@@ -144,6 +144,7 @@
 ## 6. Deployment Notes
 
 - Supabase SQL editor에서 `supabase/migrations/001_initial_schema.sql`을 먼저 적용한다.
+- 새 Supabase 프로젝트에서는 Data API 노출을 위해 `supabase/migrations/005_data_api_grants.sql`도 적용한다.
 - 앱에는 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`만 설정한다.
 - service_role key는 클라이언트, 서버 액션, Vercel env에 넣지 않는다.
 - Vercel Hobby와 Supabase Free Plan을 기준으로 운영한다.

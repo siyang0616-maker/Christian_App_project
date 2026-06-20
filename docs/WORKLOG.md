@@ -1,5 +1,16 @@
 # Worklog
 
+## 2026-06-20
+
+- Public login reached the profile setup screen, but profile save failed with the safe user-facing `profile-save` message.
+- Root-cause candidate: the live Supabase project may have RLS policies but be missing explicit Data API grants for `authenticated`.
+- Supabase changelog confirms newer projects may not expose public tables to the Data API automatically.
+- Added `supabase/migrations/005_data_api_grants.sql` to grant authenticated Data API access while keeping RLS as the row-level guard.
+- Updated `supabase/schema.sql` and `supabase/repair_after_partial_schema.sql` so future full/repair SQL includes the grants.
+- Added `scripts/check-data-api-grants-regression.mjs` and wired it into `corepack pnpm verify`.
+- Added `docs/SUPABASE_DATA_API_GRANTS.md` for the exact SQL Editor step before retrying profile save.
+- Verified `corepack pnpm verify` passes with the new Data API grant regression.
+
 ## 2026-06-19
 
 - Worker D documentation pass: updated beta/manual QA docs for the latest leader-first UX.

@@ -51,6 +51,7 @@ Blocked for first real beta.
 
 ## Current Blockers
 
+- Supabase Data API grants may be missing on the live project; apply `supabase/migrations/005_data_api_grants.sql` if profile save fails after login.
 - Supabase Auth email flow is blocking public phone testing.
 - Supabase dashboard could not save the `Confirm email` toggle because it returned `Failed to update settings: Failed to fetch (api.supabase.com)`.
 - Password recovery requests hit Supabase `over_email_send_rate_limit` / HTTP 429 during repeated testing.

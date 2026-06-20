@@ -224,6 +224,16 @@ $$;
 
 grant execute on function public.join_group_by_code(text) to authenticated;
 
+grant usage on schema public to authenticated;
+
+grant select, insert, update, delete on table public.profiles to authenticated;
+grant select, insert, update, delete on table public.groups to authenticated;
+grant select, insert, update, delete on table public.group_members to authenticated;
+grant select, insert, update, delete on table public.checkins to authenticated;
+grant select, insert, update, delete on table public.prayers to authenticated;
+grant select, insert, update, delete on table public.prayer_reactions to authenticated;
+grant select, insert, update, delete on table public.leader_prayer_care_marks to authenticated;
+
 create policy "profiles are visible to owner and shared group members"
 on public.profiles for select
 to authenticated
