@@ -68,19 +68,18 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
   const defaultInviteMessage = useMemo(
     () =>
       [
-        `이번 주부터 ${groupName}에서 동행방을 1주만 가볍게 써보려고 해요.`,
+        `이번 주만, ${groupName}에서 체크인과 기도제목을 짧게 남겨보려고 해요.`,
         "",
-        "동행방은 카톡을 대체하는 앱이 아니라, 카톡에 흘러가는 기도제목을 함께 기억하는 기록 공간이에요.",
-        "대화는 카톡에서 계속하고, 체크인과 기도제목만 동행방에 짧게 남겨보려고 해요.",
+        "동행방은 카톡을 대체하는 앱이 아니라, 카톡에 흘러가는 안부와 기도제목을 함께 기억하는 공간이에요.",
         "",
         inviteLink
-          ? "아래 링크를 열고 이메일로 가입한 뒤 초대코드를 입력해 주세요."
-          : "베타 링크는 운영자가 보내드릴 예정이에요. 링크를 받은 뒤 아래 초대코드를 입력해 주세요.",
+          ? "아래 링크를 열고 이메일로 들어온 뒤 초대코드를 입력해 주세요."
+          : "베타 링크를 받은 뒤 아래 초대코드를 입력해 주세요.",
         "",
         `링크: ${inviteLink || "[베타 링크]"}`,
         `초대코드: ${inviteCode}`,
         "",
-        "부담 없이 오늘 체크인 한 번만 남겨봐 주세요. 기도제목은 공개 범위를 직접 선택할 수 있어요.",
+        "부담 없이 오늘 안부 한 번만 남겨봐 주세요. 기도제목은 공개 범위를 직접 선택할 수 있어요.",
       ].join("\n"),
     [groupName, inviteCode, inviteLink],
   );
@@ -127,7 +126,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
           <span>
             <span className="block font-bold text-ink">멤버 초대하기</span>
             <span className="mt-1 block text-sm leading-6 text-slate-600">
-              필요할 때 초대코드와 카톡용 메시지를 열어 복사해요.
+              필요할 때 초대 메시지를 열어 복사해요.
             </span>
           </span>
         </span>

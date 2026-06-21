@@ -1,5 +1,15 @@
 # Worklog
 
+## 2026-06-21
+
+- Ran expert UX, marketing, product, and engineering review for the next quality pass.
+- Implemented the first safe UX/UI slice without schema or dependency changes:
+  - moved today's check-in status and check-in form above prayer and leader sections on the home screen
+  - softened check-in copy from a heavier rhythm frame to `오늘 안부 남기기`
+  - shortened the default leader invite message for KakaoTalk-style beta sharing
+  - updated regression checks to protect the new mobile-first order
+- Verified the full suite with `corepack pnpm verify`.
+
 ## 2026-06-20
 
 - Improved beta UX quality without adding new product scope:

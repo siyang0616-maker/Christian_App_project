@@ -37,9 +37,9 @@ export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayChec
           <HeartPulse className="h-5 w-5" />
         </div>
         <div>
-          <h2 className="font-bold text-ink">오늘의 신앙 리듬</h2>
+          <h2 className="font-bold text-ink">오늘 안부 남기기</h2>
           <p className="mt-1 text-sm leading-6 text-slate-600">
-            하루에 한 번 가볍게 남기는 체크인이에요. 시간 추적이 아니라 함께 기억하기 위한 짧은 안부예요.
+            하루에 한 번, 부담 없이 남기는 짧은 체크인이에요. 시간 추적이 아니라 함께 기억하기 위한 안부예요.
           </p>
         </div>
       </div>
@@ -106,7 +106,7 @@ export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayChec
         <VisibilitySelect defaultValue={todayCheckIn?.visibility ?? "group"} />
 
         <SubmitButton className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" pendingLabel="체크인을 저장하고 있어요...">
-          {todayCheckIn ? "오늘 체크인 수정" : "오늘 체크인 남기기"}
+          {todayCheckIn ? "오늘 안부 수정" : "오늘 안부 저장"}
         </SubmitButton>
       </form>
     </section>

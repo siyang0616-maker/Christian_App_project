@@ -144,11 +144,11 @@ Note placeholder:
 
 Button, new:
 
-오늘 체크인 남기기
+오늘 안부 저장
 
 Button, edit:
 
-오늘 체크인 수정
+오늘 안부 수정
 
 Empty state:
 

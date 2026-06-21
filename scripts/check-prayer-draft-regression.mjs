@@ -97,16 +97,23 @@ assertIncludes(
 
 assertBefore(
   appPageSource,
-  "<PrayerRequestList",
+  'id="check-in-status"',
+  "<CheckInForm",
+  "Home should show today's check-in status before the check-in form.",
+);
+
+assertBefore(
+  appPageSource,
+  "<CheckInForm",
   "<PrayerRequestForm",
-  "Home should show existing prayer cards before the prayer form.",
+  "Home should let members check in before writing a prayer request.",
 );
 
 assertBefore(
   appPageSource,
   "<PrayerRequestForm",
-  "<CheckInActivityList",
-  "Home should prioritize prayer entry before check-in activity.",
+  "<PrayerRequestList",
+  "Home should keep prayer writing close to the visible prayer cards.",
 );
 
 assertBefore(
@@ -118,23 +125,9 @@ assertBefore(
 
 assertBefore(
   appPageSource,
-  "<PrayerRequestList",
-  'id="check-in-status"',
-  "Home should show prayer cards before the check-in status section.",
-);
-
-assertBefore(
-  appPageSource,
-  "<PrayerRequestForm",
-  'id="check-in-status"',
-  "Home should show the prayer form before the check-in status section.",
-);
-
-assertBefore(
-  appPageSource,
-  "<PrayerRequestForm",
-  "<CheckInForm",
-  "Home should show the prayer form before the check-in form.",
+  "<CheckInActivityList",
+  "<LeaderInviteCard",
+  "Leader invite card should stay below the care and activity sections.",
 );
 
 assertBefore(

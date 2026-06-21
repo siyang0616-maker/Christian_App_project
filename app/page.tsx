@@ -274,6 +274,15 @@ export default async function Home({
     >
       <div className="grid gap-4">
         {shouldShowGlobalActionMessage ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
+        <div className="scroll-mt-4 grid gap-3" id="check-in-status">
+          <TodayStatus
+            checkIn={dashboard.todayCheckIn}
+            groupName={dashboard.activeGroup.name}
+          />
+          {isCheckInFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
+        </div>
+        <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
+        <PrayerRequestForm clearDraft={actionSuccess === "prayer-saved"} groupId={dashboard.activeGroup.id} />
         <div className="scroll-mt-4 grid gap-3" id="prayer-cards">
           {isPrayerFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
           <PrayerRequestList
@@ -282,7 +291,6 @@ export default async function Home({
             reactions={dashboard.prayerReactions}
           />
         </div>
-        <PrayerRequestForm clearDraft={actionSuccess === "prayer-saved"} groupId={dashboard.activeGroup.id} />
         {dashboard.membership.role === "leader" ? (
           <LeaderDashboard
             activeGroupName={dashboard.activeGroup.name}
@@ -293,14 +301,6 @@ export default async function Home({
           />
         ) : null}
         <CheckInActivityList currentUserId={user.id} checkIns={dashboard.recentCheckIns} />
-        <div className="scroll-mt-4 grid gap-3" id="check-in-status">
-          <TodayStatus
-            checkIn={dashboard.todayCheckIn}
-            groupName={dashboard.activeGroup.name}
-          />
-          {isCheckInFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
-        </div>
-        <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />
         {dashboard.membership.role === "leader" ? (
           <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
         ) : null}
