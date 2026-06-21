@@ -2,6 +2,13 @@
 
 ## 2026-06-21
 
+- Improved Leader Care Board scalability for growing groups:
+  - kept member care messages copy-only instead of adding Kakao/chat/send behavior
+  - shows the first 4 member care copy cards by default
+  - moves additional member cards behind `나머지 멤버 안부 문구` disclosure
+  - extracted member care copy card rendering so long-list UI stays consistent
+- Verified the full suite with `corepack pnpm verify`.
+
 - Clarified the leader member-care copy helper after user feedback:
   - kept KakaoTalk as a UX reference only, not a feature target
   - removed the auto-share direction from scope and kept the flow copy-first

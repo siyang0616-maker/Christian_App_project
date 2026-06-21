@@ -24,7 +24,12 @@ const memberBadgeClassNames: Record<LeaderCareBoardData["memberSummaries"][numbe
   blue: "bg-bluewash text-leaf",
 };
 
+const VISIBLE_MEMBER_SUMMARY_COUNT = 4;
+
 export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, data }: LeaderCareBoardProps) {
+  const visibleMemberSummaries = data.memberSummaries.slice(0, VISIBLE_MEMBER_SUMMARY_COUNT);
+  const hiddenMemberSummaries = data.memberSummaries.slice(VISIBLE_MEMBER_SUMMARY_COUNT);
+
   return (
     <div className="grid gap-4">
       <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
@@ -201,46 +206,26 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
         />
         <div className="mt-3 grid gap-2">
           {data.memberSummaries.length > 0 ? (
-            data.memberSummaries.map((member) => (
-              <article className="rounded-md border border-slate-100 bg-[#FFFCF8] px-3 py-3" key={member.userId}>
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <p className="text-xs font-semibold text-leaf">보낼 대상</p>
-                    <p className="mt-1 text-sm font-bold text-ink">{member.displayName}</p>
-                    <p className="mt-1 text-xs text-slate-500">{member.latestCheckInLabel}</p>
-                  </div>
-                  <span
-                    className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${memberBadgeClassNames[member.careBadgeTone]}`}
-                  >
-                    {member.careBadgeLabel}
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-6 text-slate-700">{member.careReason}</p>
-                {member.visiblePrayerCount > 0 ? (
-                  <p className="mt-1 text-xs text-slate-500">
-                    리더에게 보이는 기도제목 {member.visiblePrayerCount}개
+            <>
+              {visibleMemberSummaries.map((member) => (
+                <MemberCareCopyCard member={member} key={member.userId} />
+              ))}
+              {hiddenMemberSummaries.length > 0 ? (
+                <details className="rounded-md border border-slate-100 bg-white px-3 py-3">
+                  <summary className="cursor-pointer list-none text-sm font-bold text-leaf">
+                    나머지 멤버 안부 문구 {hiddenMemberSummaries.length}명 보기
+                  </summary>
+                  <p className="mt-2 text-xs leading-5 text-slate-500">
+                    먼저 살필 멤버를 위에 두고, 나머지 문구는 필요할 때 펼쳐서 복사해요.
                   </p>
-                ) : null}
-                <div className="mt-3 rounded-md border border-[#F8E3A0] bg-[#FFF7D6] px-3 py-2">
-                  <p className="text-xs font-semibold text-[#7B5B00]">카톡 말풍선 미리보기</p>
-                  <p className="mt-1 text-xs leading-5 text-slate-600">{member.copyPreview}</p>
-                </div>
-                <div className="mt-3">
-                  <CopyTextButton
-                    className="inline-flex h-10 w-full items-center justify-center rounded-md bg-leaf px-3 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
-                    text={member.copyMessage}
-                  >
-                    <span className="inline-flex items-center gap-2">
-                      <HeartHandshake className="h-4 w-4" />
-                      카톡에 보낼 문구 복사
-                    </span>
-                  </CopyTextButton>
-                </div>
-                <p className="mt-2 text-xs leading-5 text-slate-500">
-                  복사한 뒤 카톡이나 문자에서 직접 상대를 선택해 보내세요.
-                </p>
-              </article>
-            ))
+                  <div className="mt-3 grid gap-2">
+                    {hiddenMemberSummaries.map((member) => (
+                      <MemberCareCopyCard member={member} key={member.userId} />
+                    ))}
+                  </div>
+                </details>
+              ) : null}
+            </>
           ) : (
             <p className="rounded-md bg-mist px-3 py-3 text-sm leading-6 text-slate-600">
               아직 멤버별 안부가 쌓이기 전이에요. 첫 안부나 기도제목이 남겨지면 여기에서 다시 볼 수 있어요.
@@ -249,6 +234,45 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
         </div>
       </section>
     </div>
+  );
+}
+
+function MemberCareCopyCard({ member }: { member: LeaderCareBoardData["memberSummaries"][number] }) {
+  return (
+    <article className="rounded-md border border-slate-100 bg-[#FFFCF8] px-3 py-3">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold text-leaf">보낼 대상</p>
+          <p className="mt-1 text-sm font-bold text-ink">{member.displayName}</p>
+          <p className="mt-1 text-xs text-slate-500">{member.latestCheckInLabel}</p>
+        </div>
+        <span
+          className={`inline-flex shrink-0 items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${memberBadgeClassNames[member.careBadgeTone]}`}
+        >
+          {member.careBadgeLabel}
+        </span>
+      </div>
+      <p className="mt-3 text-sm leading-6 text-slate-700">{member.careReason}</p>
+      {member.visiblePrayerCount > 0 ? (
+        <p className="mt-1 text-xs text-slate-500">리더에게 보이는 기도제목 {member.visiblePrayerCount}개</p>
+      ) : null}
+      <div className="mt-3 rounded-md border border-[#F8E3A0] bg-[#FFF7D6] px-3 py-2">
+        <p className="text-xs font-semibold text-[#7B5B00]">카톡 말풍선 미리보기</p>
+        <p className="mt-1 text-xs leading-5 text-slate-600">{member.copyPreview}</p>
+      </div>
+      <div className="mt-3">
+        <CopyTextButton
+          className="inline-flex h-10 w-full items-center justify-center rounded-md bg-leaf px-3 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
+          text={member.copyMessage}
+        >
+          <span className="inline-flex items-center gap-2">
+            <HeartHandshake className="h-4 w-4" />
+            카톡에 보낼 문구 복사
+          </span>
+        </CopyTextButton>
+      </div>
+      <p className="mt-2 text-xs leading-5 text-slate-500">복사한 뒤 카톡이나 문자에서 직접 상대를 선택해 보내세요.</p>
+    </article>
   );
 }
 
