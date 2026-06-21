@@ -112,7 +112,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
   }
 
   return (
-    <section className="rounded-lg border border-leaf/15 bg-white/90 p-4 shadow-soft">
+    <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <button
         aria-expanded={isCardOpen}
         className="flex w-full items-start justify-between gap-3 text-left"
@@ -120,7 +120,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
         type="button"
       >
         <span className="flex items-start gap-3">
-          <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-mist text-leaf">
+          <span className="mt-0.5 shrink-0 text-leaf">
             <MessageSquareText className="h-5 w-5" />
           </span>
           <span>
@@ -130,7 +130,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
             </span>
           </span>
         </span>
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-slate-600">
+        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-slate-200 bg-white text-slate-600">
           {isCardOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
         </span>
       </button>
@@ -138,7 +138,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
       {isCardOpen ? (
         <div className="mt-4 grid gap-3">
           {isLocalLink ? (
-            <div className="flex gap-2 rounded-md border border-clay/20 bg-linen px-3 py-3 text-sm leading-6 text-slate-700">
+            <div className="flex gap-2 rounded-lg border border-clay/20 bg-linen px-3 py-3 text-sm leading-6 text-slate-700">
               <AlertCircle className="mt-0.5 h-4 w-4 shrink-0 text-clay" />
               <p>
                 지금 주소는 내 컴퓨터에서만 열리는 로컬 주소예요. 외부 멤버에게 보내기 전에는 배포된 베타 링크가 필요해요.
@@ -146,13 +146,13 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
             </div>
           ) : null}
 
-          <div className="rounded-md bg-mist px-3 py-3">
+          <div className="rounded-lg bg-[#F5F8F6] px-3 py-3">
             <p className="text-xs font-semibold text-leaf">초대코드</p>
             <p className="mt-1 text-2xl font-bold tracking-wide text-ink">{inviteCode}</p>
           </div>
 
           {inviteLink ? (
-            <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
+            <div className="rounded-lg border border-slate-200/70 bg-white px-3 py-3">
               <p className="text-xs font-semibold text-slate-500">초대링크</p>
               <p className="mt-1 break-all text-sm leading-6 text-slate-700">{inviteLink}</p>
             </div>
@@ -160,7 +160,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
 
           <div className="grid gap-2 sm:grid-cols-3">
             <button
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf transition hover:bg-[#F5F8F6]"
               onClick={() => copyText(inviteCode, "code", "초대코드")}
               type="button"
             >
@@ -168,7 +168,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
               코드 복사
             </button>
             <button
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf transition hover:bg-[#F5F8F6] disabled:cursor-not-allowed disabled:opacity-60"
               disabled={!inviteLink}
               onClick={() => copyText(inviteLink, "link", "초대링크")}
               type="button"
@@ -177,7 +177,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
               링크 복사
             </button>
             <button
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-leaf px-3 text-sm font-semibold text-white"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-leaf px-3 text-sm font-semibold text-white shadow-sm transition hover:bg-leaf/90"
               onClick={() => copyText(inviteMessage, "message", "초대 메시지")}
               type="button"
             >
@@ -188,7 +188,7 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
 
           <button
             aria-expanded={isMessageOpen}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
             onClick={() => setIsMessageOpen((current) => !current)}
             type="button"
           >
@@ -197,11 +197,11 @@ export function LeaderInviteCard({ groupName, inviteCode }: LeaderInviteCardProp
           </button>
 
           {isMessageOpen ? (
-            <div className="rounded-md border border-slate-100 bg-white px-3 py-3">
+            <div className="rounded-lg border border-slate-200/70 bg-white px-3 py-3">
               <label className="grid gap-2 text-xs font-semibold text-slate-500">
                 멤버에게 보낼 메시지
                 <textarea
-                  className="min-h-56 w-full resize-y rounded-md border border-slate-100 bg-slate-50 p-3 text-sm font-normal leading-6 text-slate-700"
+                  className="min-h-56 w-full resize-y rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm font-normal leading-6 text-slate-700 transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
                   onChange={(event) => {
                     setHasEditedMessage(true);
                     setInviteMessage(event.target.value);

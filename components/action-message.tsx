@@ -20,8 +20,8 @@ export function ActionMessage({ errorCode, successCode }: ActionMessageProps) {
   return (
     <section
       className={[
-        "flex gap-3 rounded-lg border px-4 py-3 text-sm leading-6 shadow-soft",
-        isError ? "border-red-100 bg-red-50 text-red-800" : "border-leaf/15 bg-mist text-leaf",
+        "flex gap-3 rounded-lg border px-4 py-3 text-sm leading-6 shadow-[0_1px_2px_rgba(31,41,51,0.04)]",
+        isError ? "border-red-100 bg-red-50 text-red-800" : "border-leaf/15 bg-[#F5F8F6] text-leaf",
       ].join(" ")}
     >
       {isError ? <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" /> : <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />}

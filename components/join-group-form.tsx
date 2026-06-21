@@ -7,9 +7,9 @@ type JoinGroupFormProps = {
 
 export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
   return (
-    <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
+    <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-4 flex items-center gap-2">
-        <div className="grid h-10 w-10 place-items-center rounded-full bg-bluewash text-leaf">
+        <div className="shrink-0 text-leaf">
           <KeyRound className="h-5 w-5" />
         </div>
         <div>
@@ -21,7 +21,7 @@ export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           초대코드
           <input
-            className="h-12 rounded-md border border-slate-200 bg-white px-3 text-base uppercase tracking-wide"
+            className="h-12 rounded-lg border border-slate-200 bg-white px-3 text-base uppercase tracking-wide transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
             defaultValue={defaultInviteCode}
             maxLength={10}
             name="inviteCode"
@@ -29,7 +29,7 @@ export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
             required
           />
         </label>
-        <button className="h-12 rounded-md border border-leaf/25 bg-white px-4 font-semibold text-leaf" type="submit">
+        <button className="h-12 rounded-lg border border-leaf/25 bg-white px-4 font-semibold text-leaf transition hover:bg-[#F5F8F6]" type="submit">
           초대코드로 참여하기
         </button>
       </form>

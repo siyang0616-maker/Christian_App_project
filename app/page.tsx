@@ -232,21 +232,21 @@ export default async function Home({
       <AppShell profileName={dashboard.profile.display_name}>
         <div className="grid gap-4">
           <ActionMessage errorCode={actionError} successCode={actionSuccess} />
-          <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
-            <p className="text-sm font-semibold text-white/80">동행방을 시작해볼까요?</p>
-            <h2 className="mt-1 text-xl font-bold">대화는 카톡에서, 체크인과 기도제목 기록은 동행방에서.</h2>
-            <p className="mt-2 text-sm leading-6 text-white/85">
+          <section className="border-b border-slate-200/70 pb-4">
+            <p className="text-sm font-bold text-leaf">동행방을 시작해볼까요?</p>
+            <h2 className="mt-1 text-[21px] font-bold leading-tight text-ink">대화는 카톡에서, 안부와 기도제목 기록은 동행방에서.</h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
               리더는 소그룹 방을 만들고, 멤버는 리더에게 받은 초대코드로 들어오면 돼요.
               공개 범위는 제출 전에 확인할 수 있어요.
             </p>
-            <ol className="mt-4 grid gap-2 text-sm leading-6 text-white/90">
-              <li>
-                <span className="font-bold">리더라면 방 만들기</span>
-                <span className="text-white/75"> - 소그룹 이름을 넣고 초대코드를 만들어요.</span>
+            <ol className="mt-4 grid gap-2 text-sm leading-6 text-slate-600">
+              <li className="rounded-lg border border-slate-200/70 bg-white px-3 py-2">
+                <span className="font-bold text-ink">리더라면 방 만들기</span>
+                <span> - 소그룹 이름을 넣고 초대코드를 만들어요.</span>
               </li>
-              <li>
-                <span className="font-bold">멤버라면 초대코드 입력</span>
-                <span className="text-white/75"> - 리더에게 받은 코드로 동행방에 들어가요.</span>
+              <li className="rounded-lg border border-slate-200/70 bg-white px-3 py-2">
+                <span className="font-bold text-ink">멤버라면 초대코드 입력</span>
+                <span> - 리더에게 받은 코드로 동행방에 들어가요.</span>
               </li>
             </ol>
           </section>

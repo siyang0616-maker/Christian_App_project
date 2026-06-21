@@ -85,15 +85,15 @@ export default async function TodayPage({
       role={dashboard.membership.role}
     >
       <div className="grid gap-4">
-        <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
+        <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
           <div className="flex items-start gap-3">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/15">
+            <div className="mt-0.5 shrink-0 text-leaf">
               <CalendarHeart className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-white/80">20초 체크인</p>
-              <h2 className="mt-1 text-xl font-bold">오늘의 신앙 리듬을 남겨보세요</h2>
-              <p className="mt-2 text-sm leading-6 text-white/85">
+              <p className="text-sm font-bold text-leaf">20초 체크인</p>
+              <h2 className="mt-1 text-lg font-bold text-ink">오늘 안부를 남겨보세요</h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
                 누군가를 평가하기 위한 기록이 아니라, 함께 기억하기 위한 오늘의 안부예요.
               </p>
             </div>

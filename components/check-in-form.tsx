@@ -31,9 +31,9 @@ function isChecked(todayCheckIn: CheckInWithAuthor | null, name: (typeof rhythmI
 
 export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayCheckIn }: CheckInFormProps) {
   return (
-    <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
+    <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-4 flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-mist text-leaf">
+        <div className="mt-0.5 shrink-0 text-leaf">
           <HeartPulse className="h-5 w-5" />
         </div>
         <div>
@@ -55,7 +55,7 @@ export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayChec
           </p>
           {rhythmItems.map((item) => (
             <label
-              className="flex min-h-12 items-center gap-3 rounded-md border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 has-[:checked]:border-leaf has-[:checked]:bg-mist has-[:checked]:text-leaf"
+              className="flex min-h-12 items-center gap-3 rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition has-[:checked]:border-leaf has-[:checked]:bg-[#F5F8F6] has-[:checked]:text-leaf"
               key={item.name}
             >
               <span className="grid h-6 w-6 shrink-0 place-items-center rounded-full border border-slate-200 bg-white text-transparent has-[:checked]:border-leaf has-[:checked]:bg-leaf has-[:checked]:text-white">
@@ -76,7 +76,7 @@ export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayChec
           <legend className="col-span-2 mb-1 text-sm font-bold text-ink">오늘 마음</legend>
           {moods.map((mood) => (
             <label
-              className="flex min-h-12 items-center justify-center rounded-md border border-slate-200 bg-white px-2 text-center text-sm font-semibold text-slate-700 has-[:checked]:border-leaf has-[:checked]:bg-mist has-[:checked]:text-leaf"
+              className="flex min-h-12 items-center justify-center rounded-lg border border-slate-200 bg-white px-2 text-center text-sm font-semibold text-slate-700 transition has-[:checked]:border-leaf has-[:checked]:bg-[#F5F8F6] has-[:checked]:text-leaf"
               key={mood.value}
             >
               <input
@@ -95,7 +95,7 @@ export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayChec
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           한 줄 나눔
           <textarea
-            className="min-h-24 rounded-md border border-slate-200 bg-white px-3 py-3 text-base"
+            className="min-h-24 rounded-lg border border-slate-200 bg-white px-3 py-3 text-base transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
             defaultValue={todayCheckIn?.note ?? ""}
             maxLength={240}
             name="note"
@@ -105,7 +105,7 @@ export function CheckInForm({ groupId, returnTo = "/#check-in-status", todayChec
 
         <VisibilitySelect defaultValue={todayCheckIn?.visibility ?? "group"} />
 
-        <SubmitButton className="h-12 rounded-md bg-leaf px-4 font-semibold text-white" pendingLabel="체크인을 저장하고 있어요...">
+        <SubmitButton className="h-12 rounded-lg bg-leaf px-4 font-semibold text-white shadow-sm transition hover:bg-leaf/90" pendingLabel="체크인을 저장하고 있어요...">
           {todayCheckIn ? "오늘 안부 수정" : "오늘 안부 저장"}
         </SubmitButton>
       </form>

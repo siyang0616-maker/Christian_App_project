@@ -4,7 +4,7 @@
 
 :root {
   color-scheme: light;
-  background: #f7f1e8;
+  background: #f8f7f3;
   color: #1f2933;
 }
 
@@ -15,7 +15,7 @@
 body {
   min-height: 100vh;
   margin: 0;
-  background: linear-gradient(180deg, #f8f5ee 0%, #f8faf8 48%, #eef4f1 100%);
+  background: #f8f7f3;
   color: #1f2933;
   font-family:
     -apple-system,

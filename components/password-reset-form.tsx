@@ -112,21 +112,19 @@ export function PasswordResetForm() {
   }
 
   return (
-    <section className="rounded-lg bg-white p-6 shadow-soft">
-      <div className="grid h-12 w-12 place-items-center rounded-full bg-mist text-leaf">
-        <KeyRound className="h-6 w-6" />
-      </div>
-      <h2 className="mt-5 text-2xl font-bold text-ink">비밀번호를 새로 설정해요</h2>
+    <section className="rounded-xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
+      <KeyRound className="h-6 w-6 text-leaf" />
+      <h2 className="mt-5 text-lg font-bold text-ink">비밀번호를 새로 설정해요</h2>
       <p className="mt-2 text-sm leading-6 text-slate-600">
         재설정 메일을 통해 들어왔다면 새 비밀번호를 입력해 주세요.
       </p>
 
       {state === "checking" ? (
-        <p className="mt-5 rounded-md bg-linen px-3 py-3 text-sm text-slate-600">재설정 링크를 확인하고 있어요.</p>
+        <p className="mt-5 rounded-lg bg-[#F5F1EA] px-3 py-3 text-sm text-slate-600">재설정 링크를 확인하고 있어요.</p>
       ) : null}
 
       {state === "confirm" || state === "confirming" ? (
-        <div className="mt-5 grid gap-3 rounded-md border border-leaf/15 bg-mist px-3 py-3 text-sm leading-6 text-slate-700">
+        <div className="mt-5 grid gap-3 rounded-lg border border-leaf/15 bg-[#F5F8F6] px-3 py-3 text-sm leading-6 text-slate-700">
           <div className="flex gap-3">
             <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-leaf" />
             <div>
@@ -137,7 +135,7 @@ export function PasswordResetForm() {
             </div>
           </div>
           <button
-            className="h-11 rounded-md bg-leaf px-4 font-semibold text-white disabled:opacity-60"
+            className="h-11 rounded-lg bg-leaf px-4 font-semibold text-white shadow-sm transition hover:bg-leaf/90 disabled:opacity-60"
             disabled={state === "confirming"}
             onClick={handleConfirmRecovery}
             type="button"
@@ -148,7 +146,7 @@ export function PasswordResetForm() {
       ) : null}
 
       {state === "missing" ? (
-        <div className="mt-5 flex gap-3 rounded-md border border-red-100 bg-red-50 px-3 py-3 text-sm leading-6 text-red-800">
+        <div className="mt-5 flex gap-3 rounded-lg border border-red-100 bg-red-50 px-3 py-3 text-sm leading-6 text-red-800">
           <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
           <div>
             <p className="font-semibold">재설정 링크를 확인할 수 없어요</p>
@@ -160,7 +158,7 @@ export function PasswordResetForm() {
       ) : null}
 
       {state === "done" ? (
-        <div className="mt-5 flex gap-3 rounded-md border border-leaf/15 bg-mist px-3 py-3 text-sm leading-6 text-leaf">
+        <div className="mt-5 flex gap-3 rounded-lg border border-leaf/15 bg-[#F5F8F6] px-3 py-3 text-sm leading-6 text-leaf">
           <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0" />
           <div>
             <p className="font-semibold">비밀번호를 바꿨어요</p>
@@ -172,7 +170,7 @@ export function PasswordResetForm() {
       {state === "ready" || state === "saving" ? (
         <form className="mt-5 grid gap-3" onSubmit={handleSubmit}>
           {message ? (
-            <div className="flex gap-3 rounded-md border border-red-100 bg-red-50 px-3 py-3 text-sm leading-6 text-red-800">
+            <div className="flex gap-3 rounded-lg border border-red-100 bg-red-50 px-3 py-3 text-sm leading-6 text-red-800">
               <AlertCircle className="mt-0.5 h-5 w-5 shrink-0" />
               <p>{message}</p>
             </div>
@@ -182,7 +180,7 @@ export function PasswordResetForm() {
             새 비밀번호
             <input
               autoComplete="new-password"
-              className="h-12 rounded-md border border-slate-200 bg-white px-3 text-base"
+              className="h-12 rounded-lg border border-slate-200 bg-white px-3 text-base transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
               name="password"
               type="password"
             />
@@ -191,13 +189,13 @@ export function PasswordResetForm() {
             새 비밀번호 확인
             <input
               autoComplete="new-password"
-              className="h-12 rounded-md border border-slate-200 bg-white px-3 text-base"
+              className="h-12 rounded-lg border border-slate-200 bg-white px-3 text-base transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
               name="passwordConfirm"
               type="password"
             />
           </label>
           <button
-            className="h-12 rounded-md bg-leaf px-4 font-semibold text-white disabled:opacity-60"
+            className="h-12 rounded-lg bg-leaf px-4 font-semibold text-white shadow-sm transition hover:bg-leaf/90 disabled:opacity-60"
             disabled={state === "saving"}
             type="submit"
           >

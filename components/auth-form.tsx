@@ -133,7 +133,7 @@ export function AuthForm({ message }: AuthFormProps) {
   return (
     <div className="grid gap-3">
       <form action={submitAuth} className="grid gap-3" noValidate onSubmit={handleAuthSubmit}>
-        <div className="grid grid-cols-2 gap-1 rounded-md bg-linen p-1" aria-label="로그인 또는 새 계정 선택">
+        <div className="grid grid-cols-2 gap-1 rounded-lg bg-[#EFEBE3] p-1" aria-label="로그인 또는 새 계정 선택">
           {(["signIn", "signUp"] as const).map((item) => {
             const isActive = intent === item;
 
@@ -141,7 +141,7 @@ export function AuthForm({ message }: AuthFormProps) {
               <button
                 className={[
                   "h-11 rounded-md text-sm font-semibold transition",
-                  isActive ? "bg-white text-leaf shadow-sm" : "text-slate-500",
+                  isActive ? "border border-slate-200/70 bg-white text-leaf shadow-sm" : "text-slate-500",
                 ].join(" ")}
                 key={item}
                 onClick={() => updateIntent(item)}
@@ -176,7 +176,7 @@ export function AuthForm({ message }: AuthFormProps) {
           이메일
           <input
             autoComplete="email"
-            className="h-12 rounded-md border border-slate-200 bg-white px-3 text-base"
+            className="h-12 rounded-lg border border-slate-200 bg-white px-3 text-base transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
             inputMode="email"
             name="email"
             onChange={handleEmailChange}
@@ -189,17 +189,17 @@ export function AuthForm({ message }: AuthFormProps) {
           비밀번호
           <input
             autoComplete={intentCopy[intent].passwordComplete}
-            className="h-12 rounded-md border border-slate-200 bg-white px-3 text-base"
+            className="h-12 rounded-lg border border-slate-200 bg-white px-3 text-base transition focus:border-leaf/50 focus:ring-4 focus:ring-leaf/10"
             name="password"
             onInput={handleFieldInput}
             type="password"
           />
         </label>
-        <p className="rounded-md bg-linen px-3 py-2 text-xs leading-5 text-slate-600">
+        <p className="rounded-lg bg-[#F5F1EA] px-3 py-2 text-xs leading-5 text-slate-600">
           공개 범위와 기도제목은 가입 후 동행방 안에서 직접 선택할 수 있어요.
         </p>
         <SubmitButton
-          className="h-12 rounded-md bg-leaf px-4 font-semibold text-white"
+          className="h-12 rounded-lg bg-leaf px-4 font-semibold text-white shadow-sm transition hover:bg-leaf/90"
           pendingLabel={intent === "signUp" ? "가입 확인 메일을 보내고 있어요..." : "로그인하고 있어요..."}
         >
           {intentCopy[intent].submit}
@@ -207,13 +207,13 @@ export function AuthForm({ message }: AuthFormProps) {
       </form>
 
       {showPasswordReset ? (
-        <form action={requestPasswordReset} className="grid gap-2 rounded-md border border-leaf/15 bg-mist px-3 py-3" noValidate onSubmit={handleResetSubmit}>
+        <form action={requestPasswordReset} className="grid gap-2 rounded-lg border border-leaf/15 bg-mist px-3 py-3" noValidate onSubmit={handleResetSubmit}>
           <input name="email" type="hidden" value={email} />
           <p className="text-xs leading-5 text-slate-600">
             비밀번호가 기억나지 않거나 폰에서 계속 안 들어가지면, 위 이메일로 재설정 메일을 받을 수 있어요.
           </p>
           <button
-            className="h-11 rounded-md border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf"
+            className="h-11 rounded-lg border border-leaf/25 bg-white px-3 text-sm font-semibold text-leaf transition hover:bg-[#F5F8F6]"
             type="submit"
           >
             비밀번호 재설정 메일 받기

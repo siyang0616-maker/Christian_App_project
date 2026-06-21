@@ -2,6 +2,20 @@
 
 ## 2026-06-21
 
+- Responded to user feedback that the UI still felt childish/prototype-like.
+- Ran senior design, marketer/CEO, and frontend QA review for a more mature mobile product direction.
+- Applied a stricter mature UI pass without adding product scope, schema, dependencies, chat, feed, push, or Kakao-send behavior:
+  - flattened the app surface to a quieter warm-gray mobile shell
+  - reduced oversized card shadows, pastel pills, and decorative icon circles
+  - tightened home/auth/profile/reset/group screens into simpler white surfaces with subtle borders
+  - changed Leader Care Board framing from a decorative dashboard to `오늘 먼저 살필 것`
+  - moved member care copy above older prayer history so leaders can act faster
+  - changed member copy labels to `보낼 문장` / `님에게 보낼 문장`
+  - kept copy-only behavior so the app helps leaders prepare messages without becoming chat or Kakao integration
+- Updated regression checks so the more mature surface, leader-first hierarchy, and no-chat boundary are protected.
+- Verified the full suite with `corepack pnpm verify`.
+- Confirmed the local `/leader` route returns HTTP 200.
+
 - Applied a senior-design polish pass inspired by Apple/KakaoTalk/LINE interaction principles without copying their product scope:
   - replaced the decorative radial background with a calmer system-app gradient
   - updated the font stack to native Apple/system Korean fonts first

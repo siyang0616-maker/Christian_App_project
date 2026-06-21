@@ -23,26 +23,26 @@ export function TodayStatus({ checkIn, groupName }: TodayStatusProps) {
   const todayRhythms = checkIn ? checkedRhythms(checkIn) : [];
 
   return (
-    <section className="rounded-lg bg-leaf p-4 text-white shadow-soft">
+    <section className="rounded-xl border border-leaf/15 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/15">
+        <div className="mt-0.5 shrink-0 text-leaf">
           <CalendarCheck className="h-5 w-5" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="text-sm text-white/80">{groupName}</p>
-          <h2 className="mt-1 text-xl font-bold">
+          <p className="text-xs font-semibold text-leaf">{groupName}</p>
+          <h2 className="mt-1 text-lg font-bold text-ink">
             {checkIn ? `오늘은 ${moodLabel(checkIn.mood)}` : "오늘의 체크인을 기다려요"}
           </h2>
-          <p className="mt-2 text-sm leading-6 text-white/85">
+          <p className="mt-2 text-sm leading-6 text-slate-600">
             {checkIn?.note || "하루에 한 번, 짧게 남겨도 충분해요. 함께 기억할 수 있는 하루의 마음이면 돼요."}
           </p>
           {todayRhythms.length > 0 ? (
             <div className="mt-3 flex flex-wrap gap-1">
-              <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-semibold text-white/80">
+              <span className="rounded-md bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-500">
                 오늘 남긴 리듬
               </span>
               {todayRhythms.map((label) => (
-                <span className="rounded-full bg-white/15 px-2 py-1 text-xs font-semibold text-white" key={label}>
+                <span className="rounded-md bg-[#F5F8F6] px-2 py-1 text-xs font-semibold text-leaf" key={label}>
                   {label}
                 </span>
               ))}

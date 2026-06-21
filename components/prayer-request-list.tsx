@@ -33,7 +33,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
           const authorName = prayer.visibility === "anonymous" ? "이름 숨김" : prayer.profiles.display_name;
 
           return (
-            <article className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft" key={prayer.id}>
+            <article className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]" key={prayer.id}>
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-bold text-ink">{authorName}</p>
@@ -41,18 +41,18 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
                     {visibilityLabel(prayer.visibility)} · {formatDateLabel(prayer.created_at)}
                   </p>
                 </div>
-                <span className="rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf">
+                <span className="rounded-md bg-[#F5F8F6] px-2 py-1 text-xs font-semibold text-leaf">
                   {alreadyPrayed ? "기도로 기억 중" : `${prayerReactions.length}명이 기도했어요`}
                 </span>
               </div>
-              <div className="mb-3 inline-flex rounded-full bg-bluewash px-2 py-1 text-xs font-semibold text-leaf">
+              <div className="mb-3 inline-flex rounded-md bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-600">
                 공개 범위: {visibilityLabel(prayer.visibility)}
               </div>
               <p className="whitespace-pre-wrap text-sm leading-6 text-slate-700">{prayer.content}</p>
               <form action={prayForRequest} className="mt-4">
                 <input name="prayerId" type="hidden" value={prayer.id} />
                 <button
-                  className="inline-flex h-10 items-center gap-2 rounded-md border border-clay/25 bg-[#FFF9F5] px-3 text-sm font-semibold text-clay disabled:opacity-60"
+                  className="inline-flex h-10 items-center gap-2 rounded-lg border border-clay/25 bg-[#FFF9F5] px-3 text-sm font-semibold text-clay transition hover:bg-[#FFF3EA] disabled:opacity-60"
                   disabled={alreadyPrayed}
                   type="submit"
                 >
@@ -64,7 +64,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
           );
         })
       ) : (
-        <p className="rounded-lg border border-white/70 bg-white/80 p-4 text-sm text-slate-600">
+        <p className="rounded-xl border border-slate-200/70 bg-white p-4 text-sm text-slate-600 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
           아직 남겨진 기도제목이 없어요. 멤버가 공개 범위에 맞게 기도제목을 남기면 리더 보드에도 함께 정리돼요.
         </p>
       )}

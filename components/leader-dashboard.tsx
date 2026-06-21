@@ -44,9 +44,9 @@ export function LeaderDashboard({
       : "멤버가 체크인을 남기면 여기서 바로 흐름을 볼 수 있어요.";
 
   return (
-    <section className="rounded-lg border border-leaf/15 bg-white/90 p-4 shadow-soft">
+    <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-mist text-leaf">
+        <div className="mt-0.5 shrink-0 text-leaf">
           <ClipboardList className="h-5 w-5" />
         </div>
         <div className="min-w-0">
@@ -58,7 +58,7 @@ export function LeaderDashboard({
         </div>
       </div>
 
-      <div className="mt-4 rounded-md border border-leaf/10 bg-mist px-3 py-3">
+      <div className="mt-4 rounded-lg border border-leaf/10 bg-[#F5F8F6] px-3 py-3">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs font-semibold text-leaf">함께 기억하는 방</p>
@@ -95,10 +95,10 @@ export function LeaderDashboard({
       </div>
 
       <Link
-        className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-md bg-leaf px-4 text-sm font-bold text-white"
+        className="mt-4 inline-flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-leaf px-4 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
         href="/leader"
       >
-        리더 돌봄 보드에서 자세히 보기
+        오늘 살필 내용 자세히 보기
         <ArrowRight className="h-4 w-4" />
       </Link>
     </section>
@@ -118,13 +118,13 @@ function CareSignal({
 }) {
   const toneClassName =
     tone === "clay"
-      ? "border-clay/15 bg-[#FFF5EF] text-clay"
+      ? "border-clay/15 bg-[#FBF4EF] text-clay"
       : tone === "blue"
-      ? "border-bluewash bg-bluewash text-leaf"
-      : "border-leaf/10 bg-mist text-leaf";
+      ? "border-slate-200 bg-slate-50 text-slate-700"
+      : "border-leaf/10 bg-[#F5F8F6] text-leaf";
 
   return (
-    <div className={`rounded-md border px-3 py-3 ${toneClassName}`}>
+    <div className={`rounded-lg border px-3 py-3 ${toneClassName}`}>
       <div className="flex items-start gap-2">
         <span className="mt-0.5 shrink-0">{icon}</span>
         <div className="min-w-0">
@@ -138,7 +138,7 @@ function CareSignal({
 
 function Summary({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-md bg-white px-3 py-3 text-center shadow-sm">
+    <div className="rounded-lg border border-slate-100 bg-white px-3 py-3 text-center">
       <p className="text-xs font-semibold text-slate-500">{label}</p>
       <p className="mt-1 text-xl font-bold text-ink">{value}</p>
     </div>

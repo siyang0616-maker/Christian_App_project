@@ -21,9 +21,9 @@ function checkedRhythms(checkIn: CheckInWithAuthor) {
 
 export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivityListProps) {
   return (
-    <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
+    <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-3 flex items-start gap-3">
-        <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-bluewash text-leaf">
+        <div className="mt-0.5 shrink-0 text-leaf">
           <ClipboardList className="h-5 w-5" />
         </div>
         <div>
@@ -37,7 +37,7 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
       <div className="grid gap-2">
         {checkIns.length > 0 ? (
           checkIns.slice(0, 6).map((checkIn) => (
-            <article className="rounded-md border border-slate-100 bg-white px-3 py-3" key={checkIn.id}>
+            <article className="rounded-lg border border-slate-200/70 bg-white px-3 py-3 shadow-[0_1px_2px_rgba(31,41,51,0.04)]" key={checkIn.id}>
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-semibold text-ink">
@@ -48,17 +48,17 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
                     {visibilityLabel(checkIn.visibility)} · {formatDateLabel(checkIn.checkin_date)}
                   </p>
                 </div>
-                <p className="shrink-0 rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf">
+                <p className="shrink-0 rounded-md bg-[#F5F8F6] px-2 py-1 text-xs font-semibold text-leaf">
                   {moodLabel(checkIn.mood)}
                 </p>
               </div>
               {checkedRhythms(checkIn).length > 0 ? (
                 <div className="mt-3 flex flex-wrap gap-1">
-                  <span className="rounded-full bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-500">
+                  <span className="rounded-md bg-slate-50 px-2 py-1 text-xs font-semibold text-slate-500">
                     오늘 리듬
                   </span>
                   {checkedRhythms(checkIn).map((label) => (
-                    <span className="rounded-full bg-mist px-2 py-1 text-xs font-semibold text-leaf" key={label}>
+                    <span className="rounded-md bg-[#F5F8F6] px-2 py-1 text-xs font-semibold text-leaf" key={label}>
                       {label}
                     </span>
                   ))}
@@ -68,7 +68,7 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
             </article>
           ))
         ) : (
-          <p className="rounded-md bg-mist px-3 py-3 text-sm leading-6 text-slate-600">
+          <p className="rounded-lg bg-[#F5F8F6] px-3 py-3 text-sm leading-6 text-slate-600">
             아직 볼 수 있는 안부가 없어요. 멤버가 리더에게 보이는 안부를 남기면 이곳에 보여요.
           </p>
         )}

@@ -64,13 +64,15 @@ assertIncludes(leaderInvite, "이번 주만,", "leader invite short beta message
 assertIncludes(leaderInvite, "체크인과 기도제목을 짧게 남겨보려고 해요.", "leader invite short beta message");
 assertIncludes(leaderInvite, "필요할 때 초대 메시지를 열어 복사해요.", "leader invite collapsed copy");
 
-assertIncludes(appShell, "backdrop-blur-xl", "mobile app shell glass header");
-assertIncludes(appShell, "bg-white/70", "mobile app shell light surface");
-assertIncludes(appShell, "text-[26px]", "mobile app shell title scale");
+assertIncludes(appShell, "min-h-dvh", "mobile app shell app-height surface");
+assertIncludes(appShell, "max-w-[430px]", "mobile app shell compact mobile width");
+assertIncludes(appShell, "bg-[#F8F7F3]/95", "mobile app shell mature sticky header");
+assertIncludes(appShell, "text-[22px]", "mobile app shell quieter title scale");
 assertIncludes(appShell, "오늘 안부와 기도제목", "mobile app shell concrete positioning");
-assertIncludes(appShell, "소그룹 안부와 기도제목을 함께 기억해요.", "mobile app shell concrete positioning");
+assertIncludes(appShell, "오늘 안부를 남기고, 함께 기도해요.", "mobile app shell concrete positioning");
 assertIncludes(globals, "-apple-system", "system font stack");
 assertExcludes(globals, "radial-gradient", "calm app background");
+assertExcludes(globals, "linear-gradient", "calm app background");
 assertIncludes(layout, "동행방 | 소그룹 체크인과 기도제목 기록", "metadata product positioning");
 assertIncludes(layout, "소그룹 안부와 기도제목을 리더가 함께 기억", "metadata product positioning");
 assertIncludes(layout, "openGraph", "metadata sharing trust");
