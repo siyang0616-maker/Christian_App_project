@@ -2,6 +2,20 @@
 
 ## 2026-06-21
 
+- Applied a senior-design polish pass inspired by Apple/KakaoTalk/LINE interaction principles without copying their product scope:
+  - replaced the decorative radial background with a calmer system-app gradient
+  - updated the font stack to native Apple/system Korean fonts first
+  - added a lightweight sticky glass header for a more app-like mobile surface
+  - softened Leader Care Board panels from heavy card stacks to lighter blurred surfaces
+  - collapsed older prayer date groups behind `이전 기도제목 더 보기` so growing groups stay scannable
+  - incorporated senior marketer, CEO/SEO, and frontend/QA review:
+    - tightened metadata away from Bible-app positioning toward small-group check-in and prayer memory
+    - changed first-screen copy to `오늘 안부와 기도제목`
+    - added leader-board privacy reassurance before showing member/prayer data
+    - reduced direct Kakao wording in controls while keeping copy-ready handoff behavior
+    - improved sticky-header anchor offset, long-name wrapping, and disclosure focus states
+- Verified the full suite with `corepack pnpm verify`.
+
 - Improved Leader Care Board scalability for growing groups:
   - kept member care messages copy-only instead of adding Kakao/chat/send behavior
   - shows the first 4 member care copy cards by default

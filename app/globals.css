@@ -15,14 +15,17 @@
 body {
   min-height: 100vh;
   margin: 0;
-  background:
-    radial-gradient(circle at top left, rgba(47, 111, 94, 0.12), transparent 34rem),
-    linear-gradient(180deg, #f7f1e8 0%, #f9faf8 42%, #eef3f0 100%);
+  background: linear-gradient(180deg, #f8f5ee 0%, #f8faf8 48%, #eef4f1 100%);
   color: #1f2933;
   font-family:
-    Arial,
+    -apple-system,
+    BlinkMacSystemFont,
+    "SF Pro Text",
+    "Segoe UI",
+    "Noto Sans KR",
     "Apple SD Gothic Neo",
     "Malgun Gothic",
+    Arial,
     sans-serif;
 }
 

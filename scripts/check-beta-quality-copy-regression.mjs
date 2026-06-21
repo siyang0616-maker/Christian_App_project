@@ -9,6 +9,10 @@ function assertIncludes(source, expected, label) {
   assert.match(source, new RegExp(expected.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${label} should include ${expected}.`);
 }
 
+function assertExcludes(source, forbidden, label) {
+  assert.doesNotMatch(source, new RegExp(forbidden.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")), `${label} should not include ${forbidden}.`);
+}
+
 function assertOrder(source, first, second, label) {
   const firstIndex = source.indexOf(first);
   const secondIndex = source.indexOf(second);
@@ -25,6 +29,9 @@ const prayerList = read("components/prayer-request-list.tsx");
 const checkInActivityList = read("components/check-in-activity-list.tsx");
 const todayStatus = read("components/today-status.tsx");
 const leaderInvite = read("components/leader-invite-card.tsx");
+const appShell = read("components/app-shell.tsx");
+const globals = read("app/globals.css");
+const layout = read("app/layout.tsx");
 
 assertOrder(home, "<TodayStatus", "<CheckInForm", "member first check-in flow");
 assertOrder(home, "<CheckInForm", "<PrayerRequestForm", "check-in before prayer writing");
@@ -56,5 +63,17 @@ assertIncludes(todayStatus, "오늘 남긴 리듬", "today status");
 assertIncludes(leaderInvite, "이번 주만,", "leader invite short beta message");
 assertIncludes(leaderInvite, "체크인과 기도제목을 짧게 남겨보려고 해요.", "leader invite short beta message");
 assertIncludes(leaderInvite, "필요할 때 초대 메시지를 열어 복사해요.", "leader invite collapsed copy");
+
+assertIncludes(appShell, "backdrop-blur-xl", "mobile app shell glass header");
+assertIncludes(appShell, "bg-white/70", "mobile app shell light surface");
+assertIncludes(appShell, "text-[26px]", "mobile app shell title scale");
+assertIncludes(appShell, "오늘 안부와 기도제목", "mobile app shell concrete positioning");
+assertIncludes(appShell, "소그룹 안부와 기도제목을 함께 기억해요.", "mobile app shell concrete positioning");
+assertIncludes(globals, "-apple-system", "system font stack");
+assertExcludes(globals, "radial-gradient", "calm app background");
+assertIncludes(layout, "동행방 | 소그룹 체크인과 기도제목 기록", "metadata product positioning");
+assertIncludes(layout, "소그룹 안부와 기도제목을 리더가 함께 기억", "metadata product positioning");
+assertIncludes(layout, "openGraph", "metadata sharing trust");
+assertIncludes(layout, "twitter", "metadata sharing trust");
 
 console.log("Beta quality copy regression checks passed.");
