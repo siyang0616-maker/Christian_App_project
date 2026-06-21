@@ -2,6 +2,13 @@
 
 ## 2026-06-21
 
+- Clarified the leader member-care copy helper after user feedback:
+  - kept KakaoTalk as a UX reference only, not a feature target
+  - removed the auto-share direction from scope and kept the flow copy-first
+  - changed the member care helper to show `보낼 대상`, `카톡 말풍선 미리보기`, and a single copy action
+  - updated the leader care board regression to protect the no-chat/no-send MVP boundary
+- Verified the full suite with `corepack pnpm verify`.
+
 - Ran expert UX, marketing, product, and engineering review for the next quality pass.
 - Implemented the first safe UX/UI slice without schema or dependency changes:
   - moved today's check-in status and check-in form above prayer and leader sections on the home screen

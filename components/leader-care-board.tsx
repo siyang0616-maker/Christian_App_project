@@ -195,17 +195,18 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
 
       <section className="rounded-lg border border-white/70 bg-white/90 p-4 shadow-soft">
         <SectionHeader
-          body="앱에 남겨진 안부와 기도제목만 모아, 이번 주 누구를 부드럽게 기억할지 정리해요."
+          body="카톡이나 문자에 붙여넣어 보내기 쉽도록 정리한 리더용 문구예요. 앱 안에서 자동 발송되지는 않아요."
           icon={<UsersRound className="h-4 w-4" />}
-          title="멤버별 안부 스냅샷"
+          title="멤버에게 보낼 안부 문구"
         />
         <div className="mt-3 grid gap-2">
           {data.memberSummaries.length > 0 ? (
             data.memberSummaries.map((member) => (
-              <article className="rounded-md border border-slate-100 bg-white px-3 py-3" key={member.userId}>
+              <article className="rounded-md border border-slate-100 bg-[#FFFCF8] px-3 py-3" key={member.userId}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="text-sm font-bold text-ink">{member.displayName}</p>
+                    <p className="text-xs font-semibold text-leaf">보낼 대상</p>
+                    <p className="mt-1 text-sm font-bold text-ink">{member.displayName}</p>
                     <p className="mt-1 text-xs text-slate-500">{member.latestCheckInLabel}</p>
                   </div>
                   <span
@@ -220,18 +221,24 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
                     리더에게 보이는 기도제목 {member.visiblePrayerCount}개
                   </p>
                 ) : null}
-                <div className="mt-3 rounded-md bg-mist px-3 py-2">
-                  <p className="text-xs font-semibold text-leaf">복사될 문구</p>
+                <div className="mt-3 rounded-md border border-[#F8E3A0] bg-[#FFF7D6] px-3 py-2">
+                  <p className="text-xs font-semibold text-[#7B5B00]">카톡 말풍선 미리보기</p>
                   <p className="mt-1 text-xs leading-5 text-slate-600">{member.copyPreview}</p>
                 </div>
                 <div className="mt-3">
-                  <CopyTextButton text={member.copyMessage}>
+                  <CopyTextButton
+                    className="inline-flex h-10 w-full items-center justify-center rounded-md bg-leaf px-3 text-sm font-bold text-white shadow-sm transition hover:bg-leaf/90"
+                    text={member.copyMessage}
+                  >
                     <span className="inline-flex items-center gap-2">
                       <HeartHandshake className="h-4 w-4" />
-                      안부 문구 복사
+                      카톡에 보낼 문구 복사
                     </span>
                   </CopyTextButton>
                 </div>
+                <p className="mt-2 text-xs leading-5 text-slate-500">
+                  복사한 뒤 카톡이나 문자에서 직접 상대를 선택해 보내세요.
+                </p>
               </article>
             ))
           ) : (
