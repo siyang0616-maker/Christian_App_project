@@ -33,7 +33,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
           const authorName = prayer.visibility === "anonymous" ? "이름 숨김" : prayer.profiles.display_name;
 
           return (
-            <article className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]" key={prayer.id}>
+            <article className="rounded-2xl border border-slate-200/70 bg-white/95 p-4 shadow-[0_12px_30px_rgba(31,41,51,0.06)]" key={prayer.id}>
               <div className="mb-3 flex items-start justify-between gap-3">
                 <div>
                   <p className="text-sm font-bold text-ink">{authorName}</p>
@@ -64,7 +64,7 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
           );
         })
       ) : (
-        <p className="rounded-xl border border-slate-200/70 bg-white p-4 text-sm text-slate-600 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
+        <p className="rounded-2xl border border-slate-200/70 bg-white/95 p-4 text-sm text-slate-600 shadow-[0_12px_30px_rgba(31,41,51,0.06)]">
           아직 남겨진 기도제목이 없어요. 멤버가 공개 범위에 맞게 기도제목을 남기면 리더 보드에도 함께 정리돼요.
         </p>
       )}

@@ -1,5 +1,57 @@
 # Worklog
 
+## 2026-06-22
+
+- Fixed the `/leader` dev overlay caused by the optional `leader_prayer_care_marks` query:
+  - changed the optional care-mark fetch from hard `console.error` logging to optional warning logging
+  - protected this with `scripts/check-leader-care-board-regression.mjs`
+- Reworked the Leader Care Board for the real 10-20 member use case:
+  - replaced the member card stack with a compact `멤버 상태판` matrix
+  - shows each member's `안부`, `기도`, and rhythm completion at row level
+  - keeps detailed rhythm status and reminder/share text inside an expandable row
+  - raises the visible member scan limit to 20 so small-group leaders can inspect the whole room without scrolling through oversized cards
+  - kept member-facing pressure low: no scoring, ranking, attendance policing, chat, or paid notification integration
+- Verification passed:
+  - `node scripts/check-modern-ui-regression.mjs`
+  - `node scripts/check-leader-care-board-regression.mjs`
+  - `corepack pnpm lint`
+  - `corepack pnpm typecheck`
+  - `corepack pnpm build`
+  - `corepack pnpm verify`
+- Next product decision:
+  - Birthdays, anniversaries, and important care dates are a real leader-care need for 10-20 members.
+  - Do not fake this as static UI. Implement it as a leader-only, schema-backed care-date feature with RLS so the data can actually persist and remain private.
+  - Proposed next slice: `member_care_dates` table + leader-only RLS + member row display + small add/edit form.
+
+- Updated the check-in and leader dashboard connection so leaders can understand member state from existing MVP data without schema changes:
+  - grouped member check-in input into `오늘 시작`, `말씀과 기도`, and `예배와 모임`
+  - made the member check-in copy explain that only visible check-ins appear in the leader dashboard
+  - added member-level `rhythmStatus`, `missingRhythmLabels`, and `rhythmCompletionLabel` to the Leader Care Board data model
+  - changed the leader side panel into `멤버 리듬 한눈에` so leaders can see today check-in, 말씀, 기도, 묵상, 예배/모임, and prayer-request state per member
+  - kept the wording care-oriented and avoided attendance scoring, rankings, push/SMS/Kakao API, or new database schema
+  - deferred service-specific attendance, schedules, RSVP, birthdays, and notification inbox to a later schema-backed design
+- User feedback: the app still did not feel modern enough, and the leader dashboard was not easy to scan when several members and prayer requests accumulate.
+- Decision: make a narrowed UI/UX modernization pass without adding new product features, schema, dependencies, chat, schedules, RSVP, or notifications.
+- Added decision record `superpowers/decisions/2026-06-22-modern-ui-dashboard-pass.md`.
+- Added implementation ticket `superpowers/tickets/2026-06-22-modern-ui-dashboard-pass.md`.
+- Added `scripts/check-modern-ui-regression.mjs` and wired it into `scripts/verify.mjs`.
+- Updated `/leader` to use a wider responsive shell instead of the narrow mobile-only width on desktop/tablet.
+- Reorganized the Leader Care Board into:
+  - summary metrics
+  - priority panel
+  - prayer timeline
+  - sticky member care panel
+- Reworked prayer care controls so `함께 기도`, `개별 돌봄`, `중요`, and `계속 기억` feel like clear leader-only controls.
+- Replaced the native visibility select with touch-friendly radio cards so members can understand visibility before submitting sensitive content.
+- Polished member-facing check-in, prayer form, today status, and prayer cards with modern rounded surfaces and calmer shadows.
+- Verified the modern UI regression script passes.
+- Verified `corepack pnpm typecheck` passes.
+- Reworked the leader member-care helper from a copy-only card into a `멤버 오늘 할 일 리마인드` panel:
+  - shows whether each member still needs `오늘 체크인` or `기도제목` follow-up
+  - adds native mobile share, SMS-open, and copy fallback through `components/share-text-actions.tsx`
+  - keeps the app out of Kakao/SMS API, push notification, and paid messaging scope
+- Verified `node scripts/check-modern-ui-regression.mjs`, `node scripts/check-leader-care-board-regression.mjs`, `corepack pnpm lint`, `corepack pnpm typecheck`, `corepack pnpm build`, and `corepack pnpm verify`.
+
 ## 2026-06-21
 
 - Responded to user feedback that the UI still felt childish/prototype-like.

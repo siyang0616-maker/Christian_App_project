@@ -11,7 +11,7 @@ type PrayerRequestFormProps = {
 
 export function PrayerRequestForm({ groupId, clearDraft = false, returnTo = "/#prayer-cards" }: PrayerRequestFormProps) {
   return (
-    <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
+    <section className="rounded-2xl border border-slate-200/70 bg-white/95 p-4 shadow-[0_12px_30px_rgba(31,41,51,0.06)]">
       <div className="mb-4 flex items-center gap-2">
         <div className="shrink-0 text-clay">
           <HandHeart className="h-5 w-5" />
@@ -25,7 +25,7 @@ export function PrayerRequestForm({ groupId, clearDraft = false, returnTo = "/#p
         <input name="groupId" type="hidden" value={groupId} />
         <input name="returnTo" type="hidden" value={returnTo} />
         <PrayerRequestDraftFields clearDraft={clearDraft} groupId={groupId} />
-        <SubmitButton className="h-12 rounded-lg bg-clay px-4 font-semibold text-white shadow-sm transition hover:bg-clay/90" pendingLabel="기도제목을 저장하고 있어요...">
+        <SubmitButton className="h-12 rounded-xl bg-clay px-4 font-semibold text-white shadow-sm transition hover:bg-clay/90" pendingLabel="기도제목을 저장하고 있어요...">
           기도제목 남기기
         </SubmitButton>
       </form>

@@ -23,7 +23,7 @@ export function TodayStatus({ checkIn, groupName }: TodayStatusProps) {
   const todayRhythms = checkIn ? checkedRhythms(checkIn) : [];
 
   return (
-    <section className="rounded-xl border border-leaf/15 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
+    <section className="rounded-2xl border border-leaf/15 bg-white/95 p-4 shadow-[0_12px_30px_rgba(31,41,51,0.06)]">
       <div className="flex items-start gap-3">
         <div className="mt-0.5 shrink-0 text-leaf">
           <CalendarCheck className="h-5 w-5" />

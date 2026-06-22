@@ -12,7 +12,7 @@ type CopyTextButtonProps = {
 export function CopyTextButton({
   text,
   children,
-  copiedLabel = "복사됨",
+  copiedLabel = "복사됐어요",
   className = "inline-flex h-10 items-center justify-center rounded-md border border-leaf/20 bg-white px-3 text-sm font-semibold text-leaf shadow-sm transition hover:bg-mist",
 }: CopyTextButtonProps) {
   const [status, setStatus] = useState<"idle" | "copied" | "failed">("idle");

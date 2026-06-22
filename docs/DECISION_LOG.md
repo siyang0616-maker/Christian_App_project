@@ -1,5 +1,21 @@
 # Decision Log
 
+## 2026-06-22
+
+### Modern UI Dashboard Pass
+
+- Decision record: `superpowers/decisions/2026-06-22-modern-ui-dashboard-pass.md`
+- Implementation ticket: `superpowers/tickets/2026-06-22-modern-ui-dashboard-pass.md`
+- Decision: build a narrowed UI/UX modernization pass without adding new product features.
+- Approved areas:
+  - Wider responsive `/leader` layout.
+  - Leader board summary, priority, prayer timeline, and member care panels.
+  - Clearer prayer care controls.
+  - More modern member check-in and prayer form surfaces.
+  - Touch-friendly visibility selector.
+- Deferred:
+  - Chat, direct messaging, schedule, RSVP, attendance, notification inbox, and new schema work.
+
 ## 2026-06-19
 
 ### Leader Prayer Care Marks

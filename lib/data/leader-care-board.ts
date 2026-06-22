@@ -42,11 +42,23 @@ export type LeaderPrayerDateGroup = {
   prayers: LeaderPrayerTimelineItem[];
 };
 
+type RhythmKey = "woke_up" | "bible_read" | "prayed" | "meditated" | "attended";
+
+export type LeaderRhythmStatusItem = {
+  key: RhythmKey;
+  label: string;
+  done: boolean;
+};
+
 export type LeaderMemberCareSummary = {
   userId: string;
   displayName: string;
   latestCheckInLabel: string;
   latestMoodLabel: string | null;
+  hasTodayCheckIn: boolean;
+  rhythmStatus: LeaderRhythmStatusItem[];
+  missingRhythmLabels: string[];
+  rhythmCompletionLabel: string;
   careReason: string;
   visiblePrayerCount: number;
   isQuiet: boolean;
@@ -84,6 +96,14 @@ type LeaderCareBoardInput = {
   currentUserId: string;
   now?: Date;
 };
+
+const rhythmDefinitions: Array<{ key: RhythmKey; label: string }> = [
+  { key: "woke_up", label: "기상" },
+  { key: "bible_read", label: "말씀" },
+  { key: "prayed", label: "기도" },
+  { key: "meditated", label: "묵상" },
+  { key: "attended", label: "예배/모임" },
+];
 
 export function createLeaderCareBoardData(input: LeaderCareBoardInput): LeaderCareBoardData {
   const memberUserIds = new Set(input.members.filter((member) => member.role === "member").map((member) => member.user_id));
@@ -255,19 +275,46 @@ export function buildMemberCareSummaries({
     .filter((member) => member.role === "member")
     .map((member) => {
       const latestCheckIn = latestCheckInByUser.get(member.user_id) ?? null;
+      const todayCheckIn = latestCheckIn?.checkin_date === today ? latestCheckIn : null;
+      const hasTodayCheckIn = todayCheckIn !== null;
+      const rhythmStatus = buildRhythmStatus(todayCheckIn);
+      const missingRhythmLabels = buildMissingRhythmLabels(rhythmStatus);
       const visiblePrayerCount = visiblePrayerCountByUser.get(member.user_id) ?? 0;
-      const messages = buildCopyReadyMessages(member.profiles.display_name);
       const isQuiet = quietMemberIds.has(member.user_id);
-      const priorityRank = buildMemberPriorityRank({ isQuiet, latestCheckIn, visiblePrayerCount });
-      const careBadge = buildCareBadge({ isQuiet, latestCheckIn, visiblePrayerCount });
-      const copyMessage = isQuiet ? messages.gentleCheckIn : messages.gentleResponse;
+      const priorityRank = buildMemberPriorityRank({
+        hasTodayCheckIn,
+        latestCheckIn: todayCheckIn,
+        missingRhythmLabels,
+        visiblePrayerCount,
+      });
+      const careBadge = buildCareBadge({
+        hasTodayCheckIn,
+        latestCheckIn: todayCheckIn,
+        missingRhythmLabels,
+        visiblePrayerCount,
+      });
+      const copyMessage = buildMemberReminderMessage({
+        displayName: member.profiles.display_name,
+        hasTodayCheckIn,
+        missingRhythmLabels,
+        visiblePrayerCount,
+      });
 
       return {
         userId: member.user_id,
         displayName: member.profiles.display_name,
         latestCheckInLabel: latestCheckIn ? formatLatestCheckIn(latestCheckIn, today) : "아직 리더에게 보이는 안부가 없어요.",
-        latestMoodLabel: latestCheckIn ? moodLabel(latestCheckIn.mood) : null,
-        careReason: buildCareReason({ isQuiet, latestCheckIn, visiblePrayerCount }),
+        latestMoodLabel: todayCheckIn ? moodLabel(todayCheckIn.mood) : null,
+        hasTodayCheckIn,
+        rhythmStatus,
+        missingRhythmLabels,
+        rhythmCompletionLabel: `${rhythmStatus.filter((item) => item.done).length}/${rhythmStatus.length}개 리듬`,
+        careReason: buildCareReason({
+          hasTodayCheckIn,
+          latestCheckIn: todayCheckIn,
+          missingRhythmLabels,
+          visiblePrayerCount,
+        }),
         visiblePrayerCount,
         isQuiet,
         priorityRank,
@@ -283,6 +330,17 @@ export function buildMemberCareSummaries({
     });
 }
 
+function buildRhythmStatus(checkin: CheckInWithAuthor | null): LeaderRhythmStatusItem[] {
+  return rhythmDefinitions.map((definition) => ({
+    ...definition,
+    done: Boolean(checkin?.[definition.key]),
+  }));
+}
+
+function buildMissingRhythmLabels(rhythmStatus: LeaderRhythmStatusItem[]) {
+  return rhythmStatus.filter((item) => !item.done).map((item) => item.label);
+}
+
 export function buildCopyReadyMessages(displayName: string | null) {
   const name = displayName ? `${displayName}님` : "함께 나눠준 분";
 
@@ -291,6 +349,34 @@ export function buildCopyReadyMessages(displayName: string | null) {
     gentleResponse: `${name}, 남겨준 안부 함께 기억하고 있어요. 이번 주도 혼자 감당하지 않아도 괜찮아요.`,
     prayerSupport: `${name}, 남겨준 기도제목 함께 기억하고 기도할게요. 말해줘서 고마워요.`,
   };
+}
+
+function buildMemberReminderMessage({
+  displayName,
+  hasTodayCheckIn,
+  missingRhythmLabels,
+  visiblePrayerCount,
+}: {
+  displayName: string;
+  hasTodayCheckIn: boolean;
+  missingRhythmLabels: string[];
+  visiblePrayerCount: number;
+}) {
+  const name = `${displayName}님`;
+
+  if (!hasTodayCheckIn) {
+    return `${name}, 오늘 안부를 아직 못 봐서요. 부담 없는 만큼 체크인과 기도제목을 가볍게 남겨줘도 괜찮아요.`;
+  }
+
+  if (missingRhythmLabels.length > 0) {
+    return `${name}, 오늘 ${formatKoreanList(missingRhythmLabels)} 리듬도 남길 수 있으면 함께 기억할게요. 부담되는 항목은 건너뛰어도 괜찮아요.`;
+  }
+
+  if (visiblePrayerCount > 0) {
+    return `${name}, 오늘 남겨준 안부와 기도제목 함께 기억하고 있어요. 이번 주도 혼자 감당하지 않아도 괜찮아요.`;
+  }
+
+  return `${name}, 오늘 리듬 남겨줘서 고마워요. 계속 편하게 안부를 나눠줘도 괜찮아요.`;
 }
 
 function buildPrayerStatusLabel(reactionCount: number, alreadyPrayed: boolean) {
@@ -392,20 +478,26 @@ function buildPrayerCountByUser(prayers: PrayerRequestWithAuthor[]) {
 }
 
 function buildCareReason({
-  isQuiet,
+  hasTodayCheckIn,
   latestCheckIn,
+  missingRhythmLabels,
   visiblePrayerCount,
 }: {
-  isQuiet: boolean;
+  hasTodayCheckIn: boolean;
   latestCheckIn: CheckInWithAuthor | null;
+  missingRhythmLabels: string[];
   visiblePrayerCount: number;
 }) {
   if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer") {
     return "오늘 안부를 조금 더 살펴보면 좋아요.";
   }
 
-  if (isQuiet) {
-    return "가볍게 안부를 물어보면 좋아요.";
+  if (!hasTodayCheckIn) {
+    return "오늘 안부가 아직 보이지 않아요. 부담 없이 남길 수 있게 안내해 주세요.";
+  }
+
+  if (missingRhythmLabels.length > 0) {
+    return `${formatKoreanList(missingRhythmLabels)} 리듬은 아직 보이지 않아요.`;
   }
 
   if (visiblePrayerCount > 0) {
@@ -416,19 +508,21 @@ function buildCareReason({
 }
 
 function buildMemberPriorityRank({
-  isQuiet,
+  hasTodayCheckIn,
   latestCheckIn,
+  missingRhythmLabels,
   visiblePrayerCount,
 }: {
-  isQuiet: boolean;
+  hasTodayCheckIn: boolean;
   latestCheckIn: CheckInWithAuthor | null;
+  missingRhythmLabels: string[];
   visiblePrayerCount: number;
 }) {
   if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer") {
     return 1;
   }
 
-  if (isQuiet) {
+  if (!hasTodayCheckIn) {
     return 2;
   }
 
@@ -436,31 +530,53 @@ function buildMemberPriorityRank({
     return 3;
   }
 
-  return 4;
+  if (missingRhythmLabels.length > 0) {
+    return 4;
+  }
+
+  return 5;
 }
 
 function buildCareBadge({
-  isQuiet,
+  hasTodayCheckIn,
   latestCheckIn,
+  missingRhythmLabels,
   visiblePrayerCount,
 }: {
-  isQuiet: boolean;
+  hasTodayCheckIn: boolean;
   latestCheckIn: CheckInWithAuthor | null;
+  missingRhythmLabels: string[];
   visiblePrayerCount: number;
 }) {
   if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer") {
     return { label: "조금 더 살피기", tone: "blue" as const };
   }
 
-  if (isQuiet) {
-    return { label: "안부 기다림", tone: "leaf" as const };
+  if (!hasTodayCheckIn) {
+    return { label: "오늘 안부 전", tone: "leaf" as const };
   }
 
   if (visiblePrayerCount > 0) {
     return { label: "기도제목 있음", tone: "clay" as const };
   }
 
-  return { label: "나눔 있음", tone: "blue" as const };
+  if (missingRhythmLabels.length > 0) {
+    return { label: "리듬 확인 전", tone: "blue" as const };
+  }
+
+  return { label: "오늘 리듬 있음", tone: "leaf" as const };
+}
+
+function formatKoreanList(labels: string[]) {
+  if (labels.length === 0) {
+    return "";
+  }
+
+  if (labels.length <= 3) {
+    return labels.join(", ");
+  }
+
+  return `${labels.slice(0, 3).join(", ")} 외 ${labels.length - 3}개`;
 }
 
 function formatLatestCheckIn(checkin: CheckInWithAuthor, today: string) {

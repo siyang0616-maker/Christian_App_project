@@ -70,6 +70,13 @@ if (leaderCareBoardRegression.status !== 0) {
   process.exit(leaderCareBoardRegression.status ?? 1);
 }
 
+console.log("\n> verify:modern-ui-regression");
+const modernUiRegression = runNodeScript("scripts/check-modern-ui-regression.mjs");
+
+if (modernUiRegression.status !== 0) {
+  process.exit(modernUiRegression.status ?? 1);
+}
+
 console.log("\n> verify:test-user-helper-regression");
 const testUserHelperRegression = runNodeScript("scripts/check-test-user-helper-regression.mjs");
 

@@ -6,6 +6,7 @@ import {
   attachProfilesToPrayers,
   getProfilesByIds,
   logDataQueryError,
+  logOptionalDataQueryWarning,
   type CheckInRow,
   type PrayerRequestRow,
 } from "@/lib/data/profile-joins";
@@ -231,7 +232,7 @@ async function getLeaderPrayerCareMarks(supabase: SupabaseClient, prayerIds: str
     .in("prayer_id", prayerIds)
     .returns<LeaderPrayerCareMark[]>();
 
-  logDataQueryError("leader-dashboard", "leader_prayer_care_marks", error);
+  logOptionalDataQueryWarning("leader-dashboard", "leader_prayer_care_marks", error);
   return data ?? [];
 }
 

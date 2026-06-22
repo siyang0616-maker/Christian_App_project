@@ -30,6 +30,19 @@ export function logDataQueryError(scope: string, label: string, error: DataQuery
   });
 }
 
+export function logOptionalDataQueryWarning(scope: string, label: string, error: DataQueryError | null | undefined) {
+  if (!error) {
+    return;
+  }
+
+  console.warn(`[${scope}] optional ${label} query skipped`, {
+    code: error.code,
+    message: error.message,
+    details: error.details,
+    hint: error.hint,
+  });
+}
+
 export function fallbackProfile(id: string): Profile {
   return {
     id,
