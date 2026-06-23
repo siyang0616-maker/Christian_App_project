@@ -1,5 +1,9 @@
 # Worklog
 
+## 2026-06-23
+
+- Ticket 1 implementation merged: inviteCode preservation, returnTo validation, create_group_with_leader RPC.
+
 ## 2026-06-22
 
 - Fixed the `/leader` dev overlay caused by the optional `leader_prayer_care_marks` query:
