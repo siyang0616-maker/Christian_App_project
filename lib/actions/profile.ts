@@ -2,25 +2,16 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import type { Route } from "next";
-import { actionErrorPath } from "@/lib/action-feedback";
+import { actionErrorPath, getSafeInternalPath } from "@/lib/action-feedback";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { profileSchema } from "@/lib/validation";
 
-function getSafeReturnPath(value: FormDataEntryValue | null): Route {
-  if (typeof value !== "string" || !value.startsWith("/") || value.startsWith("//")) {
-    return "/";
-  }
-
-  return value as Route;
-}
-
 export async function saveProfile(formData: FormData) {
-  const returnTo = getSafeReturnPath(formData.get("returnTo"));
+  const returnTo = getSafeInternalPath(formData.get("returnTo"));
   const parsed = profileSchema.safeParse(Object.fromEntries(formData));
 
   if (!parsed.success) {
-    redirect(actionErrorPath("profile-invalid"));
+    redirect(actionErrorPath("profile-invalid", returnTo));
   }
 
   const supabase = await createServerSupabaseClient();
@@ -44,7 +35,7 @@ export async function saveProfile(formData: FormData) {
       details: error.details,
       hint: error.hint,
     });
-    redirect(actionErrorPath("profile-save"));
+    redirect(actionErrorPath("profile-save", returnTo));
   }
 
   revalidatePath("/");

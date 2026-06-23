@@ -3,9 +3,10 @@ import { joinGroup } from "@/lib/actions/groups";
 
 type JoinGroupFormProps = {
   defaultInviteCode?: string;
+  returnTo?: string;
 };
 
-export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
+export function JoinGroupForm({ defaultInviteCode = "", returnTo = "/" }: JoinGroupFormProps) {
   return (
     <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-4 flex items-center gap-2">
@@ -18,6 +19,7 @@ export function JoinGroupForm({ defaultInviteCode = "" }: JoinGroupFormProps) {
         </div>
       </div>
       <form action={joinGroup} className="grid gap-3">
+        <input name="returnTo" type="hidden" value={returnTo} />
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           초대코드
           <input

@@ -5,9 +5,10 @@ export type { AuthPanelMessage };
 
 type AuthPanelProps = {
   message?: AuthPanelMessage;
+  returnTo?: string;
 };
 
-export function AuthPanel({ message }: AuthPanelProps) {
+export function AuthPanel({ message, returnTo = "/" }: AuthPanelProps) {
   return (
     <section className="rounded-xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-5 border-b border-slate-100 pb-4">
@@ -19,7 +20,7 @@ export function AuthPanel({ message }: AuthPanelProps) {
           이메일로 가입하거나 로그인한 뒤, 초대코드로 동행방에 들어갈 수 있어요.
         </p>
       </div>
-      <AuthForm message={message} />
+      <AuthForm message={message} returnTo={returnTo} />
     </section>
   );
 }

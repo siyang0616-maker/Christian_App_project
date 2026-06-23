@@ -13,6 +13,7 @@ import { PrayerRequestList } from "@/components/prayer-request-list";
 import { ProfileSetupForm } from "@/components/profile-setup-form";
 import { SupabaseSetupNotice } from "@/components/supabase-setup-notice";
 import { TodayStatus } from "@/components/today-status";
+import { getSafeInternalPath } from "@/lib/action-feedback";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import { getDashboardData } from "@/lib/data/dashboard";
@@ -27,6 +28,26 @@ type HomeSearchParams = {
 
 function firstParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
+}
+
+function getInviteCodeParam(params: HomeSearchParams) {
+  const inviteCode = firstParam(params.inviteCode)?.trim().toUpperCase();
+
+  if (!inviteCode || !/^[A-Z0-9]{4,10}$/.test(inviteCode)) {
+    return undefined;
+  }
+
+  return inviteCode;
+}
+
+function getHomeReturnTo(params: HomeSearchParams) {
+  const inviteCode = getInviteCodeParam(params);
+
+  if (!inviteCode) {
+    return "/";
+  }
+
+  return getSafeInternalPath(`/?inviteCode=${encodeURIComponent(inviteCode)}`);
 }
 
 function isFeedbackCodeFor(code: string | undefined, prefix: string) {
@@ -192,6 +213,8 @@ export default async function Home({
   const params = searchParams ? await searchParams : {};
   const actionError = firstParam(params.actionError);
   const actionSuccess = firstParam(params.actionSuccess);
+  const inviteCode = getInviteCodeParam(params);
+  const homeReturnTo = getHomeReturnTo(params);
 
   if (!hasSupabaseEnv()) {
     return (
@@ -209,7 +232,7 @@ export default async function Home({
   if (!user) {
     return (
       <AppShell>
-        <AuthPanel message={getAuthPanelMessage(params)} />
+        <AuthPanel message={getAuthPanelMessage(params)} returnTo={homeReturnTo} />
       </AppShell>
     );
   }
@@ -221,7 +244,7 @@ export default async function Home({
       <AppShell>
         <div className="grid gap-4">
           <ActionMessage errorCode={actionError} successCode={actionSuccess} />
-          <ProfileSetupForm email={user.email ?? ""} />
+          <ProfileSetupForm email={user.email ?? ""} returnTo={homeReturnTo} />
         </div>
       </AppShell>
     );
@@ -251,7 +274,7 @@ export default async function Home({
             </ol>
           </section>
           <CreateGroupForm />
-          <JoinGroupForm defaultInviteCode={firstParam(params.inviteCode)} />
+          <JoinGroupForm defaultInviteCode={inviteCode} returnTo={homeReturnTo} />
         </div>
       </AppShell>
     );

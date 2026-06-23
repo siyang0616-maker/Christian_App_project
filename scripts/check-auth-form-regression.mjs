@@ -2,7 +2,12 @@ import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 
 const authFormSource = readFileSync(new URL("../components/auth-form.tsx", import.meta.url), "utf8");
+const authPanelSource = readFileSync(new URL("../components/auth-panel.tsx", import.meta.url), "utf8");
 const appPageSource = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
+const callbackSource = readFileSync(new URL("../app/auth/callback/route.ts", import.meta.url), "utf8");
+const profileSetupSource = readFileSync(new URL("../components/profile-setup-form.tsx", import.meta.url), "utf8");
+const authActionSource = readFileSync(new URL("../lib/actions/auth.ts", import.meta.url), "utf8");
+const profileActionSource = readFileSync(new URL("../lib/actions/profile.ts", import.meta.url), "utf8");
 
 assert.match(
   authFormSource,
@@ -54,6 +59,90 @@ assert.match(
   appPageSource,
   /error === "reset-rate-limit"[\s\S]*?비밀번호 재설정/,
   "Password reset rate limits should be labeled as password-reset specific.",
+);
+
+assert.match(
+  authPanelSource,
+  /type AuthPanelProps = \{[\s\S]*?returnTo\?: string;/,
+  "AuthPanel should accept a returnTo path so invite links survive login and sign-up.",
+);
+
+assert.match(
+  authFormSource,
+  /type AuthFormProps = \{[\s\S]*?returnTo\?: string;/,
+  "AuthForm should accept a returnTo path from the current invite context.",
+);
+
+assert.match(
+  authFormSource,
+  /<input name="returnTo" type="hidden" value=\{returnTo\} \/>/,
+  "AuthForm should submit returnTo as a hidden field.",
+);
+
+assert.match(
+  authActionSource,
+  /const returnTo = getSafeInternalPath\(formData\.get\("returnTo"\)\);/,
+  "Auth actions should sanitize the submitted returnTo before redirects.",
+);
+
+assert.match(
+  authActionSource,
+  /\/auth\/callback\?next=\$\{encodeURIComponent\(returnTo\)\}/,
+  "Sign-up email redirects should preserve returnTo through the auth callback next parameter.",
+);
+
+assert.match(
+  authActionSource,
+  /redirect\(authFeedbackPath\("notice", "check-email", returnTo\)\);/,
+  "Email-confirmation notice redirects should keep inviteCode in the URL.",
+);
+
+assert.match(
+  authActionSource,
+  /redirect\(returnTo\);/,
+  "Successful password login should return to the invite context instead of always redirecting home.",
+);
+
+assert.match(
+  callbackSource,
+  /getSafeInternalPath\(requestUrl\.searchParams\.get\("next"\)\)/,
+  "Auth callback should normalize next to a safe internal path.",
+);
+
+assert.match(
+  profileSetupSource,
+  /type ProfileSetupFormProps = \{[\s\S]*?returnTo\?: string;/,
+  "ProfileSetupForm should accept a returnTo prop.",
+);
+
+assert.match(
+  profileSetupSource,
+  /<input name="returnTo" type="hidden" value=\{returnTo\} \/>/,
+  "ProfileSetupForm should preserve returnTo after saving the display name.",
+);
+
+assert.match(
+  appPageSource,
+  /const homeReturnTo = getHomeReturnTo\(params\);/,
+  "Home page should derive a safe returnTo from inviteCode.",
+);
+
+assert.match(
+  appPageSource,
+  /<AuthPanel message=\{getAuthPanelMessage\(params\)\} returnTo=\{homeReturnTo\} \/>/,
+  "Logged-out invite users should pass returnTo into AuthPanel.",
+);
+
+assert.match(
+  appPageSource,
+  /<ProfileSetupForm email=\{user\.email \?\? ""\} returnTo=\{homeReturnTo\} \/>/,
+  "Profile setup should preserve inviteCode after auth.",
+);
+
+assert.match(
+  profileActionSource,
+  /const returnTo = getSafeInternalPath\(formData\.get\("returnTo"\)\);/,
+  "Profile save should use the shared safe internal path helper.",
 );
 
 console.log("Auth form regression checks passed.");

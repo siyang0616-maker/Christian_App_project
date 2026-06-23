@@ -3,9 +3,10 @@ import { saveProfile } from "@/lib/actions/profile";
 
 type ProfileSetupFormProps = {
   email: string;
+  returnTo?: string;
 };
 
-export function ProfileSetupForm({ email }: ProfileSetupFormProps) {
+export function ProfileSetupForm({ email, returnTo = "/" }: ProfileSetupFormProps) {
   return (
     <section className="rounded-xl border border-slate-200/70 bg-white p-5 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-5 border-b border-slate-100 pb-4">
@@ -18,7 +19,7 @@ export function ProfileSetupForm({ email }: ProfileSetupFormProps) {
         </p>
       </div>
       <form action={saveProfile} className="grid gap-3">
-        <input name="returnTo" type="hidden" value="/" />
+        <input name="returnTo" type="hidden" value={returnTo} />
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           이메일
           <input className="h-12 rounded-lg border border-slate-200 bg-slate-50 px-3 text-base" readOnly value={email} />

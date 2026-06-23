@@ -15,7 +15,7 @@ assert.match(
 
 assert.match(
   profileActionSource,
-  /redirect\(actionErrorPath\("profile-save"\)\)/,
+  /redirect\(actionErrorPath\("profile-save", returnTo\)\)/,
   "Profile save failures should keep the user-facing error safe and generic.",
 );
 

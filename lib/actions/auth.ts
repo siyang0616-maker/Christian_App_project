@@ -1,7 +1,9 @@
 "use server";
 
+import type { Route } from "next";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { getSafeInternalPath } from "@/lib/action-feedback";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { emailOnlySchema, emailPasswordSchema } from "@/lib/validation";
 
@@ -20,8 +22,16 @@ type AuthErrorCode =
   | "signup-disabled"
   | "signup-rate-limit";
 
-function redirectWithError(code: AuthErrorCode): never {
-  redirect(`/?error=${code}`);
+function authFeedbackPath(key: "error" | "notice", code: string, returnTo: Route = "/") {
+  const safeReturnTo = getSafeInternalPath(returnTo);
+  const [path, hash = ""] = safeReturnTo.split("#");
+  const separator = path.includes("?") ? "&" : "?";
+
+  return `${path}${separator}${key}=${code}${hash ? `#${hash}` : ""}` as Route;
+}
+
+function redirectWithError(code: AuthErrorCode, returnTo: Route = "/"): never {
+  redirect(authFeedbackPath("error", code, returnTo));
 }
 
 function getSignupErrorCode(error: { message?: string; status?: number; code?: string }): AuthErrorCode {
@@ -79,20 +89,28 @@ function getLoginErrorCode(error: { message?: string; status?: number; code?: st
   return "login";
 }
 
-async function getEmailRedirectTo() {
+async function getAppBaseUrl() {
   const headerStore = await headers();
   const origin = headerStore.get("origin");
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
 
-  return origin ? `${origin}/auth/callback` : siteUrl ? `${siteUrl}/auth/callback` : undefined;
+  if (process.env.NODE_ENV === "production" && siteUrl) {
+    return siteUrl;
+  }
+
+  return origin ?? siteUrl;
+}
+
+async function getEmailRedirectTo(returnTo: Route) {
+  const appBaseUrl = await getAppBaseUrl();
+
+  return appBaseUrl ? `${appBaseUrl}/auth/callback?next=${encodeURIComponent(returnTo)}` : undefined;
 }
 
 async function getPasswordResetRedirectTo() {
-  const headerStore = await headers();
-  const origin = headerStore.get("origin");
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim().replace(/\/+$/, "");
+  const appBaseUrl = await getAppBaseUrl();
 
-  return origin ? `${origin}/auth/reset-password` : siteUrl ? `${siteUrl}/auth/reset-password` : undefined;
+  return appBaseUrl ? `${appBaseUrl}/auth/reset-password` : undefined;
 }
 
 function getPasswordResetErrorCode(error: { message?: string; status?: number; code?: string }): AuthErrorCode {
@@ -122,16 +140,17 @@ function getPasswordResetErrorCode(error: { message?: string; status?: number; c
 
 export async function submitAuth(formData: FormData) {
   const intent = formData.get("intent") === "signUp" ? "signUp" : "signIn";
+  const returnTo = getSafeInternalPath(formData.get("returnTo"));
   const parsed = emailPasswordSchema.safeParse(Object.fromEntries(formData));
 
   if (!parsed.success) {
-    redirectWithError("invalid");
+    redirectWithError("invalid", returnTo);
   }
 
   const supabase = await createServerSupabaseClient();
 
   if (intent === "signUp") {
-    const emailRedirectTo = await getEmailRedirectTo();
+    const emailRedirectTo = await getEmailRedirectTo(returnTo);
     const { data, error } = await supabase.auth.signUp({
       email: parsed.data.email,
       password: parsed.data.password,
@@ -139,14 +158,14 @@ export async function submitAuth(formData: FormData) {
     });
 
     if (error) {
-      redirectWithError(getSignupErrorCode(error));
+      redirectWithError(getSignupErrorCode(error), returnTo);
     }
 
     if (!data.session) {
-      redirect("/?notice=check-email");
+      redirect(authFeedbackPath("notice", "check-email", returnTo));
     }
 
-    redirect("/");
+    redirect(returnTo);
   }
 
   const { error } = await supabase.auth.signInWithPassword({
@@ -155,10 +174,10 @@ export async function submitAuth(formData: FormData) {
   });
 
   if (error) {
-    redirectWithError(getLoginErrorCode(error));
+    redirectWithError(getLoginErrorCode(error), returnTo);
   }
 
-  redirect("/");
+  redirect(returnTo);
 }
 
 export async function requestPasswordReset(formData: FormData) {

@@ -16,6 +16,7 @@ export type AuthPanelMessage = {
 
 type AuthFormProps = {
   message?: AuthPanelMessage;
+  returnTo?: string;
 };
 
 const intentCopy: Record<AuthIntent, { label: string; helper: string; submit: string; passwordComplete: string }> = {
@@ -79,7 +80,7 @@ function validateAuthFields(email: string, password: string): AuthPanelMessage |
   return undefined;
 }
 
-export function AuthForm({ message }: AuthFormProps) {
+export function AuthForm({ message, returnTo = "/" }: AuthFormProps) {
   const [intent, setIntent] = useState<AuthIntent>(message?.suggestedIntent ?? "signUp");
   const [email, setEmail] = useState("");
   const [clientMessage, setClientMessage] = useState<AuthPanelMessage>();
@@ -171,6 +172,7 @@ export function AuthForm({ message }: AuthFormProps) {
         ) : null}
 
         <input name="intent" type="hidden" value={intent} />
+        <input name="returnTo" type="hidden" value={returnTo} />
 
         <label className="grid gap-1 text-sm font-medium text-slate-700">
           이메일
