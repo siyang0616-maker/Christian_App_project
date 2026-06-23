@@ -1,4 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { getCareMessagesForParents } from "@/lib/data/care-messages";
 import {
   attachProfileToCheckIn,
   attachProfilesToCheckIns,
@@ -107,6 +108,13 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
 
   const prayerIds = prayerRequestsWithProfiles.map((prayer) => prayer.id);
   let prayerReactions: PrayerReaction[] = [];
+  const careMessageParents = [
+    ...recentCheckInsWithProfiles.map((checkIn) => ({ parentType: "checkin" as const, parentId: checkIn.id })),
+    ...prayerRequestsWithProfiles.map((prayer) => ({ parentType: "prayer" as const, parentId: prayer.id })),
+  ];
+  const careMessages = activeGroup
+    ? await getCareMessagesForParents(supabase, activeGroup.id, careMessageParents, "dashboard")
+    : [];
 
   if (prayerIds.length > 0) {
     const { data, error } = await supabase
@@ -134,6 +142,7 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
     recentCheckIns: recentCheckInsWithProfiles,
     prayerRequests: prayerRequestsWithProfiles,
     prayerReactions,
+    careMessages,
   };
 }
 
@@ -148,5 +157,6 @@ function emptyDashboard(profile: Profile | null): DashboardData {
     recentCheckIns: [],
     prayerRequests: [],
     prayerReactions: [],
+    careMessages: [],
   };
 }

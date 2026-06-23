@@ -1,4 +1,6 @@
 import type {
+  CareMessageParentType,
+  CareMessageWithSender,
   CheckInWithAuthor,
   GroupMemberWithProfile,
   LeaderPrayerCareMark,
@@ -14,6 +16,20 @@ export type LeaderInboxItem = {
   body: string;
   priorityRank: number;
   tone: "leaf" | "clay" | "blue";
+};
+
+export type LeaderCareThreadPreview = {
+  parentType: CareMessageParentType;
+  parentId: string;
+  groupId: string;
+  threadOwnerId: string;
+  messageCount: number;
+  lastMessageBody: string;
+  lastMessageSenderId: string;
+  lastMessageSenderName: string;
+  lastMessageCreatedAt: string;
+  waitingForLeaderResponse: boolean;
+  messages: CareMessageWithSender[];
 };
 
 export type LeaderPrayerTimelineItem = {
@@ -67,9 +83,11 @@ export type LeaderMemberCareSummary = {
   careBadgeTone: "leaf" | "clay" | "blue";
   copyMessage: string;
   copyPreview: string;
+  latestCareThread: LeaderCareThreadPreview | null;
 };
 
 export type LeaderCareBoardData = {
+  currentUserId: string;
   totals: {
     memberCount: number;
     todayVisibleCheckInCount: number;
@@ -93,6 +111,7 @@ type LeaderCareBoardInput = {
   prayers: PrayerRequestWithAuthor[];
   reactions: PrayerReaction[];
   careMarks: LeaderPrayerCareMark[];
+  careMessages: CareMessageWithSender[];
   currentUserId: string;
   now?: Date;
 };
@@ -110,6 +129,7 @@ export function createLeaderCareBoardData(input: LeaderCareBoardInput): LeaderCa
   const todayMemberVisibleCheckInCount = input.todayCheckins.filter((checkin) => memberUserIds.has(checkin.user_id)).length;
 
   return {
+    currentUserId: input.currentUserId,
     totals: {
       memberCount: memberUserIds.size,
       todayVisibleCheckInCount: input.todayCheckins.length,
@@ -127,19 +147,33 @@ export function createLeaderCareBoardData(input: LeaderCareBoardInput): LeaderCa
       quietMembers: input.quietMembers,
       recentCheckIns: input.recentCheckIns,
       prayers: input.prayers,
+      careMessages: input.careMessages,
+      currentUserId: input.currentUserId,
       now: input.now,
     }),
   };
 }
 
 export function buildLeaderInbox({
+  careMessages,
   quietMembers,
   todayCheckins,
   prayers,
-}: Pick<LeaderCareBoardInput, "quietMembers" | "todayCheckins" | "prayers">): LeaderInboxItem[] {
+}: Pick<LeaderCareBoardInput, "careMessages" | "quietMembers" | "todayCheckins" | "prayers">): LeaderInboxItem[] {
   const needPrayerCheckIns = todayCheckins.filter((checkin) => checkin.mood === "hard" || checkin.mood === "need_prayer");
   const unansweredPrayerCount = prayers.filter((prayer) => !prayer.answered_at).length;
+  const waitingCareThreadCount = countThreadsWaitingForLeader(careMessages);
   const items: LeaderInboxItem[] = [];
+
+  if (waitingCareThreadCount > 0) {
+    items.push({
+      id: "care-thread-replies",
+      title: "답장을 기다리는 대화",
+      body: `${waitingCareThreadCount}개의 돌봄 대화가 리더 답장을 기다리고 있어요.`,
+      priorityRank: 0,
+      tone: "blue",
+    });
+  }
 
   if (unansweredPrayerCount > 0) {
     items.push({
@@ -253,12 +287,16 @@ export function groupPrayersByDate(
 }
 
 export function buildMemberCareSummaries({
+  careMessages,
+  currentUserId,
   members,
   quietMembers,
   recentCheckIns,
   prayers,
   now = new Date(),
 }: {
+  careMessages: CareMessageWithSender[];
+  currentUserId: string;
   members: GroupMemberWithProfile[];
   quietMembers: GroupMemberWithProfile[];
   recentCheckIns: CheckInWithAuthor[];
@@ -269,6 +307,7 @@ export function buildMemberCareSummaries({
   const latestCheckInByUser = buildLatestCheckInByUser(recentCheckIns);
   const attributablePrayers = prayers.filter((prayer) => prayer.visibility !== "anonymous");
   const visiblePrayerCountByUser = buildPrayerCountByUser(attributablePrayers);
+  const latestCareThreadByOwner = buildLatestCareThreadByOwner(careMessages, currentUserId);
   const today = toDateKey(now);
 
   return members
@@ -299,6 +338,7 @@ export function buildMemberCareSummaries({
         missingRhythmLabels,
         visiblePrayerCount,
       });
+      const latestCareThread = latestCareThreadByOwner.get(member.user_id) ?? null;
 
       return {
         userId: member.user_id,
@@ -322,6 +362,7 @@ export function buildMemberCareSummaries({
         careBadgeTone: careBadge.tone,
         copyMessage,
         copyPreview: copyMessage,
+        latestCareThread,
       };
     })
     .sort((left, right) => {
@@ -475,6 +516,54 @@ function buildPrayerCountByUser(prayers: PrayerRequestWithAuthor[]) {
   });
 
   return countByUser;
+}
+
+function countThreadsWaitingForLeader(messages: CareMessageWithSender[]) {
+  return [...buildLatestCareThreadByOwner(messages, "").values()].filter((thread) => thread.waitingForLeaderResponse).length;
+}
+
+function buildLatestCareThreadByOwner(messages: CareMessageWithSender[], currentUserId: string) {
+  const threadsByParent = new Map<string, CareMessageWithSender[]>();
+
+  messages.forEach((message) => {
+    const key = `${message.parent_type}:${message.parent_id}`;
+    const threadMessages = threadsByParent.get(key) ?? [];
+    threadMessages.push(message);
+    threadsByParent.set(key, threadMessages);
+  });
+
+  const latestByOwner = new Map<string, LeaderCareThreadPreview>();
+
+  threadsByParent.forEach((threadMessages) => {
+    const orderedMessages = [...threadMessages].sort((left, right) => left.created_at.localeCompare(right.created_at));
+    const firstMessage = orderedMessages[0];
+    const lastMessage = orderedMessages[orderedMessages.length - 1];
+
+    if (!firstMessage || !lastMessage) {
+      return;
+    }
+
+    const preview: LeaderCareThreadPreview = {
+      parentType: firstMessage.parent_type,
+      parentId: firstMessage.parent_id,
+      groupId: firstMessage.group_id,
+      threadOwnerId: firstMessage.thread_owner_id,
+      messageCount: orderedMessages.length,
+      lastMessageBody: lastMessage.body,
+      lastMessageSenderId: lastMessage.sender_id,
+      lastMessageSenderName: lastMessage.profiles.display_name,
+      lastMessageCreatedAt: lastMessage.created_at,
+      waitingForLeaderResponse: lastMessage.sender_id === firstMessage.thread_owner_id && lastMessage.sender_id !== currentUserId,
+      messages: orderedMessages,
+    };
+    const existing = latestByOwner.get(firstMessage.thread_owner_id);
+
+    if (!existing || preview.lastMessageCreatedAt > existing.lastMessageCreatedAt) {
+      latestByOwner.set(firstMessage.thread_owner_id, preview);
+    }
+  });
+
+  return latestByOwner;
 }
 
 function buildCareReason({

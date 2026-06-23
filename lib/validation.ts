@@ -51,3 +51,11 @@ export const leaderPrayerCareMarkSchema = z.object({
   isImportant: checkboxSchema,
   isOngoing: checkboxSchema,
 });
+
+export const careMessageSchema = z.object({
+  groupId: z.string().uuid(),
+  parentType: z.enum(["checkin", "prayer"]),
+  parentId: z.string().uuid(),
+  threadOwnerId: z.string().uuid(),
+  body: z.string().trim().min(1).max(500),
+});

@@ -49,6 +49,14 @@ export const actionErrorMessages = {
     title: "기도 돌봄 표시를 저장하지 못했어요",
     body: "잠시 후 다시 시도해 주세요. 리더에게 보이는 기도제목에만 돌봄 표시를 남길 수 있어요.",
   },
+  "care-message-invalid": {
+    title: "메시지를 다시 확인해 주세요",
+    body: "1자 이상 500자 이하로 입력해 주세요.",
+  },
+  "care-message-save": {
+    title: "메시지를 보내지 못했어요",
+    body: "잠시 후 다시 시도해 주세요.",
+  },
 } as const;
 
 export const actionSuccessMessages = {
@@ -67,6 +75,10 @@ export const actionSuccessMessages = {
   "prayer-care-saved": {
     title: "기도 돌봄 표시를 저장했어요",
     body: "이 제목은 리더 보드에서 함께 기도할 일과 조용히 돌볼 일로 다시 볼 수 있어요.",
+  },
+  "care-message-saved": {
+    title: "메시지를 보냈어요",
+    body: "",
   },
 } as const;
 

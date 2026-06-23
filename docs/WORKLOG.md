@@ -2,6 +2,7 @@
 
 ## 2026-06-23
 
+- Care Thread v0: care_messages table + RLS + sendCareMessage action + member/leader thread UI.
 - Ticket 1 implementation merged: inviteCode preservation, returnTo validation, create_group_with_leader RPC.
 
 ## 2026-06-22

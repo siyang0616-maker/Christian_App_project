@@ -4,6 +4,7 @@ export type PrayerVisibility = CheckinVisibility | "anonymous";
 export type Visibility = PrayerVisibility;
 export type Mood = "good" | "normal" | "hard" | "need_prayer";
 export type PrayerCareScope = "communal" | "personal";
+export type CareMessageParentType = "checkin" | "prayer";
 
 export type Profile = {
   id: string;
@@ -79,6 +80,21 @@ export type LeaderPrayerCareMark = {
   updated_at: string;
 };
 
+export type CareMessage = {
+  id: string;
+  group_id: string;
+  parent_type: CareMessageParentType;
+  parent_id: string;
+  thread_owner_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+};
+
+export type CareMessageWithSender = CareMessage & {
+  profiles: Profile;
+};
+
 export type DashboardData = {
   profile: Profile | null;
   membership: GroupMember | null;
@@ -89,4 +105,5 @@ export type DashboardData = {
   recentCheckIns: CheckInWithAuthor[];
   prayerRequests: PrayerRequestWithAuthor[];
   prayerReactions: PrayerReaction[];
+  careMessages: CareMessageWithSender[];
 };

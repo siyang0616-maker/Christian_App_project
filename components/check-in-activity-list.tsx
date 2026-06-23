@@ -1,10 +1,14 @@
 import { ClipboardList } from "lucide-react";
-import type { CheckInWithAuthor } from "@/lib/types";
+import { CareThread } from "@/components/care-thread";
+import { careMessageParentKey } from "@/lib/data/care-messages";
+import type { CareMessageWithSender, CheckInWithAuthor, MemberRole } from "@/lib/types";
 import { formatDateLabel, moodLabel, visibilityLabel } from "@/lib/ui/labels";
 
 type CheckInActivityListProps = {
+  careMessages: CareMessageWithSender[];
   checkIns: CheckInWithAuthor[];
   currentUserId: string;
+  currentUserRole: MemberRole;
 };
 
 const rhythmLabels: Array<{ key: keyof Pick<CheckInWithAuthor, "attended" | "bible_read" | "meditated" | "prayed" | "woke_up">; label: string }> = [
@@ -19,7 +23,9 @@ function checkedRhythms(checkIn: CheckInWithAuthor) {
   return rhythmLabels.filter((item) => checkIn[item.key]).map((item) => item.label);
 }
 
-export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivityListProps) {
+export function CheckInActivityList({ careMessages, checkIns, currentUserId, currentUserRole }: CheckInActivityListProps) {
+  const careMessagesByParent = buildCareMessageMap(careMessages);
+
   return (
     <section className="rounded-xl border border-slate-200/70 bg-white p-4 shadow-[0_1px_2px_rgba(31,41,51,0.04)]">
       <div className="mb-3 flex items-start gap-3">
@@ -36,7 +42,11 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
 
       <div className="grid gap-2">
         {checkIns.length > 0 ? (
-          checkIns.slice(0, 6).map((checkIn) => (
+          checkIns.slice(0, 6).map((checkIn) => {
+            const canUseThread = checkIn.user_id === currentUserId || currentUserRole === "leader";
+            const threadMessages = careMessagesByParent.get(careMessageParentKey("checkin", checkIn.id)) ?? [];
+
+            return (
             <article className="rounded-lg border border-slate-200/70 bg-white px-3 py-3 shadow-[0_1px_2px_rgba(31,41,51,0.04)]" key={checkIn.id}>
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -65,8 +75,21 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
                 </div>
               ) : null}
               {checkIn.note ? <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-slate-600">{checkIn.note}</p> : null}
+              {canUseThread ? (
+                <CareThread
+                  className="mt-3"
+                  currentUserId={currentUserId}
+                  groupId={checkIn.group_id}
+                  messages={threadMessages}
+                  parentId={checkIn.id}
+                  parentType="checkin"
+                  returnTo="/#check-in-status"
+                  threadOwnerId={checkIn.user_id}
+                />
+              ) : null}
             </article>
-          ))
+            );
+          })
         ) : (
           <p className="rounded-lg bg-[#F5F8F6] px-3 py-3 text-sm leading-6 text-slate-600">
             아직 볼 수 있는 안부가 없어요. 멤버가 리더에게 보이는 안부를 남기면 이곳에 보여요.
@@ -75,4 +98,17 @@ export function CheckInActivityList({ checkIns, currentUserId }: CheckInActivity
       </div>
     </section>
   );
+}
+
+function buildCareMessageMap(messages: CareMessageWithSender[]) {
+  const map = new Map<string, CareMessageWithSender[]>();
+
+  messages.forEach((message) => {
+    const key = careMessageParentKey(message.parent_type, message.parent_id);
+    const list = map.get(key) ?? [];
+    list.push(message);
+    map.set(key, list);
+  });
+
+  return map;
 }

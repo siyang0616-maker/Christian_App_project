@@ -309,7 +309,9 @@ export default async function Home({
         <div className="scroll-mt-4 grid gap-3" id="prayer-cards">
           {isPrayerFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
           <PrayerRequestList
+            careMessages={dashboard.careMessages}
             currentUserId={user.id}
+            currentUserRole={dashboard.membership.role}
             prayers={dashboard.prayerRequests}
             reactions={dashboard.prayerReactions}
           />
@@ -323,7 +325,12 @@ export default async function Home({
             prayers={dashboard.prayerRequests}
           />
         ) : null}
-        <CheckInActivityList currentUserId={user.id} checkIns={dashboard.recentCheckIns} />
+        <CheckInActivityList
+          careMessages={dashboard.careMessages}
+          checkIns={dashboard.recentCheckIns}
+          currentUserId={user.id}
+          currentUserRole={dashboard.membership.role}
+        />
         {dashboard.membership.role === "leader" ? (
           <LeaderInviteCard groupName={dashboard.activeGroup.name} inviteCode={dashboard.activeGroup.invite_code} />
         ) : null}

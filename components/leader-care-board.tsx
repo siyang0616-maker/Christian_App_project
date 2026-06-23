@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { ActionMessage } from "@/components/action-message";
+import { CareThread } from "@/components/care-thread";
 import { CopyTextButton } from "@/components/copy-text-button";
 import { ShareTextActions } from "@/components/share-text-actions";
 import { prayForRequest, saveLeaderPrayerCareMark } from "@/lib/actions/prayers";
@@ -89,7 +90,11 @@ export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, d
         </div>
 
         <aside className="xl:sticky xl:top-24">
-          <MemberCareListPanel hiddenMembers={hiddenMemberSummaries} members={visibleMemberSummaries} />
+          <MemberCareListPanel
+            currentUserId={data.currentUserId}
+            hiddenMembers={hiddenMemberSummaries}
+            members={visibleMemberSummaries}
+          />
         </aside>
       </div>
     </div>
@@ -431,19 +436,23 @@ function CareControlOption({
 }
 
 function MemberCareListPanel({
+  currentUserId,
   hiddenMembers,
   members,
 }: {
+  currentUserId: string;
   hiddenMembers: LeaderCareBoardData["memberSummaries"];
   members: LeaderCareBoardData["memberSummaries"];
 }) {
-  return <MemberSnapshotRail hiddenMembers={hiddenMembers} members={members} />;
+  return <MemberSnapshotRail currentUserId={currentUserId} hiddenMembers={hiddenMembers} members={members} />;
 }
 
 function MemberSnapshotRail({
+  currentUserId,
   hiddenMembers,
   members,
 }: {
+  currentUserId: string;
   hiddenMembers: LeaderCareBoardData["memberSummaries"];
   members: LeaderCareBoardData["memberSummaries"];
 }) {
@@ -457,14 +466,14 @@ function MemberSnapshotRail({
       <div className="mt-4 grid max-h-[calc(100dvh-160px)] gap-2 overflow-y-auto pr-1">
         {members.length > 0 ? (
           <>
-            <MemberStatusTable members={members} />
+            <MemberStatusTable currentUserId={currentUserId} members={members} />
             {hiddenMembers.length > 0 ? (
               <details className="rounded-lg border border-slate-200 bg-[#FAFAF8] px-3 py-3">
                 <summary className="cursor-pointer rounded-md text-sm font-black text-leaf focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-leaf/30">
                   나머지 멤버 {hiddenMembers.length}명 더 보기
                 </summary>
                 <div className="mt-3 grid gap-2">
-                  <MemberStatusTable members={hiddenMembers} />
+                  <MemberStatusTable currentUserId={currentUserId} members={hiddenMembers} />
                 </div>
               </details>
             ) : null}
@@ -479,7 +488,7 @@ function MemberSnapshotRail({
   );
 }
 
-function MemberStatusTable({ members }: { members: LeaderCareBoardData["memberSummaries"] }) {
+function MemberStatusTable({ currentUserId, members }: { currentUserId: string; members: LeaderCareBoardData["memberSummaries"] }) {
   return (
     <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
       <div className="hidden grid-cols-[minmax(120px,1.2fr)_74px_74px_88px_minmax(120px,1fr)] gap-2 border-b border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-black text-slate-500 md:grid">
@@ -490,13 +499,13 @@ function MemberStatusTable({ members }: { members: LeaderCareBoardData["memberSu
         <span>돌봄 신호</span>
       </div>
       {members.map((member) => (
-        <MemberStatusRow member={member} key={member.userId} />
+        <MemberStatusRow currentUserId={currentUserId} member={member} key={member.userId} />
       ))}
     </div>
   );
 }
 
-function MemberStatusRow({ member }: { member: LeaderCareBoardData["memberSummaries"][number] }) {
+function MemberStatusRow({ currentUserId, member }: { currentUserId: string; member: LeaderCareBoardData["memberSummaries"][number] }) {
   const checkInDone = member.hasTodayCheckIn;
   const prayerDone = member.visiblePrayerCount > 0;
   const doneCount = member.rhythmStatus.filter((item) => item.done).length;
@@ -566,8 +575,57 @@ function MemberStatusRow({ member }: { member: LeaderCareBoardData["memberSummar
             <ShareTextActions copyLabel="안부 문구 복사" shareLabel="리마인드 보내기" text={member.copyMessage} />
           </div>
         </div>
+        {member.latestCareThread ? <LeaderCareThreadPanel currentUserId={currentUserId} member={member} /> : null}
       </div>
     </details>
+  );
+}
+
+function LeaderCareThreadPanel({
+  currentUserId,
+  member,
+}: {
+  currentUserId: string;
+  member: LeaderCareBoardData["memberSummaries"][number];
+}) {
+  const thread = member.latestCareThread;
+
+  if (!thread) {
+    return null;
+  }
+
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white px-3 py-3 md:col-span-2">
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div>
+          <p className="text-xs font-black text-slate-500">대화 스레드</p>
+          <p className="mt-1 text-sm font-black text-ink">
+            {thread.parentType === "checkin" ? "체크인에서 이어진 대화" : "기도제목에서 이어진 대화"}
+          </p>
+        </div>
+        <span
+          className={`rounded-md border px-2 py-1 text-[11px] font-black ${
+            thread.waitingForLeaderResponse
+              ? "border-[#BBD4E2] bg-[#F2F8FB] text-[#315F7D]"
+              : "border-leaf/20 bg-[#F3F8F5] text-leaf"
+          }`}
+        >
+          {thread.waitingForLeaderResponse ? "답장 필요" : "대화 기록 있음"}
+        </span>
+      </div>
+      <p className="mb-3 rounded-lg bg-slate-50 px-3 py-2 text-xs leading-5 text-slate-600">
+        최근 메시지: {thread.lastMessageSenderName} · {thread.lastMessageBody}
+      </p>
+      <CareThread
+        currentUserId={currentUserId}
+        groupId={thread.groupId}
+        messages={thread.messages}
+        parentId={thread.parentId}
+        parentType={thread.parentType}
+        returnTo="/leader"
+        threadOwnerId={thread.threadOwnerId}
+      />
+    </div>
   );
 }
 

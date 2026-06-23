@@ -1,16 +1,21 @@
 import { Heart } from "lucide-react";
+import { CareThread } from "@/components/care-thread";
 import { prayForRequest } from "@/lib/actions/prayers";
-import type { PrayerReaction, PrayerRequestWithAuthor } from "@/lib/types";
+import { careMessageParentKey } from "@/lib/data/care-messages";
+import type { CareMessageWithSender, MemberRole, PrayerReaction, PrayerRequestWithAuthor } from "@/lib/types";
 import { formatDateLabel, visibilityLabel } from "@/lib/ui/labels";
 
 type PrayerRequestListProps = {
+  careMessages: CareMessageWithSender[];
   currentUserId: string;
+  currentUserRole: MemberRole;
   prayers: PrayerRequestWithAuthor[];
   reactions: PrayerReaction[];
 };
 
-export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerRequestListProps) {
+export function PrayerRequestList({ careMessages, currentUserId, currentUserRole, prayers, reactions }: PrayerRequestListProps) {
   const reactionMap = new Map<string, PrayerReaction[]>();
+  const careMessagesByParent = buildCareMessageMap(careMessages);
 
   reactions.forEach((reaction) => {
     const list = reactionMap.get(reaction.prayer_id) ?? [];
@@ -31,6 +36,8 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
           const prayerReactions = reactionMap.get(prayer.id) ?? [];
           const alreadyPrayed = prayerReactions.some((reaction) => reaction.user_id === currentUserId);
           const authorName = prayer.visibility === "anonymous" ? "이름 숨김" : prayer.profiles.display_name;
+          const canUseThread = prayer.user_id === currentUserId || currentUserRole === "leader";
+          const threadMessages = careMessagesByParent.get(careMessageParentKey("prayer", prayer.id)) ?? [];
 
           return (
             <article className="rounded-2xl border border-slate-200/70 bg-white/95 p-4 shadow-[0_12px_30px_rgba(31,41,51,0.06)]" key={prayer.id}>
@@ -60,6 +67,18 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
                   {alreadyPrayed ? "기도로 기억 중" : "기도했어요"}
                 </button>
               </form>
+              {canUseThread ? (
+                <CareThread
+                  className="mt-3"
+                  currentUserId={currentUserId}
+                  groupId={prayer.group_id}
+                  messages={threadMessages}
+                  parentId={prayer.id}
+                  parentType="prayer"
+                  returnTo="/#prayer-cards"
+                  threadOwnerId={prayer.user_id}
+                />
+              ) : null}
             </article>
           );
         })
@@ -70,4 +89,17 @@ export function PrayerRequestList({ currentUserId, prayers, reactions }: PrayerR
       )}
     </section>
   );
+}
+
+function buildCareMessageMap(messages: CareMessageWithSender[]) {
+  const map = new Map<string, CareMessageWithSender[]>();
+
+  messages.forEach((message) => {
+    const key = careMessageParentKey(message.parent_type, message.parent_id);
+    const list = map.get(key) ?? [];
+    list.push(message);
+    map.set(key, list);
+  });
+
+  return map;
 }

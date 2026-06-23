@@ -1,0 +1,202 @@
+## 1. ?섏? ?딅뒗 寃?(?덈? 異붽??섏? 留?寃?
+
+- ?ㅼ떆媛??낅뜲?댄듃 (Supabase Realtime, WebSocket, polling)
+- ?쎌쓬 ?쒖떆, ??댄븨 ?몃뵒耳?댄꽣
+- ?몄떆/SMS/Kakao ?뚮┝
+- ?대?吏/?뚯씪 泥⑤?
+- 硫붿떆吏 ?섏젙/??젣 (append-only, 移댄넚怨??щ━ "湲곕줉"???듭떖 媛移?
+- ?낅┰?곸씤 "梨꾪똿 ???대굹 ?꾩껜 ???紐⑸줉 ?붾㈃ ??諛섎뱶??泥댄겕??湲곕룄?쒕ぉ 移대뱶??遺숈뼱?쒕쭔 議댁옱
+
+## 2. ?곗씠?곕쿋?댁뒪
+
+留덉씠洹몃젅?댁뀡 ?뚯씪? ?대? ?묒꽦?섏뼱 ?덉뒿?덈떎: `supabase/migrations/007_care_messages.sql`
+(??conversation??泥⑤????뚯씪??洹몃?濡?蹂듭궗?댁꽌 ?꾨줈?앺듃???ｌ쑝?몄슂.)
+
+?듭떖 ?ㅺ퀎:
+- `care_messages` ?뚯씠釉붿씠 `checkins` ?먮뒗 `prayers`??`parent_type` + `parent_id`濡?留ㅻ떖由?- `thread_owner_id`????긽 洹?泥댄겕??湲곕룄?쒕ぉ????硫ㅻ쾭 (由щ뜑媛 ?듭옣?대룄 owner????諛붾?
+- RLS: 硫ㅻ쾭???먭린 ?ㅻ젅?쒕쭔, 由щ뜑??洹몃９ ?꾩껜 ?ㅻ젅?쒕? 蹂????덉쓬
+- update/delete ?뺤콉 ?놁쓬 ??append-only
+
+## 3. ???異붽? (`lib/types.ts`)
+
+湲곗〈 ?뚯씪 留??꾨옒??異붽?:
+
+```typescript
+export type CareMessageParentType = "checkin" | "prayer";
+
+export type CareMessage = {
+  id: string;
+  group_id: string;
+  parent_type: CareMessageParentType;
+  parent_id: string;
+  thread_owner_id: string;
+  sender_id: string;
+  body: string;
+  created_at: string;
+};
+
+export type CareMessageWithSender = CareMessage & {
+  profiles: Profile;
+};
+```
+
+## 4. Validation 異붽? (`lib/validation.ts`)
+
+湲곗〈 ?뚯씪 ?앹뿉 異붽?, 湲곗〈 ?ㅽ궎留덈뱾怨?媛숈? ?ㅽ????좎?:
+
+```typescript
+export const careMessageSchema = z.object({
+  groupId: z.string().uuid(),
+  parentType: z.enum(["checkin", "prayer"]),
+  parentId: z.string().uuid(),
+  threadOwnerId: z.string().uuid(),
+  body: z.string().trim().min(1).max(500),
+});
+```
+
+## 5. ?쒕쾭 ?≪뀡 (`lib/actions/care-messages.ts` ?????뚯씪)
+
+`lib/actions/prayers.ts`??湲곗〈 援ъ“(?먮윭 泥섎━, revalidatePath ?⑦꽩)瑜?洹몃?濡??곕씪媛???묒꽦:
+
+```typescript
+"use server";
+
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { actionErrorPath, actionSuccessPath, getSafeInternalPath } from "@/lib/action-feedback";
+import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { careMessageSchema } from "@/lib/validation";
+
+export async function sendCareMessage(formData: FormData) {
+  const returnTo = getSafeInternalPath(formData.get("returnTo"));
+  const parsed = careMessageSchema.safeParse(Object.fromEntries(formData));
+
+  if (!parsed.success) {
+    redirect(actionErrorPath("care-message-invalid", returnTo));
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/");
+  }
+
+  const { error } = await supabase.from("care_messages").insert({
+    group_id: parsed.data.groupId,
+    parent_type: parsed.data.parentType,
+    parent_id: parsed.data.parentId,
+    thread_owner_id: parsed.data.threadOwnerId,
+    sender_id: user.id,
+    body: parsed.data.body,
+  });
+
+  if (error) {
+    console.error("Supabase care message save failed", {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+    });
+    redirect(actionErrorPath("care-message-save", returnTo));
+  }
+
+  revalidatePath("/");
+  revalidatePath("/leader");
+  redirect(actionSuccessPath("care-message-saved", returnTo));
+}
+```
+
+`lib/action-feedback.ts`??`actionErrorMessages`? `actionSuccessMessages`??異붽?:
+
+```typescript
+// actionErrorMessages ?덉뿉 異붽?
+"care-message-invalid": {
+  title: "硫붿떆吏瑜??ㅼ떆 ?뺤씤??二쇱꽭??,
+  body: "1???댁긽 500???댄븯濡??낅젰??二쇱꽭??",
+},
+"care-message-save": {
+  title: "硫붿떆吏瑜?蹂대궡吏 紐삵뻽?댁슂",
+  body: "?좎떆 ???ㅼ떆 ?쒕룄??二쇱꽭??",
+},
+
+// actionSuccessMessages ?덉뿉 異붽?
+"care-message-saved": {
+  title: "硫붿떆吏瑜?蹂대깉?댁슂",
+  body: "",
+},
+```
+
+## 6. ?곗씠???덉씠??(`lib/data/care-messages.ts` ?????뚯씪)
+
+???⑥닔??"??泥댄겕??湲곕룄?쒕ぉ???щ┛ 硫붿떆吏 紐⑸줉"??媛?몄샃?덈떎.
+硫ㅻ쾭 ?붾㈃怨?由щ뜑 ?붾㈃ ?묒そ?먯꽌 ?ъ궗?⑺빀?덈떎.
+
+```typescript
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { CareMessageParentType, CareMessageWithSender } from "@/lib/types";
+
+export async function getCareMessagesForParent(
+  supabase: SupabaseClient,
+  parentType: CareMessageParentType,
+  parentId: string,
+): Promise<CareMessageWithSender[]> {
+  const { data, error } = await supabase
+    .from("care_messages")
+    .select("*, profiles(*)")
+    .eq("parent_type", parentType)
+    .eq("parent_id", parentId)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error("Supabase care message fetch failed", {
+      code: error.code,
+      message: error.message,
+    });
+    return [];
+  }
+
+  return (data ?? []) as CareMessageWithSender[];
+}
+```
+
+由щ뜑 耳?대낫??履쎌뿉?쒕뒗 "?묐떟 ?湲?以묒씤 ?ㅻ젅?? 紐⑸줉???꾩슂?⑸땲??
+`lib/data/leader-care-board.ts`???ㅼ쓬 濡쒖쭅??異붽? (湲곗〈 `LeaderCareBoardData` ????뺤옣):
+
+- 洹몃９??紐⑤뱺 `care_messages`瑜?媛?몄???`parent_type` + `parent_id`濡?洹몃９??- 媛??ㅻ젅?쒖쓽 留덉?留?硫붿떆吏 諛쒖떊?먭? 硫ㅻ쾭??寃쎌슦 = "由щ뜑 ?묐떟 ?湲?濡??쒖떆
+- 留덉?留?硫붿떆吏 諛쒖떊?먭? 由щ뜑??寃쎌슦 = "硫ㅻ쾭 ?뺤씤 ?湲? (諛곗? ?놁씠 議곗슜???쒖떆)
+
+??遺遺꾩? `leader-care-board.tsx`??湲곗〈 `inbox` 諛곗뿴??????ぉ ??낆쑝濡??쇱썙 ?ｌ쑝硫??섍퀬,
+蹂꾨룄?????⑤꼸??留뚮뱾 ?꾩슂???놁뒿?덈떎 ??湲곗〈 "?ㅻ뒛 ?곗꽑?쒖쐞" ?뱀뀡???먯뿰?ㅻ읇寃??⑸쪟?쒗궎?몄슂.
+
+## 7. UI ??硫ㅻ쾭 履?(湲곗〈 而댄룷?뚰듃 ?섏젙)
+
+`components/check-in-activity-list.tsx`? `components/prayer-request-list.tsx`?먯꽌
+媛?移대뱶 ?섎떒???묒? "????붾낫湲? ?좉???異붽??⑸땲??
+
+?덉씠?꾩썐 ?먯튃:
+- 湲곕낯 ?곹깭: "由щ뜑? ???1媛? 媛숈? ??以??붿빟留?蹂댁엫 (?쇱튂湲???
+- ?쇱튂硫? 硫붿떆吏?ㅼ씠 ?쒓컙?쒖쑝濡??섏뿴, 諛쒖떊???대쫫 + ?쒓컙
+- 留??꾨옒 ?낅젰李?1媛?(textarea + ?꾩넚 踰꾪듉), 硫붿떆吏 ?놁쑝硫?placeholder濡?  "由щ뜑?먭쾶 吏㏐쾶 ?④꺼蹂댁꽭?? ?뺣룄??遺???녿뒗 臾멸뎄
+- 由щ뜑媛 蹂대궦 硫붿떆吏? ?닿? 蹂대궦 硫붿떆吏??諛곌꼍?됱쑝濡쒕쭔 援щ텇 (留먰뭾??瑗щ━, 醫뚯슦 諛곗튂 媛숈?
+  梨꾪똿 UI ?⑦꽩? ?곗? ?딆쓬 ???닿굔 梨꾪똿???꾨땲???볤??대씪??嫄??쒓컖?곸쑝濡쒕룄 遺꾨챸????
+
+## 8. UI ??由щ뜑 履?(`leader-care-board.tsx` ?뺤옣)
+
+湲곗〈 `MemberStatusRow`??expandable ?곸뿭(`<details>` ?덉そ) ???대? "蹂대궪 臾몄옣" ?⑤꼸???덉뒿?덈떎.
+洹??놁뿉 ???⑤꼸???섎굹 異붽?:
+
+- "????ㅻ젅?? ?⑤꼸: ??硫ㅻ쾭??理쒓렐 泥댄겕??湲곕룄?쒕ぉ???щ┛ ???以?媛??理쒓렐 寃?1媛쒕쭔 誘몃━蹂닿린
+- "?듭옣?섍린" 踰꾬옙?쇱쓣 ?꾨Ⅴ硫??몃씪??textarea媛 ?대┝ (蹂꾨룄 ?섏씠吏 ?대룞 ?놁쓬)
+- ?묐떟 ?湲?以묒씤 ?ㅻ젅?쒓? ?덉쑝硫?硫ㅻ쾭 ???먯껜???묒? ?쒖떆(湲곗〈 `careBadgeTone` ???ъ궗??
+
+## 9. Acceptance Criteria
+
+1. `corepack pnpm lint`, `typecheck`, `build`, `verify` ?듦낵
+2. 硫ㅻ쾭媛 ?먭린 泥댄겕?몄뿉 硫붿떆吏瑜??④린硫? 由щ뜑 怨꾩젙?먯꽌 `/leader`瑜??댁뿀????蹂댁엫
+3. 硫ㅻ쾭 B媛 硫ㅻ쾭 A???ㅻ젅?쒕? RLS ?뚮Ц??紐?遊?(Supabase?먯꽌 吏곸젒 荑쇰━?댁꽌 鍮?諛곗뿴 ?뺤씤)
+4. 由щ뜑媛 ?듭옣?섎㈃ 硫ㅻ쾭 履??붾㈃???덈줈怨좎묠 ??蹂댁엫 (?ㅼ떆媛??꾨떂, ?덈줈怨좎묠 湲곗?)
+5. 500??珥덇낵 ?낅젰???먮윭 硫붿떆吏 ?뺤긽 ?쒖떆
+6. ???섏씠吏/????씠 ?앷린吏 ?딆쓬 ???꾨? 湲곗〈 泥댄겕??湲곕룄?쒕ぉ 移대뱶 ?덉뿉 ?몃씪?몄쑝濡?議댁옱
