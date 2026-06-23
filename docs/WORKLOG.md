@@ -2,6 +2,7 @@
 
 ## 2026-06-23
 
+- Local beta smoke test: 실패 - 리더 로그인, 프로필 저장, 방 생성, 초대 패널 열기까지 진행했지만 로컬에서 `링크 복사` 버튼이 비활성화되어 초대 링크 복사 단계에서 중단.
 - Care Thread v0: care_messages table + RLS + sendCareMessage action + member/leader thread UI.
 - Ticket 1 implementation merged: inviteCode preservation, returnTo validation, create_group_with_leader RPC.
 
