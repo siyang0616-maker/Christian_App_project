@@ -8,6 +8,7 @@ import type {
   PrayerReaction,
   PrayerRequestWithAuthor,
 } from "@/lib/types";
+import { hasCareSignal } from "@/lib/care-signals";
 import { moodLabel, visibilityLabel } from "@/lib/ui/labels";
 
 export type LeaderInboxItem = {
@@ -86,6 +87,7 @@ export type LeaderMemberCareSummary = {
   latestCareThread: LeaderCareThreadPreview | null;
   isWaitingOnMember: boolean;
   daysSinceLeaderContact: number | null;
+  hasTextCareSignal: boolean;
 };
 
 export type LeaderCareBoardData = {
@@ -309,6 +311,7 @@ export function buildMemberCareSummaries({
   const latestCheckInByUser = buildLatestCheckInByUser(recentCheckIns);
   const attributablePrayers = prayers.filter((prayer) => prayer.visibility !== "anonymous");
   const visiblePrayerCountByUser = buildPrayerCountByUser(attributablePrayers);
+  const prayersByUser = buildPrayersByUser(attributablePrayers);
   const latestCareThreadByOwner = buildLatestCareThreadByOwner(careMessages, currentUserId);
   const today = toDateKey(now);
 
@@ -324,7 +327,14 @@ export function buildMemberCareSummaries({
       const isQuiet = quietMemberIds.has(member.user_id);
       const latestCareThread = latestCareThreadByOwner.get(member.user_id) ?? null;
       const contactWaitingStatus = buildContactWaitingStatus(latestCareThread?.messages ?? [], currentUserId, now);
+      const hasTextCareSignal = buildMemberTextCareSignal({
+        careMessages,
+        latestCheckIn,
+        memberUserId: member.user_id,
+        prayers: prayersByUser.get(member.user_id) ?? [],
+      });
       const priorityRank = buildMemberPriorityRank({
+        hasTextCareSignal,
         hasTodayCheckIn,
         isWaitingOnMember: contactWaitingStatus.isWaitingOnMember,
         latestCheckIn: todayCheckIn,
@@ -354,6 +364,7 @@ export function buildMemberCareSummaries({
         missingRhythmLabels,
         rhythmCompletionLabel: `${rhythmStatus.filter((item) => item.done).length}/${rhythmStatus.length}개 리듬`,
         careReason: buildCareReason({
+          hasTextCareSignal,
           hasTodayCheckIn,
           latestCheckIn: todayCheckIn,
           missingRhythmLabels,
@@ -369,6 +380,7 @@ export function buildMemberCareSummaries({
         latestCareThread,
         isWaitingOnMember: contactWaitingStatus.isWaitingOnMember,
         daysSinceLeaderContact: contactWaitingStatus.daysSinceLeaderContact,
+        hasTextCareSignal,
       };
     })
     .sort((left, right) => {
@@ -524,6 +536,36 @@ function buildPrayerCountByUser(prayers: PrayerRequestWithAuthor[]) {
   return countByUser;
 }
 
+function buildPrayersByUser(prayers: PrayerRequestWithAuthor[]) {
+  const prayersByUser = new Map<string, PrayerRequestWithAuthor[]>();
+
+  prayers.forEach((prayer) => {
+    const list = prayersByUser.get(prayer.user_id) ?? [];
+    list.push(prayer);
+    prayersByUser.set(prayer.user_id, list);
+  });
+
+  return prayersByUser;
+}
+
+function buildMemberTextCareSignal({
+  careMessages,
+  latestCheckIn,
+  memberUserId,
+  prayers,
+}: {
+  careMessages: CareMessageWithSender[];
+  latestCheckIn: CheckInWithAuthor | null;
+  memberUserId: string;
+  prayers: PrayerRequestWithAuthor[];
+}) {
+  return (
+    hasCareSignal(latestCheckIn?.note) ||
+    prayers.some((prayer) => hasCareSignal(prayer.content)) ||
+    careMessages.some((message) => message.thread_owner_id === memberUserId && message.sender_id === memberUserId && hasCareSignal(message.body))
+  );
+}
+
 function countThreadsWaitingForLeader(messages: CareMessageWithSender[]) {
   return [...buildLatestCareThreadByOwner(messages, "").values()].filter((thread) => thread.waitingForLeaderResponse).length;
 }
@@ -594,11 +636,13 @@ function buildLatestCareThreadByOwner(messages: CareMessageWithSender[], current
 }
 
 function buildCareReason({
+  hasTextCareSignal,
   hasTodayCheckIn,
   latestCheckIn,
   missingRhythmLabels,
   visiblePrayerCount,
 }: {
+  hasTextCareSignal: boolean;
   hasTodayCheckIn: boolean;
   latestCheckIn: CheckInWithAuthor | null;
   missingRhythmLabels: string[];
@@ -606,6 +650,10 @@ function buildCareReason({
 }) {
   if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer") {
     return "오늘 안부를 조금 더 살펴보면 좋아요.";
+  }
+
+  if (hasTextCareSignal) {
+    return "남긴 글 안에 리더가 조금 더 주의 깊게 읽을 표현이 있어요.";
   }
 
   if (!hasTodayCheckIn) {
@@ -624,19 +672,21 @@ function buildCareReason({
 }
 
 function buildMemberPriorityRank({
+  hasTextCareSignal,
   hasTodayCheckIn,
   isWaitingOnMember,
   latestCheckIn,
   missingRhythmLabels,
   visiblePrayerCount,
 }: {
+  hasTextCareSignal: boolean;
   hasTodayCheckIn: boolean;
   isWaitingOnMember: boolean;
   latestCheckIn: CheckInWithAuthor | null;
   missingRhythmLabels: string[];
   visiblePrayerCount: number;
 }) {
-  if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer") {
+  if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer" || hasTextCareSignal) {
     return 1;
   }
 
