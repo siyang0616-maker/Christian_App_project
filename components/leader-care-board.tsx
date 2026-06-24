@@ -68,6 +68,8 @@ const memberBadgeClassNames: Record<LeaderCareBoardData["memberSummaries"][numbe
   blue: "border-[#BBD4E2] bg-[#F2F8FB] text-[#315F7D]",
 };
 
+const contactWaitingBadgeClassName = "border-amber-200 bg-amber-50 text-amber-800";
+
 export function LeaderCareBoard({ actionError, actionSuccess, activeGroupName, data }: LeaderCareBoardProps) {
   const visibleMemberSummaries = data.memberSummaries.slice(0, VISIBLE_MEMBER_SUMMARY_COUNT);
   const hiddenMemberSummaries = data.memberSummaries.slice(VISIBLE_MEMBER_SUMMARY_COUNT);
@@ -521,10 +523,9 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
         <div className="min-w-0">
           <div className="flex items-center justify-between gap-2 md:block">
             <p className="truncate text-sm font-black text-ink">{member.displayName}</p>
-            <span
-              className={`inline-flex shrink-0 items-center rounded-md border px-2 py-1 text-[11px] font-black md:hidden ${memberBadgeClassNames[member.careBadgeTone]}`}
-            >
-              {member.careBadgeLabel}
+            <span className="flex shrink-0 flex-wrap justify-end gap-1 md:hidden">
+              <MemberCareBadge member={member} />
+              <ContactWaitingBadge member={member} />
             </span>
           </div>
           <p className="mt-1 truncate text-xs text-slate-500">{member.latestCheckInLabel}</p>
@@ -543,10 +544,9 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
         </div>
 
         <div className="flex items-center justify-between gap-2">
-          <span
-            className={`hidden shrink-0 items-center rounded-md border px-2 py-1 text-[11px] font-black md:inline-flex ${memberBadgeClassNames[member.careBadgeTone]}`}
-          >
-            {member.careBadgeLabel}
+          <span className="hidden shrink-0 flex-wrap gap-1 md:flex">
+            <MemberCareBadge member={member} />
+            <ContactWaitingBadge member={member} />
           </span>
           <p className="min-w-0 truncate text-xs leading-5 text-slate-600">{member.careReason}</p>
         </div>
@@ -578,6 +578,26 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
         {member.latestCareThread ? <LeaderCareThreadPanel currentUserId={currentUserId} member={member} /> : null}
       </div>
     </details>
+  );
+}
+
+function MemberCareBadge({ member }: { member: LeaderCareBoardData["memberSummaries"][number] }) {
+  return (
+    <span className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-black ${memberBadgeClassNames[member.careBadgeTone]}`}>
+      {member.careBadgeLabel}
+    </span>
+  );
+}
+
+function ContactWaitingBadge({ member }: { member: LeaderCareBoardData["memberSummaries"][number] }) {
+  if (!member.isWaitingOnMember || member.daysSinceLeaderContact === null) {
+    return null;
+  }
+
+  return (
+    <span className={`inline-flex items-center rounded-md border px-2 py-1 text-[11px] font-black ${contactWaitingBadgeClassName}`}>
+      D+{member.daysSinceLeaderContact} 응답 없음
+    </span>
   );
 }
 

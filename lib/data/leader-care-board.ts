@@ -84,6 +84,8 @@ export type LeaderMemberCareSummary = {
   copyMessage: string;
   copyPreview: string;
   latestCareThread: LeaderCareThreadPreview | null;
+  isWaitingOnMember: boolean;
+  daysSinceLeaderContact: number | null;
 };
 
 export type LeaderCareBoardData = {
@@ -320,8 +322,11 @@ export function buildMemberCareSummaries({
       const missingRhythmLabels = buildMissingRhythmLabels(rhythmStatus);
       const visiblePrayerCount = visiblePrayerCountByUser.get(member.user_id) ?? 0;
       const isQuiet = quietMemberIds.has(member.user_id);
+      const latestCareThread = latestCareThreadByOwner.get(member.user_id) ?? null;
+      const contactWaitingStatus = buildContactWaitingStatus(latestCareThread?.messages ?? [], currentUserId, now);
       const priorityRank = buildMemberPriorityRank({
         hasTodayCheckIn,
+        isWaitingOnMember: contactWaitingStatus.isWaitingOnMember,
         latestCheckIn: todayCheckIn,
         missingRhythmLabels,
         visiblePrayerCount,
@@ -338,7 +343,6 @@ export function buildMemberCareSummaries({
         missingRhythmLabels,
         visiblePrayerCount,
       });
-      const latestCareThread = latestCareThreadByOwner.get(member.user_id) ?? null;
 
       return {
         userId: member.user_id,
@@ -363,6 +367,8 @@ export function buildMemberCareSummaries({
         copyMessage,
         copyPreview: copyMessage,
         latestCareThread,
+        isWaitingOnMember: contactWaitingStatus.isWaitingOnMember,
+        daysSinceLeaderContact: contactWaitingStatus.daysSinceLeaderContact,
       };
     })
     .sort((left, right) => {
@@ -522,6 +528,27 @@ function countThreadsWaitingForLeader(messages: CareMessageWithSender[]) {
   return [...buildLatestCareThreadByOwner(messages, "").values()].filter((thread) => thread.waitingForLeaderResponse).length;
 }
 
+function buildContactWaitingStatus(
+  threadMessages: CareMessageWithSender[],
+  currentUserId: string,
+  today: Date,
+): { isWaitingOnMember: boolean; daysSinceLeaderContact: number | null } {
+  if (threadMessages.length === 0) {
+    return { isWaitingOnMember: false, daysSinceLeaderContact: null };
+  }
+
+  const last = threadMessages[threadMessages.length - 1];
+  const leaderSentLast = last.sender_id === currentUserId;
+
+  if (!leaderSentLast) {
+    return { isWaitingOnMember: false, daysSinceLeaderContact: null };
+  }
+
+  const days = Math.floor((today.getTime() - new Date(last.created_at).getTime()) / 86_400_000);
+
+  return { isWaitingOnMember: days >= 3, daysSinceLeaderContact: days };
+}
+
 function buildLatestCareThreadByOwner(messages: CareMessageWithSender[], currentUserId: string) {
   const threadsByParent = new Map<string, CareMessageWithSender[]>();
 
@@ -598,17 +625,23 @@ function buildCareReason({
 
 function buildMemberPriorityRank({
   hasTodayCheckIn,
+  isWaitingOnMember,
   latestCheckIn,
   missingRhythmLabels,
   visiblePrayerCount,
 }: {
   hasTodayCheckIn: boolean;
+  isWaitingOnMember: boolean;
   latestCheckIn: CheckInWithAuthor | null;
   missingRhythmLabels: string[];
   visiblePrayerCount: number;
 }) {
   if (latestCheckIn?.mood === "hard" || latestCheckIn?.mood === "need_prayer") {
     return 1;
+  }
+
+  if (isWaitingOnMember) {
+    return 1.5;
   }
 
   if (!hasTodayCheckIn) {
