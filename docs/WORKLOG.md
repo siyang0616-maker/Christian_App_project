@@ -2,6 +2,8 @@
 
 ## 2026-06-23
 
+- [Windows] Ticket C 멤버 성장 타임라인 구현, 28칸 checkins 데이터 일치 검증 완료
+
 - [Windows] Ticket B 키워드 신호 감지, 멤버 화면 비노출 검증 완료
 
 - [Windows] Ticket B 키워드 신호 감지 구현 (push: 보류 - gh CLI 미설치)

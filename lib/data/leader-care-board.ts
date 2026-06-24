@@ -7,6 +7,7 @@ import type {
   PrayerCareScope,
   PrayerReaction,
   PrayerRequestWithAuthor,
+  TimelineDay,
 } from "@/lib/types";
 import { hasCareSignal } from "@/lib/care-signals";
 import { moodLabel, visibilityLabel } from "@/lib/ui/labels";
@@ -88,6 +89,7 @@ export type LeaderMemberCareSummary = {
   isWaitingOnMember: boolean;
   daysSinceLeaderContact: number | null;
   hasTextCareSignal: boolean;
+  timeline: TimelineDay[];
 };
 
 export type LeaderCareBoardData = {
@@ -117,6 +119,7 @@ type LeaderCareBoardInput = {
   careMarks: LeaderPrayerCareMark[];
   careMessages: CareMessageWithSender[];
   currentUserId: string;
+  memberTimelinesByUser?: Map<string, TimelineDay[]>;
   now?: Date;
 };
 
@@ -153,6 +156,7 @@ export function createLeaderCareBoardData(input: LeaderCareBoardInput): LeaderCa
       prayers: input.prayers,
       careMessages: input.careMessages,
       currentUserId: input.currentUserId,
+      memberTimelinesByUser: input.memberTimelinesByUser,
       now: input.now,
     }),
   };
@@ -293,6 +297,7 @@ export function groupPrayersByDate(
 export function buildMemberCareSummaries({
   careMessages,
   currentUserId,
+  memberTimelinesByUser,
   members,
   quietMembers,
   recentCheckIns,
@@ -301,6 +306,7 @@ export function buildMemberCareSummaries({
 }: {
   careMessages: CareMessageWithSender[];
   currentUserId: string;
+  memberTimelinesByUser?: Map<string, TimelineDay[]>;
   members: GroupMemberWithProfile[];
   quietMembers: GroupMemberWithProfile[];
   recentCheckIns: CheckInWithAuthor[];
@@ -381,6 +387,7 @@ export function buildMemberCareSummaries({
         isWaitingOnMember: contactWaitingStatus.isWaitingOnMember,
         daysSinceLeaderContact: contactWaitingStatus.daysSinceLeaderContact,
         hasTextCareSignal,
+        timeline: memberTimelinesByUser?.get(member.user_id) ?? [],
       };
     })
     .sort((left, right) => {

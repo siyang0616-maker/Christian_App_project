@@ -6,6 +6,15 @@ export type Mood = "good" | "normal" | "hard" | "need_prayer";
 export type PrayerCareScope = "communal" | "personal";
 export type CareMessageParentType = "checkin" | "prayer";
 
+export type TimelineDay = {
+  date: string;
+  hasCheckIn: boolean;
+  mood: Mood | null;
+  bibleRead: boolean;
+  prayed: boolean;
+  attended: boolean;
+};
+
 export type Profile = {
   id: string;
   display_name: string;
@@ -106,4 +115,5 @@ export type DashboardData = {
   prayerRequests: PrayerRequestWithAuthor[];
   prayerReactions: PrayerReaction[];
   careMessages: CareMessageWithSender[];
+  memberTimeline: TimelineDay[];
 };

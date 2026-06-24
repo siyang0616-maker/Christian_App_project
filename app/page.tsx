@@ -8,6 +8,7 @@ import { CreateGroupForm } from "@/components/create-group-form";
 import { JoinGroupForm } from "@/components/join-group-form";
 import { LeaderInviteCard } from "@/components/leader-invite-card";
 import { LeaderDashboard } from "@/components/leader-dashboard";
+import { MemberTimelineGrid } from "@/components/member-timeline-grid";
 import { PrayerRequestForm } from "@/components/prayer-request-form";
 import { PrayerRequestList } from "@/components/prayer-request-list";
 import { ProfileSetupForm } from "@/components/profile-setup-form";
@@ -302,6 +303,7 @@ export default async function Home({
             checkIn={dashboard.todayCheckIn}
             groupName={dashboard.activeGroup.name}
           />
+          <MemberTimelineGrid timeline={dashboard.memberTimeline} />
           {isCheckInFeedback ? <ActionMessage errorCode={actionError} successCode={actionSuccess} /> : null}
         </div>
         <CheckInForm groupId={dashboard.activeGroup.id} todayCheckIn={dashboard.todayCheckIn} />

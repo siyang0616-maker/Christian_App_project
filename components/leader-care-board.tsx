@@ -13,6 +13,7 @@ import type { ReactNode } from "react";
 import { ActionMessage } from "@/components/action-message";
 import { CareThread } from "@/components/care-thread";
 import { CopyTextButton } from "@/components/copy-text-button";
+import { MemberTimelineGrid } from "@/components/member-timeline-grid";
 import { ShareTextActions } from "@/components/share-text-actions";
 import { prayForRequest, saveLeaderPrayerCareMark } from "@/lib/actions/prayers";
 import type { LeaderCareBoardData } from "@/lib/data/leader-care-board";
@@ -577,6 +578,9 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
           <div className="mt-3">
             <ShareTextActions copyLabel="안부 문구 복사" shareLabel="리마인드 보내기" text={member.copyMessage} />
           </div>
+        </div>
+        <div className="md:col-span-2">
+          <MemberTimelineGrid compact timeline={member.timeline} title="최근 4주 안부 기록" />
         </div>
         {member.latestCareThread ? <LeaderCareThreadPanel currentUserId={currentUserId} member={member} /> : null}
       </div>

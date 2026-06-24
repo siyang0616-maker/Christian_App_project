@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCareMessagesForParents } from "@/lib/data/care-messages";
 import { createLeaderCareBoardData, type LeaderCareBoardData } from "@/lib/data/leader-care-board";
+import { getMemberTimelinesForGroup } from "@/lib/data/member-timeline";
 import {
   attachProfilesToCheckIns,
   attachProfilesToMembers,
@@ -143,6 +144,7 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
   const todayCheckins = todayCheckinsResult.data ?? [];
   const recentCheckIns = recentCheckinsResult.data ?? [];
   const prayersToRemember = prayersToRememberResult.data ?? [];
+  const memberUserIds = members.filter((member) => member.role === "member").map((member) => member.user_id);
   const prayerIds = prayersToRemember.map((prayer) => prayer.id);
   const careMessageParents = [
     ...recentCheckIns.map((checkIn) => ({ parentType: "checkin" as const, parentId: checkIn.id })),
@@ -155,6 +157,9 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
   const careMessages = activeGroupResult.data
     ? await getCareMessagesForParents(supabase, activeGroupResult.data.id, careMessageParents, "leader-dashboard")
     : [];
+  const memberTimelinesByUser = activeGroupResult.data
+    ? await getMemberTimelinesForGroup(supabase, activeGroupResult.data.id, memberUserIds)
+    : new Map();
 
   const profilesById = await getProfilesByIds(
     supabase,
@@ -190,6 +195,7 @@ export async function getLeaderDashboardData(supabase: SupabaseClient, userId: s
     careMarks: leaderPrayerCareMarks,
     careMessages,
     currentUserId: userId,
+    memberTimelinesByUser,
   });
 
   return {

@@ -1,5 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getCareMessagesForParents } from "@/lib/data/care-messages";
+import { getMemberTimeline } from "@/lib/data/member-timeline";
 import {
   attachProfileToCheckIn,
   attachProfilesToCheckIns,
@@ -115,6 +116,7 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
   const careMessages = activeGroup
     ? await getCareMessagesForParents(supabase, activeGroup.id, careMessageParents, "dashboard")
     : [];
+  const memberTimeline = activeGroup ? await getMemberTimeline(supabase, userId, activeGroup.id) : [];
 
   if (prayerIds.length > 0) {
     const { data, error } = await supabase
@@ -143,6 +145,7 @@ export async function getDashboardData(supabase: SupabaseClient, userId: string)
     prayerRequests: prayerRequestsWithProfiles,
     prayerReactions,
     careMessages,
+    memberTimeline,
   };
 }
 
@@ -158,5 +161,6 @@ function emptyDashboard(profile: Profile | null): DashboardData {
     prayerRequests: [],
     prayerReactions: [],
     careMessages: [],
+    memberTimeline: [],
   };
 }
