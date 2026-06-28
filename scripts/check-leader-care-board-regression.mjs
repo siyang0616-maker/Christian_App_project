@@ -65,6 +65,12 @@ assertIncludes(careBoard, "MatrixState", "leader care board matrix state chips")
 assertIncludes(careBoard, "const VISIBLE_MEMBER_SUMMARY_COUNT = 20;", "leader care board should scan up to 20 members");
 assertIncludes(careBoard, "grid-cols-[minmax(120px,1.2fr)_74px_74px_88px_minmax(120px,1fr)]", "leader care board desktop member matrix");
 assertIncludes(careBoard, "member.rhythmStatus.map", "leader care board member rhythm dashboard");
+assertIncludes(careBoard, "RelationshipStatusHeader", "leader care board relationship-first expanded row");
+assertIncludes(careBoard, "관계 한 줄", "leader care board relationship status header");
+assertIncludes(careBoard, "님과 나눈 대화가 없어요", "leader care board no-thread relationship empty state");
+assertIncludes(careBoard, "답장을 기다리고 있어요", "leader care board member-waiting relationship status");
+assertIncludes(careBoard, "최근까지 잘 이어지고 있어요", "leader care board connected relationship status");
+assertIncludes(careBoard, "border-l-4", "leader care board row priority tone");
 assertIncludes(careBoard, "오늘 리듬 상세", "leader care board member rhythm dashboard");
 assertIncludes(careBoard, "보낼 문장", "leader care board copy preview");
 assertIncludes(careBoard, "리마인드 보내기", "leader care board share action");

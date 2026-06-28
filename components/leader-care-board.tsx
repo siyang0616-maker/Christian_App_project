@@ -69,6 +69,12 @@ const memberBadgeClassNames: Record<LeaderCareBoardData["memberSummaries"][numbe
   blue: "border-[#BBD4E2] bg-[#F2F8FB] text-[#315F7D]",
 };
 
+const memberRowBorderClassNames: Record<LeaderCareBoardData["memberSummaries"][number]["careBadgeTone"], string> = {
+  leaf: "border-l-leaf",
+  clay: "border-l-clay",
+  blue: "border-l-[#BBD4E2]",
+};
+
 const contactWaitingBadgeClassName = "border-amber-200 bg-amber-50 text-amber-800";
 const textCareSignalBadgeClassName = "border-[#BBD4E2] bg-[#F2F8FB] text-[#315F7D]";
 
@@ -520,7 +526,7 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
       : "놓친 리듬을 짧게 안내해요";
 
   return (
-    <details className="group border-b border-slate-200 last:border-b-0">
+    <details className={`group border-b border-b-slate-200 border-l-4 ${memberRowBorderClassNames[member.careBadgeTone]} last:border-b-0`}>
       <summary className="grid cursor-pointer gap-2 px-3 py-3 transition hover:bg-slate-50 md:grid-cols-[minmax(120px,1.2fr)_74px_74px_88px_minmax(120px,1fr)] md:items-center">
         <div className="min-w-0">
           <div className="flex items-center justify-between gap-2 md:block">
@@ -557,6 +563,20 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
       </summary>
 
       <div className="grid gap-3 bg-[#FAFAF8] px-3 pb-3 md:grid-cols-[1fr_1fr]">
+        <RelationshipStatusHeader member={member} />
+        {member.latestCareThread ? <LeaderCareThreadPanel currentUserId={currentUserId} member={member} /> : null}
+
+        <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs font-black text-slate-500">보낼 문장</p>
+            <span className="rounded-md bg-slate-50 px-2 py-1 text-[11px] font-black text-slate-500">{actionSummary}</span>
+          </div>
+          <p className="mt-1 break-words text-xs leading-5 text-slate-600 [overflow-wrap:anywhere]">{member.copyPreview}</p>
+          <div className="mt-3">
+            <ShareTextActions copyLabel="안부 문구 복사" shareLabel="리마인드 보내기" text={member.copyMessage} />
+          </div>
+        </div>
+
         <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs font-black text-slate-600">오늘 리듬 상세</p>
@@ -569,22 +589,34 @@ function MemberStatusRow({ currentUserId, member }: { currentUserId: string; mem
           </div>
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-white px-3 py-3">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-black text-slate-500">보낼 문장</p>
-            <span className="rounded-md bg-slate-50 px-2 py-1 text-[11px] font-black text-slate-500">{actionSummary}</span>
-          </div>
-          <p className="mt-1 break-words text-xs leading-5 text-slate-600 [overflow-wrap:anywhere]">{member.copyPreview}</p>
-          <div className="mt-3">
-            <ShareTextActions copyLabel="안부 문구 복사" shareLabel="리마인드 보내기" text={member.copyMessage} />
-          </div>
-        </div>
         <div className="md:col-span-2">
           <MemberTimelineGrid compact timeline={member.timeline} title="최근 4주 안부 기록" />
         </div>
-        {member.latestCareThread ? <LeaderCareThreadPanel currentUserId={currentUserId} member={member} /> : null}
       </div>
     </details>
+  );
+}
+
+function RelationshipStatusHeader({ member }: { member: LeaderCareBoardData["memberSummaries"][number] }) {
+  let className = "border-slate-200 bg-slate-50 text-slate-600";
+  let message = `아직 ${member.displayName}님과 나눈 대화가 없어요. 먼저 인사를 건네볼까요?`;
+
+  if (member.latestCareThread?.waitingForLeaderResponse) {
+    className = textCareSignalBadgeClassName;
+    message = `${member.displayName}님이 먼저 이야기를 건넸어요. 답장을 기다리고 있어요.`;
+  } else if (member.isWaitingOnMember && member.daysSinceLeaderContact !== null) {
+    className = contactWaitingBadgeClassName;
+    message = `${member.displayName}님에게 ${member.daysSinceLeaderContact}일 전 먼저 연락했어요. 답이 없어도 괜찮아요, 한 번 더 가볍게 안부를 물어볼 수 있어요.`;
+  } else if (member.latestCareThread) {
+    className = memberBadgeClassNames.leaf;
+    message = `${member.displayName}님과 최근까지 잘 이어지고 있어요.`;
+  }
+
+  return (
+    <div className={`rounded-lg border px-3 py-3 md:col-span-2 ${className}`}>
+      <p className="text-xs font-black opacity-80">관계 한 줄</p>
+      <p className="mt-1 text-sm font-black leading-6 text-current">{message}</p>
+    </div>
   );
 }
 
