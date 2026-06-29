@@ -1,3 +1,5 @@
+문서 체계 진입점: [00_GUIDE.md](./00_GUIDE.md)
+
 # Product North Star
 
 The goal is not to build a big Christian app.

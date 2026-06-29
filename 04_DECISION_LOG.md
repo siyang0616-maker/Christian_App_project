@@ -70,3 +70,9 @@ PROJECT_STATUS.md/CURRENT_SPRINT.md가 서로 다른 시점의 내용을 담은 
 진입점으로 하는 4단계 체계(원칙/현황/결정로그/티켓)로 재편하고, 옛
 문서는 archive로 이동.
 (이 변경 자체가 00_GUIDE.md에 반영됨)
+
+## 2026-06-29 — Supabase ref 재확인 후 MAC_MINI_HANDOFF archive 허용
+`.env.local`의 Supabase project ref와 `MAC_MINI_HANDOFF.md`에 적힌 ref가
+모두 `vguvxpvysodugauaxfxz`로 일치함을 확인. 이전 결정 로그에 남아 있던
+ref 불일치 우려는 현재 파일 기준으로 재현되지 않았으므로, 오래된
+`MAC_MINI_HANDOFF.md`는 00_GUIDE.md의 지시에 따라 archive 대상으로 처리.
