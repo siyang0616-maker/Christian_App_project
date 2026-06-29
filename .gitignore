@@ -10,3 +10,4 @@ dist
 coverage
 *.log
 .superpowers
+MIGRATE_DOCS_PROMPT.md
